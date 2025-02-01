@@ -1,14 +1,11 @@
 /* eslint-disable import/no-unresolved */
-'use client'
+"use client";
 
-import axios from 'axios'
-
-
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000"
-
-})
+  baseURL: process.env.REACT_APP_BACKENND_URL,
+});
 
 // api.interceptors.request.use(
 //   config => {
@@ -25,4 +22,4 @@ const api = axios.create({
 //   error => Promise.reject(error)
 // )
 
-export default api
+export default api;

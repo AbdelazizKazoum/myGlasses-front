@@ -16,6 +16,7 @@ import "./index.css";
 import useApplyFilters from "../../utils/useApplyFilters";
 import ProductCard from "../ProductCard";
 import { addCategory } from "../../store/filtersSlice";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const ProductDetailsCard = (props) => {
   const productId = useParams("id");
@@ -126,7 +127,9 @@ const ProductDetailsCard = (props) => {
           <div className="relative h-[85%] p-7 bg-black/[0.075] flex items-center justify-center rounded-lg">
             <img
               className="product-details-card-image"
-              src={displayImage || image}
+              src={
+                displayImage ? getImageUrl(displayImage) : getImageUrl(image)
+              }
               alt="productImage"
             />
           </div>
@@ -137,7 +140,7 @@ const ProductDetailsCard = (props) => {
               {data.detail[imagesIndex].images?.map((item, index) => (
                 <img
                   key={index}
-                  src={item?.image}
+                  src={getImageUrl(item?.image)}
                   alt="Thumbnail 1"
                   className="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
                   onClick={() => {

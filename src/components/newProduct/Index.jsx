@@ -14,8 +14,9 @@ export default function CreateProductPage() {
   const [images, setImages] = useState({}); // Initially empty
   const [colorPicker, setColorPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#000000");
-  const [activeColor, setActiveColor] = useState(null);
+  const [activeColor, setActiveColor] = useState("#c15353");
   const colorPickerRef = useRef(null);
+  const [defaultImage, setDefaultImage] = useState(null);
 
   // Hooks
   const dispatch = useDispatch();
@@ -72,6 +73,8 @@ export default function CreateProductPage() {
     const formData = new FormData();
 
     formData.append("product-information", JSON.stringify(product));
+
+    formData.append("defaultImage", defaultImage);
 
     Object.keys(images).forEach((color) => {
       images[color].forEach((file, index) => {
@@ -311,6 +314,48 @@ export default function CreateProductPage() {
               </div>
             </div>
           )}
+          <div className="mt-4 border p-4 rounded">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold">Default Image : </h2>
+              </div>
+              <button
+                type="button"
+                className="cart-product-remove-button"
+                onClick={() => setDefaultImage(null)}
+              >
+                Remove
+              </button>
+            </div>
+
+            {/* Default image */}
+            <div className="mt-4 flex flex-wrap gap-3">
+              {defaultImage && (
+                <div className="relative border flex justify-center items-center">
+                  <img
+                    src={URL.createObjectURL(defaultImage)}
+                    alt={`Product in ${activeColor}`}
+                    className="w-16 h-16 object-cover rounded"
+                  />
+
+                  <CircleX
+                    className="bg-white text-gray-600 rounded-full absolute -top-3 -right-3 cart-product-update-icon"
+                    onClick={() => setDefaultImage(null)}
+                  />
+                </div>
+              )}
+
+              <label className="cursor-pointer flex items-center gap-2 text-gray-500 border p-3">
+                <Upload size={40} />
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => setDefaultImage(e.target.files[0])}
+                />
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
