@@ -34,4 +34,20 @@ export const getProducts = createAsyncThunk("products/get", async () => {
   }
 });
 
+//
+// Create new product
+export const createProduct = createAsyncThunk(
+  "products/get",
+  async (formData) => {
+    const res = await api.post("/product", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("🚀 ~ res:", res);
+
+    if (res.data) {
+      return res.data;
+    }
+  }
+);
+
 export default productsSlice.reducer;

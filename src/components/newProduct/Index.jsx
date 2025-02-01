@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { SketchPicker } from "react-color";
 import { PlusCircle, Check, Upload, CircleX } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { createProduct } from "../../store/productsSlice";
 
 export default function CreateProductPage() {
   const [product, setProduct] = useState({
@@ -14,6 +16,9 @@ export default function CreateProductPage() {
   const [selectedColor, setSelectedColor] = useState("#000000");
   const [activeColor, setActiveColor] = useState(null);
   const colorPickerRef = useRef(null);
+
+  // Hooks
+  const dispatch = useDispatch();
 
   const handleProductChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -63,13 +68,35 @@ export default function CreateProductPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    const formData = new FormData();
+
+    formData.append("product-information", JSON.stringify(product));
+
+    Object.keys(images).forEach((color) => {
+      images[color].forEach((file, index) => {
+        formData.append(color, file);
+      });
+    });
+
     e.preventDefault(); // Prevent the default form submission
     console.log({
       product,
       colors,
       images,
     });
+
+    const res = await dispatch(createProduct(formData));
+    console.log("🚀 ~ handleSubmit ~ res:", res);
+
+    // console.log(
+    //   "get information from formData : ",
+    //   formData.get("product-information")
+    // );
+    // console.log(
+    //   "get files from formData : ",
+    //   formData.get("images[#c15353][]")
+    // );
   };
 
   return (
