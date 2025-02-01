@@ -1,15 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { SketchPicker } from "react-color";
-import {
-  PlusCircle,
-  CheckCircle,
-  XCircle,
-  Check,
-  Upload,
-  CircleX,
-} from "lucide-react";
-import { AiFillPlusCircle } from "react-icons/ai";
-import { CiCircleRemove } from "react-icons/ci";
+import { PlusCircle, Check, Upload, CircleX } from "lucide-react";
 
 export default function CreateProductPage() {
   const [product, setProduct] = useState({
@@ -17,7 +8,7 @@ export default function CreateProductPage() {
     description: "",
     price: "",
   });
-  const [colors, setColors] = useState(["#ff0000", "#00ff00", "#0000ff"]); // Default colors
+  const [colors, setColors] = useState(["#c15353", "#149c9e", "#a1b70b"]); // Default colors
   const [images, setImages] = useState({}); // Initially empty
   const [colorPicker, setColorPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#000000");
