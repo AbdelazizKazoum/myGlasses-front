@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { SketchPicker } from "react-color";
-import { PlusCircle, Check, Upload, CircleX } from "lucide-react";
+import { PlusCircle, Check, Upload, CircleX, Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { createProduct } from "../../store/productsSlice";
 
 export default function CreateProductPage() {
+  // State --------------------------------------------->
   const [product, setProduct] = useState({
     name: "",
     description: "",
@@ -17,14 +18,17 @@ export default function CreateProductPage() {
   const [activeColor, setActiveColor] = useState("#c15353");
   const colorPickerRef = useRef(null);
   const [defaultImage, setDefaultImage] = useState(null);
+  const [loading, setLoading] = useState(false); // <-- Add loading state
 
-  // Hooks
+  // Hooks -------------------------------------------->
   const dispatch = useDispatch();
 
+  // Actions ------------------------------------------>
   const handleProductChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
+  // Add color action
   const addColor = () => {
     if (!colors.includes(selectedColor)) {
       setColors([...colors, selectedColor]);
@@ -33,6 +37,7 @@ export default function CreateProductPage() {
     setColorPicker(false);
   };
 
+  // Remove color action
   const removeColor = (color) => {
     setColors(colors.filter((c) => c !== color));
     setImages((prev) => {
@@ -43,25 +48,12 @@ export default function CreateProductPage() {
     if (activeColor === color) setActiveColor(null);
   };
 
+  // Upload file action for colors
   const handleFileUpload = (color, files) => {
     setImages({ ...images, [color]: [...(images[color] || []), ...files] });
   };
 
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        colorPickerRef.current &&
-        !colorPickerRef.current.contains(event.target)
-      ) {
-        setColorPicker(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
+  // remove image from colors
   const removeImage = (color, index) => {
     setImages({
       ...images,
@@ -69,8 +61,11 @@ export default function CreateProductPage() {
     });
   };
 
+  // Submit the product to the api
   const handleSubmit = async (e) => {
     const formData = new FormData();
+
+    setLoading(true); // Start loading
 
     formData.append("product-information", JSON.stringify(product));
 
@@ -92,15 +87,24 @@ export default function CreateProductPage() {
     const res = await dispatch(createProduct(formData));
     console.log("🚀 ~ handleSubmit ~ res:", res);
 
-    // console.log(
-    //   "get information from formData : ",
-    //   formData.get("product-information")
-    // );
-    // console.log(
-    //   "get files from formData : ",
-    //   formData.get("images[#c15353][]")
-    // );
+    setLoading(false); // Stop loading
   };
+
+  // Component Life sycle ------------------------------------------>
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        colorPickerRef.current &&
+        !colorPickerRef.current.contains(event.target)
+      ) {
+        setColorPicker(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="bg-white shadow-md p-6 ">
@@ -363,10 +367,15 @@ export default function CreateProductPage() {
       <div className="w-full flex justify-center mt-6">
         <button
           type="submit"
-          className="p-3 border rounded bg-blue-500 text-white w-full sm:w-1/3"
+          className="p-3 border bill-checkout-button sm:w-1/3 flex items-center justify-center"
           onClick={handleSubmit}
+          disabled={loading} // Disable button when loading
         >
-          Submit Product
+          {loading ? (
+            <Loader2 className="animate-spin mr-2" size={20} />
+          ) : (
+            "Submit Product"
+          )}
         </button>
       </div>
     </div>

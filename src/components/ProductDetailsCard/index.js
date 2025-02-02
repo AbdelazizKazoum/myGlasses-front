@@ -25,6 +25,7 @@ const ProductDetailsCard = (props) => {
   // Hooks
   const { data, status } = useSelector((state) => state.productDetails);
   const filteredData = useApplyFilters();
+  console.log("🚀 ~ ProductDetailsCard ~ filteredData:", filteredData);
 
   const {
     id,
@@ -43,7 +44,7 @@ const ProductDetailsCard = (props) => {
 
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
-  const [displayImage, setDisplayImage] = useState(image);
+  const [, /*displayImage */ setDisplayImage] = useState(image);
 
   const [visibleItems, setVisibleItems] = useState(4);
 
@@ -111,7 +112,7 @@ const ProductDetailsCard = (props) => {
         )}
       </div>
 
-      {/* Product List */}
+      {/* recommended Product List */}
       <ul className="row product-list-container d-flex">
         {filteredData.slice(0, 4).map((product) => (
           <ProductCard key={product.id} product={product} />
@@ -127,9 +128,7 @@ const ProductDetailsCard = (props) => {
           <div className="relative h-[85%] p-7 bg-black/[0.075] flex items-center justify-center rounded-lg">
             <img
               className="product-details-card-image"
-              src={
-                displayImage ? getImageUrl(displayImage) : getImageUrl(image)
-              }
+              src={getImageUrl(image)}
               alt="productImage"
             />
           </div>

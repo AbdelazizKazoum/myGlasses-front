@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
-import { TbCurrencyTaka } from "react-icons/tb";
 import { TbCurrencyDirham } from "react-icons/tb";
 import "./index.css";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const TrendingProductCard = (props) => {
   const { id, name, image, price, category } = props.product;
@@ -15,9 +15,7 @@ const TrendingProductCard = (props) => {
             <div className="trending-product-info">
               <div className="flex gap-1">
                 <TbCurrencyDirham className="text-xl" />
-                <div className="text-[18px] -ml-1">
-                  {price}
-                </div>
+                <div className="text-[18px] -ml-1">{price}</div>
                 <TbSquareRoundedPlusFilled className="text-[17px] mt-[2px] text-[#A16207]" />
               </div>
               <div className="pl-1">
@@ -27,7 +25,7 @@ const TrendingProductCard = (props) => {
           </section>
           <section className="trending-product-image-container">
             <img
-              src={image}
+              src={getImageUrl(image)}
               alt="trendingProduct"
               className="trending-product-image"
             />

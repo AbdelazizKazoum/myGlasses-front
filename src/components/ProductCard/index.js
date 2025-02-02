@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addCartItem } from "../../store/cartSlice";
 import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
 import "./index.css";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const ProductCard = (props) => {
   const { product } = props;
@@ -42,10 +43,6 @@ const ProductCard = (props) => {
     dispatch(removeWishlistItem(id));
   };
 
-  const imageUrl = image.startsWith("http")
-    ? image
-    : `${process.env.REACT_APP_BACKEND_URL}${image}`;
-
   return (
     <li className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4 d-flex">
       <div className="product-card shadow-sm">
@@ -53,7 +50,11 @@ const ProductCard = (props) => {
           to={`/product/${id}`}
           className="link-item product-image-container"
         >
-          <img src={imageUrl} className="product-image" alt="productImage" />
+          <img
+            src={getImageUrl(image)}
+            className="product-image"
+            alt="productImage"
+          />
         </Link>
         <div>
           <section>

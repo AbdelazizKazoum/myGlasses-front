@@ -21,6 +21,8 @@ import LoginPage from "./components/LoginPage";
 import SignUpPage from "./components/SignUpPage";
 import CheckoutPage from "./components/CheckoutPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
 import { AddProduct } from "./components/addProduct";
@@ -39,6 +41,7 @@ function App() {
     <Provider store={store}>
       {showNavbar && <Navbar />}
       <div className="main-container">
+        <ToastContainer />
         <div className="responsive-container">
           <Routes>
             <Route exact path="/login" element={<LoginPage />} />
