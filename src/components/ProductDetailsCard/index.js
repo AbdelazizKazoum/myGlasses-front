@@ -44,7 +44,7 @@ const ProductDetailsCard = (props) => {
 
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
-  const [, /*displayImage */ setDisplayImage] = useState(image);
+  const [displayImage, setDisplayImage] = useState(null);
 
   const [visibleItems, setVisibleItems] = useState(4);
 
@@ -128,7 +128,9 @@ const ProductDetailsCard = (props) => {
           <div className="relative h-[85%] p-7 bg-black/[0.075] flex items-center justify-center rounded-lg">
             <img
               className="product-details-card-image"
-              src={getImageUrl(image)}
+              src={
+                displayImage ? getImageUrl(displayImage) : getImageUrl(image)
+              }
               alt="productImage"
             />
           </div>

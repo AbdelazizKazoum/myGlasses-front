@@ -3,6 +3,7 @@ import { SketchPicker } from "react-color";
 import { PlusCircle, Check, Upload, CircleX, Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { createProduct } from "../../store/productsSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateProductPage() {
   // State --------------------------------------------->
@@ -22,6 +23,7 @@ export default function CreateProductPage() {
 
   // Hooks -------------------------------------------->
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Actions ------------------------------------------>
   const handleProductChange = (e) => {
@@ -88,6 +90,7 @@ export default function CreateProductPage() {
     console.log("🚀 ~ handleSubmit ~ res:", res);
 
     setLoading(false); // Stop loading
+    navigate("/products");
   };
 
   // Component Life sycle ------------------------------------------>
@@ -216,7 +219,7 @@ export default function CreateProductPage() {
         {/* Color and Image Upload Section */}
         <div className="w-full sm:w-1/2 relative mt-6 sm:mt-0">
           <h2 className="text-lg font-semibold">Select Available Colors</h2>
-          <div className="flex items-center mt-2 gap-2 justify-between">
+          <div className="flex items-center mt-2 gap-2">
             <div className="flex gap-2">
               {colors.map((color, index) => (
                 <div key={index} className="relative">
@@ -236,7 +239,7 @@ export default function CreateProductPage() {
               onClick={() => setColorPicker(!colorPicker)}
               className="text-gray-600 hover:text-gray-900"
             >
-              <PlusCircle size={24} />
+              <PlusCircle size={30} />
             </button>
           </div>
 
@@ -245,12 +248,10 @@ export default function CreateProductPage() {
               ref={colorPickerRef}
               className="absolute top-12 right-0 bg-white p-2 rounded-lg z-10 border"
             >
-              <button
+              <CircleX
+                className="bg-white cursor-pointer text-gray-600 rounded-full absolute -top-3 -right-3 cart-product-update-icon"
                 onClick={() => setColorPicker(false)}
-                className="absolute top-2 right-2 bg-gray-500 text-white p-1 rounded"
-              >
-                X
-              </button>
+              />
               <SketchPicker
                 className="border-none shadow-none"
                 color={selectedColor}
