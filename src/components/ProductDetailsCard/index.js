@@ -138,17 +138,18 @@ const ProductDetailsCard = (props) => {
           {/* Display images */}
           <div>
             <div className="flex gap-4 py-4 justify-center overflow-x-auto">
-              {data.detail[imagesIndex].images?.map((item, index) => (
-                <img
-                  key={index}
-                  src={getImageUrl(item?.image)}
-                  alt="Thumbnail 1"
-                  className="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                  onClick={() => {
-                    setDisplayImage(item.image);
-                  }}
-                />
-              ))}
+              {data.detail ??
+                data.detail[imagesIndex].images?.map((item, index) => (
+                  <img
+                    key={index}
+                    src={getImageUrl(item?.image)}
+                    alt="Thumbnail 1"
+                    className="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                    onClick={() => {
+                      setDisplayImage(item.image);
+                    }}
+                  />
+                ))}
             </div>
           </div>
         </div>
@@ -192,7 +193,7 @@ const ProductDetailsCard = (props) => {
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Color:</h3>
             <div className="flex space-x-2">
-              {detail.map((item, index) => (
+              {detail?.map((item, index) => (
                 <button
                   key={index}
                   style={{ backgroundColor: item.color }}
