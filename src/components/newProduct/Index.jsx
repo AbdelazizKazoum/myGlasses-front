@@ -4,6 +4,7 @@ import { PlusCircle, Check, Upload, CircleX, Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { createProduct } from "../../store/productsSlice";
 import { useNavigate } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
 
 export default function CreateProductPage() {
   // State --------------------------------------------->
@@ -11,21 +12,34 @@ export default function CreateProductPage() {
     name: "",
     description: "",
     price: "",
+    weight: "",
+    quantity: "",
+    brand: "",
+    category: "",
+    gender: null,
+    newPrice: null,
+    trending: false,
   });
-  const [colors, setColors] = useState(["#c15353", "#149c9e", "#a1b70b"]); // Default colors
-  const [images, setImages] = useState({}); // Initially empty
+  const [colors, setColors] = useState(["#c15353", "#149c9e", "#a1b70b"]);
+  const [images, setImages] = useState({});
   const [colorPicker, setColorPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#000000");
   const [activeColor, setActiveColor] = useState("#c15353");
   const colorPickerRef = useRef(null);
   const [defaultImage, setDefaultImage] = useState(null);
-  const [loading, setLoading] = useState(false); // <-- Add loading state
+  const [loading, setLoading] = useState(false);
 
-  // Hooks -------------------------------------------->
+  // React Hook Form ------------------------------------>
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Actions ------------------------------------------>
   const handleProductChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
@@ -63,37 +77,49 @@ export default function CreateProductPage() {
     });
   };
 
-  // Submit the product to the api
-  const handleSubmit = async (e) => {
-    const formData = new FormData();
-
+  const handleFormSubmit = async (data) => {
     setLoading(true); // Start loading
 
-    formData.append("product-information", JSON.stringify(product));
+    // Validation to check if there are colors without images
+    const colorsWithoutImages = colors.filter(
+      (color) => images[color]?.length === 0
+    );
+    console.log(
+      "🚀 ~ handleFormSubmit ~ colorsWithoutImages:",
+      colorsWithoutImages
+    );
 
+    if (colorsWithoutImages.length === 0) {
+      alert(
+        `Please upload at least one image for each color: ${colorsWithoutImages.join(
+          ", "
+        )}`
+      );
+      setLoading(false); // Stop loading
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("product-information", JSON.stringify(data));
     formData.append("defaultImage", defaultImage);
 
     Object.keys(images).forEach((color) => {
-      images[color].forEach((file, index) => {
-        formData.append(color, file);
+      images[color].forEach((file) => {
+        const newFileName = file.name.split(" ").join("_");
+        const fileWithNewName = new File([file], newFileName, {
+          type: file.type,
+        });
+        formData.append(color, fileWithNewName);
       });
     });
 
-    e.preventDefault(); // Prevent the default form submission
-    console.log({
-      product,
-      colors,
-      images,
-    });
+    console.log("Form Data Submitted:", data);
 
-    const res = await dispatch(createProduct(formData));
-    console.log("🚀 ~ handleSubmit ~ res:", res);
-
-    setLoading(false); // Stop loading
+    // const res = await dispatch(createProduct(formData));
+    setLoading(false);
     navigate("/products");
   };
 
-  // Component Life sycle ------------------------------------------>
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -110,100 +136,186 @@ export default function CreateProductPage() {
   }, []);
 
   return (
-    <div className="bg-white shadow-md p-6 ">
+    <div className="bg-white shadow-md p-6">
       <div className="mx-auto rounded-lg flex flex-col sm:flex-row gap-6">
         {/* Product Information Section */}
         <div className="w-full sm:w-1/2">
           <h1 className="text-2xl font-bold mb-4">Create New Product</h1>
           <h2 className="text-lg font-semibold">Product Information</h2>
-          <input
-            type="text"
-            name="name"
-            placeholder="Product Name"
-            className="w-full p-2 border rounded mt-2"
-            value={product.name}
-            onChange={handleProductChange}
-          />
-          <textarea
-            name="description"
-            placeholder="Description"
-            className="w-full p-2 border rounded mt-2"
-            value={product.description}
-            onChange={handleProductChange}
-          ></textarea>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2">
-            <input
-              type="text"
-              name="brand"
-              placeholder="Brand"
-              className="w-full p-2 border rounded"
-              value={product.brand}
-              onChange={handleProductChange}
+
+          <div>
+            <Controller
+              name="name"
+              control={control}
+              defaultValue={product.name}
+              rules={{ required: "Product name is required" }}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="text"
+                  placeholder="Product Name"
+                  className="w-full p-2 border rounded mt-2"
+                />
+              )}
             />
-            <input
-              type="text"
-              name="category"
-              placeholder="Category"
-              className="w-full p-2 border rounded"
-              value={product.category}
-              onChange={handleProductChange}
-            />
-            <input
-              type="text"
-              name="gender"
-              placeholder="Gender"
-              className="w-full p-2 border rounded"
-              value={product.gender}
-              onChange={handleProductChange}
+            {errors?.name && (
+              <p className="text-red-500">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            {" "}
+            <Controller
+              name="description"
+              control={control}
+              defaultValue={product.description}
+              render={({ field }) => (
+                <textarea
+                  {...field}
+                  placeholder="Description"
+                  className="w-full p-2 border rounded mt-2"
+                />
+              )}
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-2">
-            <input
-              type="text"
-              name="weight"
-              placeholder="Weight"
-              className="w-full p-2 border rounded"
-              value={product.weight}
-              onChange={handleProductChange}
-            />
-            <input
-              type="text"
-              name="quantity"
-              placeholder="Quantity"
-              className="w-full p-2 border rounded"
-              value={product.quantity}
-              onChange={handleProductChange}
-            />
-            <input
-              type="text"
-              name="qty"
-              placeholder="Qty"
-              className="w-full p-2 border rounded"
-              value={product.qty}
-              onChange={handleProductChange}
-            />
-          </div>
-
+          {/* Category and Gender dropdowns */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-            <input
-              type="number"
-              name="price"
-              placeholder="Price"
-              className="w-full p-2 border rounded"
-              value={product.price}
-              onChange={handleProductChange}
-            />
-            <input
-              type="text"
-              name="newPrice"
-              placeholder="New Price"
-              className="w-full p-2 border rounded"
-              value={product.newPrice}
-              onChange={handleProductChange}
-            />
+            <div className="flex flex-col">
+              <Controller
+                name="category"
+                control={control}
+                defaultValue={product.category}
+                rules={{ required: "Category is required" }}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className="w-full p-2 border rounded bg-white"
+                    onChange={(e) => setValue("category", e.target.value)}
+                  >
+                    <option value="">Select Category</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Sunglasses">Sunglasses</option>
+                    <option value="Accessories">Accessories</option>
+                  </select>
+                )}
+              />
+              {errors?.category && (
+                <p className="text-red-500">{errors.category.message}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <Controller
+                name="gender"
+                control={control}
+                defaultValue={product.gender}
+                rules={{ required: "Gender is required" }}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    className="w-full p-2 border rounded bg-white"
+                    onChange={(e) => setValue("gender", e.target.value)}
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                )}
+              />
+              {errors?.gender && (
+                <p className="text-red-500">{errors.gender.message}</p>
+              )}
+            </div>
           </div>
 
+          {/* Numeric fields validation */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+            <div className="flex flex-col">
+              <Controller
+                name="price"
+                control={control}
+                defaultValue={product.price}
+                rules={{
+                  required: "Price is required",
+                  pattern: {
+                    value: /^[0-9]+(\.[0-9]{1,2})?$/,
+                    message: "Invalid price format",
+                  },
+                }}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="number"
+                    placeholder="Price"
+                    className="w-full p-2 border rounded"
+                  />
+                )}
+              />
+              {errors?.price && (
+                <p className="text-red-500">{errors.price.message}</p>
+              )}
+            </div>
+            <div>
+              <Controller
+                name="newPrice"
+                control={control}
+                defaultValue={product.newPrice}
+                rules={{ required: "New price is required" }}
+                render={({ field }) => (
+                  <input
+                    {...field}
+                    type="number"
+                    placeholder="New Price"
+                    className="w-full p-2 border rounded"
+                  />
+                )}
+              />{" "}
+              {errors?.newPrice && (
+                <p className="text-red-500">{errors.newPrice.message}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Other Inputs */}
+          <div>
+            <Controller
+              name="weight"
+              control={control}
+              defaultValue={product.weight}
+              rules={{ required: "weight is required" }}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="text"
+                  placeholder="Weight"
+                  className="w-full p-2 border rounded mt-2"
+                />
+              )}
+            />
+            {errors?.weight && (
+              <p className="text-red-500">{errors.weight.message}</p>
+            )}
+          </div>
+          <div>
+            <Controller
+              name="quantity"
+              control={control}
+              defaultValue={product.quantity}
+              rules={{ required: "quantity is required" }}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="text"
+                  placeholder="Quantity"
+                  className="w-full p-2 border rounded mt-2"
+                />
+              )}
+            />
+            {errors?.quantity && (
+              <p className="text-red-500">{errors.quantity.message}</p>
+            )}
+          </div>
           <label className="flex items-center gap-2 mt-3">
             <input
               type="checkbox"
@@ -218,6 +330,50 @@ export default function CreateProductPage() {
 
         {/* Color and Image Upload Section */}
         <div className="w-full sm:w-1/2 relative mt-6 sm:mt-0">
+          {/* --------------------------- */}
+          <div className="mb-4 border p-4 rounded ">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold">Default Image : </h2>
+              </div>
+              <button
+                type="button"
+                className="cart-product-remove-button"
+                onClick={() => setDefaultImage(null)}
+              >
+                Remove
+              </button>
+            </div>
+
+            {/* Default image */}
+            <div className="mt-4 flex flex-wrap gap-3">
+              {defaultImage && (
+                <div className="relative border flex justify-center items-center">
+                  <img
+                    src={URL.createObjectURL(defaultImage)}
+                    alt={`Product in ${activeColor}`}
+                    className="w-16 h-16 object-cover rounded"
+                  />
+
+                  <CircleX
+                    className="bg-white text-gray-600 rounded-full absolute -top-3 -right-3 cart-product-update-icon"
+                    onClick={() => setDefaultImage(null)}
+                  />
+                </div>
+              )}
+
+              <label className="cursor-pointer flex items-center gap-2 text-gray-500 border p-3">
+                <Upload size={40} />
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => setDefaultImage(e.target.files[0])}
+                />
+              </label>
+            </div>
+          </div>
+
           <h2 className="text-lg font-semibold">Select Available Colors</h2>
           <div className="flex items-center mt-2 gap-2">
             <div className="flex gap-2">
@@ -319,57 +475,13 @@ export default function CreateProductPage() {
               </div>
             </div>
           )}
-          <div className="mt-4 border p-4 rounded">
-            <div className="flex justify-between">
-              <div className="flex items-center gap-3">
-                <h2 className="text-lg font-semibold">Default Image : </h2>
-              </div>
-              <button
-                type="button"
-                className="cart-product-remove-button"
-                onClick={() => setDefaultImage(null)}
-              >
-                Remove
-              </button>
-            </div>
-
-            {/* Default image */}
-            <div className="mt-4 flex flex-wrap gap-3">
-              {defaultImage && (
-                <div className="relative border flex justify-center items-center">
-                  <img
-                    src={URL.createObjectURL(defaultImage)}
-                    alt={`Product in ${activeColor}`}
-                    className="w-16 h-16 object-cover rounded"
-                  />
-
-                  <CircleX
-                    className="bg-white text-gray-600 rounded-full absolute -top-3 -right-3 cart-product-update-icon"
-                    onClick={() => setDefaultImage(null)}
-                  />
-                </div>
-              )}
-
-              <label className="cursor-pointer flex items-center gap-2 text-gray-500 border p-3">
-                <Upload size={40} />
-                <input
-                  type="file"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => setDefaultImage(e.target.files[0])}
-                />
-              </label>
-            </div>
-          </div>
         </div>
       </div>
-
-      {/* Submit Button */}
       <div className="w-full flex justify-center mt-6">
         <button
           type="submit"
           className="p-3 border bill-checkout-button sm:w-1/3 flex items-center justify-center"
-          onClick={handleSubmit}
+          onClick={handleSubmit(handleFormSubmit)}
           disabled={loading} // Disable button when loading
         >
           {loading ? (
