@@ -26,7 +26,9 @@ const filtersSlice = createSlice({
     },
 
     addCategory(state, action) {
-      state.category.push(action.payload);
+      if (!state.category?.includes(action.payload)) {
+        state.category.push(action.payload);
+      }
     },
 
     removeCategory(state, action) {

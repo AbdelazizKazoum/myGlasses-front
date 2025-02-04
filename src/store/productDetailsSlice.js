@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { statusCode } from "../utils/statusCode";
-import { productsList } from "../eyesomeData";
 import api from "../lib/api";
 
 const initialState = {

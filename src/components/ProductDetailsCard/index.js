@@ -70,8 +70,8 @@ const ProductDetailsCard = (props) => {
 
   useEffect(() => {
     (async () => {
+      dispatch(addCategory("ACCESSOIRES"));
       await dispatch(getProductDetails(productId.id));
-      await dispatch(addCategory("ACCESSOIRES"));
       setLoading(false);
     })();
   }, [dispatch, productId.id]);

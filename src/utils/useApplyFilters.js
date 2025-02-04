@@ -1,70 +1,64 @@
+import { useMemo } from "react";
 import { useSelector } from "react-redux";
-import axios from 'axios';
 
-const useApplyFilters =  () => {
+const useApplyFilters = () => {
   const filters = useSelector((state) => state.filters);
+  const { data: productsList } = useSelector((state) => state.products);
 
-  // get products
-  const {data :productsList } = useSelector((state) => state.products);
-
-
-  
   const { searchInput, gender, priceRange, category, rating, priceSort } =
     filters;
+  console.log("🚀 ~ useApplyFilters ~ category:", category);
 
+  return useMemo(() => {
+    try {
+      let filteredData = [...(productsList || [])];
 
+      if (priceSort === "LOW_HIGH") {
+        filteredData.sort((a, b) => a.newPrice - b.newPrice);
+      } else if (priceSort === "HIGH_LOW") {
+        filteredData.sort((a, b) => b.newPrice - a.newPrice);
+      }
 
-    
-  try {
-    let filteredData=[];
+      if (gender !== "All") {
+        filteredData = filteredData.filter((item) => item.gender === gender);
+      }
 
-
-
-
-
-
- // let filteredData = [...productsList];
-
-  if (priceSort === "LOW_HIGH") {
-    filteredData.sort((a, b) => a.newPrice - b.newPrice);
-  } else if (priceSort === "HIGH_LOW") {
-    filteredData.sort((a, b) => b.newPrice - a.newPrice);
-  } else {
-    filteredData = [...productsList];
-  }
-
-  filteredData =
-    gender !== "All"
-      ? filteredData.filter((item) => item.gender === gender)
-      : filteredData;
-
-  filteredData =
-    searchInput !== ""
-      ? filteredData.filter((item) =>
+      if (searchInput !== "") {
+        filteredData = filteredData.filter((item) =>
           item.name.toLowerCase().includes(searchInput.toLowerCase())
-        )
-      : filteredData;
+        );
+      }
 
-  filteredData =
-    priceRange !== 4999
-      ? filteredData.filter((item) => item.newPrice <= priceRange)
-      : filteredData;
+      if (priceRange !== 4999) {
+        filteredData = filteredData.filter(
+          (item) => item.newPrice <= priceRange
+        );
+      }
 
-  filteredData =
-    category.length !== 0
-      ? filteredData.filter((item) => category.includes(item.category))
-      : filteredData;
+      if (category.length !== 0) {
+        filteredData = filteredData.filter((item) =>
+          category.includes(item.category)
+        );
+      }
 
-  filteredData =
-    rating !== ""
-      ? filteredData.filter((item) => item.rating >= rating)
-      : filteredData;
+      if (rating !== "") {
+        filteredData = filteredData.filter((item) => item.rating >= rating);
+      }
 
-  return filteredData;
-} catch (error) {
-  console.error('Error fetching products:', error);
-  return [];
-}
+      return filteredData;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return [];
+    }
+  }, [
+    productsList,
+    category,
+    priceRange,
+    priceSort,
+    rating,
+    searchInput,
+    gender,
+  ]); // Only recompute when these dependencies change
 };
 
 export default useApplyFilters;
