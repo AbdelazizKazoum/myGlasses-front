@@ -7,15 +7,17 @@ import { BiSolidBookmarkHeart } from "react-icons/bi";
 import { BsHandbagFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getProductDetails } from "../../store/productDetailsSlice";
+import {
+  getProductDetails,
+  getProductsByCategory,
+} from "../../store/productDetailsSlice";
 import Loader from "../Loader";
 import ErrorCard from "../ErrorCard";
 import { statusCode } from "../../utils/statusCode";
 
 import "./index.css";
-import useApplyFilters from "../../utils/useApplyFilters";
+// import useApplyFilters from "../../utils/useApplyFilters";
 import ProductCard from "../ProductCard";
-import { addCategory } from "../../store/filtersSlice";
 import { getImageUrl } from "../../utils/getImageUrl";
 
 const ProductDetailsCard = (props) => {
@@ -23,9 +25,13 @@ const ProductDetailsCard = (props) => {
   const dispatch = useDispatch();
 
   // Hooks
-  const { data, status } = useSelector((state) => state.productDetails);
-  const filteredData = useApplyFilters();
-  console.log("🚀 ~ ProductDetailsCard ~ filteredData:", filteredData);
+  const {
+    data,
+    status,
+    relatedProducts: filteredData,
+  } = useSelector((state) => state.productDetails);
+
+  // const filteredData = useApplyFilters();
 
   const {
     id,
@@ -70,7 +76,7 @@ const ProductDetailsCard = (props) => {
 
   useEffect(() => {
     (async () => {
-      dispatch(addCategory("ACCESSOIRES"));
+      dispatch(getProductsByCategory("ACCESSOIRES"));
       await dispatch(getProductDetails(productId.id));
       setLoading(false);
     })();
@@ -91,7 +97,7 @@ const ProductDetailsCard = (props) => {
     setIsAddedToWishlist(false);
   };
 
-  if (loading && !detail) return "loading ...";
+  if (loading && !detail) return <Loader />;
 
   // Recommanded Products
   const renderRecommandedProducts = () => (

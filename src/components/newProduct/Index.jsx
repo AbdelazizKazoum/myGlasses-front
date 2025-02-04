@@ -20,7 +20,7 @@ export default function CreateProductPage() {
     newPrice: null,
     trending: false,
   });
-  const [colors, setColors] = useState(["#c15353", "#149c9e", "#a1b70b"]);
+  const [colors, setColors] = useState(["#c15353", "#149c9e"]);
   const [images, setImages] = useState({});
   const [colorPicker, setColorPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#000000");
@@ -114,7 +114,8 @@ export default function CreateProductPage() {
 
     console.log("Form Data Submitted:", data);
 
-    // const res = await dispatch(createProduct(formData));
+    const res = await dispatch(createProduct(formData));
+    console.log("🚀 ~ handleFormSubmit ~ res:", res);
 
     setLoading(false);
     navigate("/products");
@@ -160,6 +161,26 @@ export default function CreateProductPage() {
             />
             {errors?.name && (
               <p className="text-red-500">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <Controller
+              name="brand"
+              control={control}
+              defaultValue={product.brand}
+              rules={{ required: "Brand name is required" }}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="text"
+                  placeholder="Brand"
+                  className="w-full p-2 border rounded mt-2"
+                />
+              )}
+            />
+            {errors?.name && (
+              <p className="text-red-500">{errors.brand.message}</p>
             )}
           </div>
 

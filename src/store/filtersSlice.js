@@ -64,4 +64,5 @@ export const {
   clearFilters,
   updateSearchInput,
 } = filtersSlice.actions;
+
 export default filtersSlice.reducer;

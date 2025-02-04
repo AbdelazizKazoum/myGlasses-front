@@ -1,18 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { statusCode } from "../utils/statusCode";
-import { productsList } from "../eyesomeData";
 import api from "../lib/api";
 import { toast } from "react-toastify";
 
 const initialState = {
   data: [],
+  filteredProducts: [],
   status: statusCode.idle,
 };
 
 const productsSlice = createSlice({
   name: "products",
   initialState,
-  reducers: {},
+  reducers: {
+    filterByCategory(state, action) {
+      console.log("🚀 ~ filterByCategory ~ state:", state.data);
+
+      state.filteredProducts = state.data.filter(
+        (item) => item.category === action.payload
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getProducts.pending, (state, action) => {
@@ -55,5 +63,7 @@ export const createProduct = createAsyncThunk(
     }
   }
 );
+
+export const { filterByCategory } = productsSlice.actions;
 
 export default productsSlice.reducer;

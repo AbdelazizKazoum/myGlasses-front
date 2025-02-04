@@ -1,15 +1,19 @@
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import { BiSolidBookmarkHeart } from "react-icons/bi";
 import { useState } from "react";
-import { removeCartItem, decreaseCartItemCount, increaseCartItemCount } from "../../store/cartSlice";
+import {
+  removeCartItem,
+  decreaseCartItemCount,
+  increaseCartItemCount,
+} from "../../store/cartSlice";
 import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
 import "./index.css";
-import { TbCurrencyTaka } from "react-icons/tb";
 import { TbCurrencyDirham } from "react-icons/tb";
-const CartProductCard = (props) => { 
+import { getImageUrl } from "../../utils/getImageUrl";
+const CartProductCard = (props) => {
   const { product } = props;
   const { id, name, image, newPrice, price, qty } = product;
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
@@ -46,7 +50,11 @@ const CartProductCard = (props) => {
 
   return (
     <li className="cart-product-card shadow-sm">
-      <img className="cart-product-image" src={image} alt="productName" />
+      <img
+        className="cart-product-image"
+        src={getImageUrl(image)}
+        alt="productName"
+      />
       <div className="cart-product-details">
         <h1>{name}</h1>
         <p>
@@ -86,13 +94,11 @@ const CartProductCard = (props) => {
       <div className="cart-product-price-container">
         {/* <p>₹{newPrice}</p> */}
         <div className="flex gap-1">
-          <TbCurrencyDirham className="text-xl" /> 
-          <div className="text-xl font-semibold -ml-1">
-            {newPrice}
-          </div>
+          <TbCurrencyDirham className="text-xl" />
+          <div className="text-xl font-semibold -ml-1">{newPrice}</div>
         </div>
         <div className="flex gap-1 ml-3">
-         <TbCurrencyDirham className="text-sm text-gray-400" /> 
+          <TbCurrencyDirham className="text-sm text-gray-400" />
           <div className="text-sm font-semibold -ml-1 text-gray-400">
             <del>{price}</del>
           </div>

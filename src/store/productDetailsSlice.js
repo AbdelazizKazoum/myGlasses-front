@@ -5,6 +5,7 @@ import api from "../lib/api";
 const initialState = {
   data: {},
   status: statusCode.idle,
+  relatedProducts: [],
 };
 
 const productDetailsSlice = createSlice({
@@ -23,6 +24,18 @@ const productDetailsSlice = createSlice({
         state.status = statusCode.success;
         state.data = action.payload;
       });
+
+    builder
+      .addCase(getProductsByCategory.pending, (state, action) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(getProductsByCategory.rejected, (state, action) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(getProductsByCategory.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.relatedProducts = action.payload;
+      });
   },
 });
 
@@ -33,6 +46,19 @@ export const getProductDetails = createAsyncThunk(
       const response = await api.get("http://localhost:5000/product");
 
       return response.data.find((product) => product.id === id);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+export const getProductsByCategory = createAsyncThunk(
+  "productByCategory/get",
+  async (category) => {
+    try {
+      const response = await api.get("http://localhost:5000/product");
+
+      return response.data.filter((product) => product.category === category);
     } catch (error) {
       console.error(error);
     }
