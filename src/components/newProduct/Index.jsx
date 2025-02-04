@@ -28,6 +28,7 @@ export default function CreateProductPage() {
   const colorPickerRef = useRef(null);
   const [defaultImage, setDefaultImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState("");
 
   // React Hook Form ------------------------------------>
   const {
@@ -79,21 +80,19 @@ export default function CreateProductPage() {
 
   const handleFormSubmit = async (data) => {
     setLoading(true); // Start loading
+    setImageError(""); // Reset error message
 
-    // Validation to check if there are colors without images
+    // Check if all colors have at least one image
     const colorsWithoutImages = colors.filter(
-      (color) => images[color]?.length === 0
-    );
-    console.log(
-      "🚀 ~ handleFormSubmit ~ colorsWithoutImages:",
-      colorsWithoutImages
+      (color) => !images[color] || images[color].length === 0
     );
 
-    if (colorsWithoutImages.length === 0) {
-      alert(
-        `Please upload at least one image for each color: ${colorsWithoutImages.join(
+    // Check if default image is uploaded
+    if (colorsWithoutImages.length !== 0 || !defaultImage) {
+      setImageError(
+        `Veuillez télécharger au moins une image pour chaque couleur (${colorsWithoutImages.join(
           ", "
-        )}`
+        )}) et une image par défaut.`
       );
       setLoading(false); // Stop loading
       return;
@@ -116,6 +115,7 @@ export default function CreateProductPage() {
     console.log("Form Data Submitted:", data);
 
     // const res = await dispatch(createProduct(formData));
+
     setLoading(false);
     navigate("/products");
   };
@@ -423,7 +423,10 @@ export default function CreateProductPage() {
           )}
 
           {activeColor && (
-            <div className="mt-4 border p-4 rounded">
+            <div
+              style={{ borderColor: "red !important " }}
+              className={` mt-4 border p-4 rounded `}
+            >
               <div className="flex justify-between">
                 <div className="flex items-center gap-3">
                   <h2 className="text-lg font-semibold">Upload Images for</h2>
@@ -477,7 +480,12 @@ export default function CreateProductPage() {
           )}
         </div>
       </div>
-      <div className="w-full flex justify-center mt-6">
+      <div className="w-full flex flex-col items-center justify-center mt-6">
+        {/* Show error message if images are missing */}
+        {imageError && (
+          <p className="text-red-500 text-sm mb-2">{imageError}</p>
+        )}
+
         <button
           type="submit"
           className="p-3 border bill-checkout-button sm:w-1/3 flex items-center justify-center"

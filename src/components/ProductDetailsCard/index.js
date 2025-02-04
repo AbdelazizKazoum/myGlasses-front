@@ -138,8 +138,8 @@ const ProductDetailsCard = (props) => {
           {/* Display images */}
           <div>
             <div className="flex gap-4 py-4 justify-center overflow-x-auto">
-              {data.detail ??
-                data.detail[imagesIndex].images?.map((item, index) => (
+              {data?.detail &&
+                data?.detail[imagesIndex]?.images?.map((item, index) => (
                   <img
                     key={index}
                     src={getImageUrl(item?.image)}
