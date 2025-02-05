@@ -19,7 +19,7 @@ import "./index.css";
 // import useApplyFilters from "../../utils/useApplyFilters";
 import ProductCard from "../ProductCard";
 import { getImageUrl } from "../../utils/getImageUrl";
-import ProductModal from "../modals/ProductModal.tsx";
+import ProductModal from "../modals/ProductModal.jsx";
 
 const ProductDetailsCard = (props) => {
   const productId = useParams("id");
@@ -54,7 +54,7 @@ const ProductDetailsCard = (props) => {
   const [displayImage, setDisplayImage] = useState(null);
 
   const [visibleItems, setVisibleItems] = useState(4);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   // this state for loasing more recommanded products
   const handleShowMore = () => {
@@ -124,7 +124,9 @@ const ProductDetailsCard = (props) => {
       {/* recommended Product List */}
       <ul className="row product-list-container d-flex">
         {filteredData.slice(0, 4).map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <li className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4 d-flex">
+            <ProductCard key={product.id} product={product} />
+          </li>
         ))}
       </ul>
     </div>
@@ -136,6 +138,7 @@ const ProductDetailsCard = (props) => {
         accessories={filteredData}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        product={data}
       />
 
       <div className="product-details-card gap-5 pt-8">

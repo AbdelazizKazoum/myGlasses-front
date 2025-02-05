@@ -1,50 +1,60 @@
-import React, { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import ProductCard from "../ProductCard";
-import { useDispatch, useSelector } from "react-redux";
-import { getProductsByCategory } from "../../store/productDetailsSlice";
 
-export const RecommandedProducts = () => {
-  // State
-  const [visibleItems, setVisibleItems] = useState(4);
+export const RecommandedProducts = ({ products }) => {
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollRef = useRef(null);
 
-  // Hooks
-  const { relatedProducts: filteredData } = useSelector(
-    (state) => state.productDetails
-  );
-  const dispatch = useDispatch();
-  // this state for loasing more recommanded products
-  const handleShowMore = () => {
-    setVisibleItems(visibleItems + 4); // Load 4 more items each time
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
+      setScrollPosition(scrollRef.current.scrollLeft);
+    }
   };
 
-  useEffect(() => {
-    dispatch(getProductsByCategory("ACCESSOIRES"));
-  });
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 200, behavior: "smooth" });
+      setScrollPosition(scrollRef.current.scrollLeft);
+    }
+  };
 
   return (
     <div className=" mt-4 ">
-      <hr className=" my-4 " />
-      <div className="flex justify-between m-3">
-        {/* Title in French */}
-        <h1 className=" font-bold ">Produits Recommandés</h1>
-
-        {/* Show More button */}
-        {filteredData.length > visibleItems && (
-          <button
-            className="show-more-button underline "
-            onClick={handleShowMore}
-          >
-            Voir plus
-          </button>
-        )}
-      </div>
-
-      {/* recommended Product List */}
-      <ul className="row product-list-container d-flex">
-        {filteredData.slice(0, 4).map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </ul>
+      {products.length > 0 && (
+        <div className="mt-4">
+          <h4 className="text-md font-semibold">Vous pourriez aussi aimer :</h4>
+          <div className="relative flex items-center">
+            <button
+              className="absolute left-0 z-10 bg-gray-200 p-2 rounded-full"
+              onClick={scrollLeft}
+            >
+              &#8592;
+            </button>
+            <div
+              className="overflow-hidden w-full flex gap-4 mt-4"
+              ref={scrollRef}
+              style={{
+                scrollBehavior: "smooth",
+                overflowX: "auto",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {products.map((product) => (
+                <div key={product.id} className="inline-block ">
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+            <button
+              className="absolute right-0 z-10 bg-gray-200 p-2 rounded-full"
+              onClick={scrollRight}
+            >
+              &#8594;
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

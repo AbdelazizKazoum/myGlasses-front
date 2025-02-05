@@ -217,7 +217,7 @@ export default function CreateProductPage() {
                     <option value="">Select Category</option>
                     <option value="Sports">Sports</option>
                     <option value="Sunglasses">Sunglasses</option>
-                    <option value="Accessories">Accessories</option>
+                    <option value="ACCESSOIRES">Accessories</option>
                   </select>
                 )}
               />

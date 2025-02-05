@@ -1,7 +1,34 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import ProductCard from "../ProductCard";
+import { getImageUrl } from "../../utils/getImageUrl";
+import { RecommandedProducts } from "../Products/RecommandedProducts";
 
-const ProductModal = ({ isOpen, setIsOpen, productName, accessories = [] }) => {
+const ProductModal = ({
+  isOpen,
+  setIsOpen,
+  productName,
+  accessories = [],
+  product,
+}) => {
+  console.log("🚀 ~ ProductModal ~ product:", product);
+
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
+      setScrollPosition(scrollRef.current.scrollLeft);
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 200, behavior: "smooth" });
+      setScrollPosition(scrollRef.current.scrollLeft);
+    }
+  };
+
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center ${
@@ -42,23 +69,31 @@ const ProductModal = ({ isOpen, setIsOpen, productName, accessories = [] }) => {
         </div>
 
         {/* Modal body */}
-        <div className="flex-grow  p-4">
-          <p className="text-green-600 text-center text-lg">
-            Le produit <strong>{productName}</strong> a été ajouté à votre
-            panier avec succès.
-          </p>
-          {accessories.length > 0 && (
-            <div className="mt-4">
-              <h4 className="text-md font-semibold">
-                Vous pourriez aussi aimer :
-              </h4>
-              <div className=" gap-4 mt-4">
-                {accessories.slice(0, 4).map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+        <div className="flex-grow p-4">
+          {/* Product Info */}
+          <div className="">
+            <p className="text-green-600 text-center text-lg">
+              Le produit <strong>{productName}</strong> a été ajouté à votre
+              panier avec succès.
+            </p>
+            <div className="flex flex-col items-center gap-4 p-2">
+              <div className="flex gap-3 justify-center items-center m-auto">
+                <img
+                  src={getImageUrl(product.image)}
+                  alt={product.name}
+                  className="w-16 h-16 object-cover rounded"
+                />
+                <div>
+                  <h4 className="font-semibold">{product.name}</h4>
+                  <p className="text-gray-600 text-sm">
+                    Prix: {product.price} €
+                  </p>
+                </div>
               </div>
             </div>
-          )}
+          </div>
+
+          <RecommandedProducts products={accessories} />
         </div>
 
         {/* Modal footer */}
