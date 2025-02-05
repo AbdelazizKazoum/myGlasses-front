@@ -44,8 +44,8 @@ const ProductCard = (props) => {
   };
 
   return (
-    <>
-      <div className="product-card shadow-sm min-w-xs max-w-xs">
+    <li className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4 d-flex">
+      <div className="product-card shadow-sm">
         <Link
           to={`/product/${id}`}
           className="link-item product-image-container"
@@ -109,7 +109,7 @@ const ProductCard = (props) => {
           </section>
         </div>
       </div>
-    </>
+    </li>
   );
 };
 

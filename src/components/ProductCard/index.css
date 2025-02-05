@@ -11,26 +11,37 @@
   /* box-shadow: 0 0 20px 4px #9ca3af; */
 }
 .product-image-container {
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
 .product-image {
+  width: 100%;
   object-fit: contain;
   aspect-ratio: 1.7;
 }
 
 @media screen and ((min-width: 500px) and (max-width: 768px)) {
+  .product-card {
+    flex-direction: row;
+  }
+
   .product-image-container {
+    width: 40%;
+    height: 200px;
     overflow: hidden;
   }
 
   .product-image {
     object-fit: contain;
+    aspect-ratio: initial;
   }
 }
 
 .product-card > div {
   background-color: #fdfdfb;
+  width: 100%;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -39,7 +50,7 @@
 @media screen and ((min-width: 500px) and (max-width: 768px)) {
   .product-card > div {
     justify-content: space-evenly;
-    width: 100%;
+    width: 60%;
   }
 }
 
