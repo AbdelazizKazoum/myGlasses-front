@@ -255,7 +255,7 @@ const CheckoutPage = () => {
               <div>
                 <p className="order-summary-product-title">{product.name}</p>
                 <p className="order-summary-product-title">
-                ৳ {product.newPrice}
+                  ৳ {product.newPrice}
                   <del>৳ {product.price}</del>
                 </p>
               </div>
