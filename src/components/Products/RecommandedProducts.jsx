@@ -1,18 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../ProductCard";
-import useApplyFilters from "../../utils/useApplyFilters";
+import { useDispatch, useSelector } from "react-redux";
+import { getProductsByCategory } from "../../store/productDetailsSlice";
 
 export const RecommandedProducts = () => {
   // State
   const [visibleItems, setVisibleItems] = useState(4);
 
   // Hooks
-  const filteredData = useApplyFilters();
-
+  const { relatedProducts: filteredData } = useSelector(
+    (state) => state.productDetails
+  );
+  const dispatch = useDispatch();
   // this state for loasing more recommanded products
   const handleShowMore = () => {
     setVisibleItems(visibleItems + 4); // Load 4 more items each time
   };
+
+  useEffect(() => {
+    dispatch(getProductsByCategory("ACCESSOIRES"));
+  });
 
   return (
     <div className=" mt-4 ">

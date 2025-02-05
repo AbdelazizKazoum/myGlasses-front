@@ -19,6 +19,7 @@ import "./index.css";
 // import useApplyFilters from "../../utils/useApplyFilters";
 import ProductCard from "../ProductCard";
 import { getImageUrl } from "../../utils/getImageUrl";
+import ProductModal from "../modals/ProductModal.tsx";
 
 const ProductDetailsCard = (props) => {
   const productId = useParams("id");
@@ -53,6 +54,7 @@ const ProductDetailsCard = (props) => {
   const [displayImage, setDisplayImage] = useState(null);
 
   const [visibleItems, setVisibleItems] = useState(4);
+  const [isOpen, setIsOpen] = useState(true);
 
   // this state for loasing more recommanded products
   const handleShowMore = () => {
@@ -83,6 +85,7 @@ const ProductDetailsCard = (props) => {
   }, [dispatch, productId.id]);
 
   const addToCart = () => {
+    setIsOpen(true);
     dispatch(addCartItem({ ...data, qty: 1 }));
     setIsAddedToCart(true);
   };
@@ -129,6 +132,12 @@ const ProductDetailsCard = (props) => {
 
   const renderProductDetailsCardSuccessView = () => (
     <div className="flex flex-col">
+      <ProductModal
+        accessories={filteredData}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+
       <div className="product-details-card gap-5 pt-8">
         <div>
           <div className="relative h-[85%] p-7 bg-black/[0.075] flex items-center justify-center rounded-lg">
