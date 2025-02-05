@@ -1,5 +1,4 @@
-import React, { useState, useRef } from "react";
-import ProductCard from "../ProductCard";
+import { useNavigate } from "react-router-dom";
 import { getImageUrl } from "../../utils/getImageUrl";
 import { RecommandedProducts } from "../Products/RecommandedProducts";
 
@@ -10,25 +9,8 @@ const ProductModal = ({
   accessories = [],
   product,
 }) => {
-  console.log("🚀 ~ ProductModal ~ product:", product);
-
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const scrollRef = useRef(null);
-
-  const scrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
-      setScrollPosition(scrollRef.current.scrollLeft);
-    }
-  };
-
-  const scrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 200, behavior: "smooth" });
-      setScrollPosition(scrollRef.current.scrollLeft);
-    }
-  };
-
+  // Hooks
+  const navigate = useNavigate();
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center ${
@@ -92,6 +74,7 @@ const ProductModal = ({
               </div>
             </div>
           </div>
+          <h4 className="text-md font-semibold">Vous pourriez aussi aimer :</h4>
 
           <RecommandedProducts products={accessories} />
         </div>
@@ -101,7 +84,10 @@ const ProductModal = ({
           <button
             type="button"
             className="text-white bg-black/90 hover:bg-black/80 rounded-lg px-4 py-2"
-            onClick={() => setIsOpen(false)}
+            onClick={() => {
+              setIsOpen(false);
+              navigate("/cart");
+            }}
           >
             Continuer vos achats
           </button>

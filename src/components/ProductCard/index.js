@@ -5,16 +5,18 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addCartItem } from "../../store/cartSlice";
 import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
+import "./index.css";
 import { getImageUrl } from "../../utils/getImageUrl";
 
-const ProductCard = ({ product }) => {
+const ProductCard = (props) => {
+  const { product } = props;
   const { id, name, brand, rating, price, newPrice, image } = product;
+
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
 
   const cartProducts = useSelector((state) => state.cart);
   const wishlistProducts = useSelector((state) => state.wishlist);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setIsAddedToCart(cartProducts.some((product) => product.id === id));
@@ -23,6 +25,8 @@ const ProductCard = ({ product }) => {
   useEffect(() => {
     setIsAddedToWishlist(wishlistProducts.some((product) => product.id === id));
   }, [wishlistProducts, id]);
+
+  const dispatch = useDispatch();
 
   const addToCart = () => {
     setIsAddedToCart(true);
@@ -40,71 +44,72 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="rounded-lg flex flex-col overflow-hidden bg-gray-200 shadow-sm transition-transform hover:scale-[1.01] min-w-[150px] max-w-[120px] sm:max-w-[150px]">
-      <Link
-        to={`/product/${id}`}
-        className="flex items-center justify-center overflow-hidden"
-      >
-        <img
-          src={getImageUrl(image)}
-          alt="productImage"
-          className="object-contain w-full h-32 sm:h-48"
-        />
-      </Link>
-      <div className="bg-white flex flex-col flex-grow p-2 sm:p-3">
-        <section className="flex">
-          <div className="flex flex-col">
-            <h2 className="text-black text-sm sm:text-lg font-medium">
-              {name}
-            </h2>
-            <div className="flex items-center gap-1 text-gray-500 text-xs sm:text-sm">
-              <span>{rating}</span>
-              <AiFillStar className="text-yellow-400" />
-              <span className="text-xs">Rating</span>
+    <>
+      <div className="product-card shadow-sm min-w-xs max-w-xs">
+        <Link
+          to={`/product/${id}`}
+          className="link-item product-image-container"
+        >
+          <img
+            src={getImageUrl(image)}
+            className="product-image"
+            alt="productImage"
+          />
+        </Link>
+        <div>
+          <section>
+            <div className="product-card-details">
+              <h2>{name}</h2>
+              <div className="flex gap-1">
+                <div>{rating}</div>
+                <div className="mt-[2px]">
+                  <AiFillStar className="color-yellow !text-[#FACC15]" />
+                </div>
+                <div>
+                  <span className="text-gray-400 text-xs">Rating</span>
+                </div>
+              </div>
+              <p className="product-card-brand">{brand}</p>
             </div>
-            <p className="text-gray-600 text-xs sm:text-sm">{brand}</p>
-          </div>
-          <div className="flex flex-col items-end">
-            <p className="text-orange-600 text-sm sm:text-lg font-medium">
-              MAD {newPrice}
-            </p>
-            <del className="text-gray-500 text-xs sm:text-sm">MAD {price}</del>
-          </div>
-        </section>
-        <hr className="my-1 sm:my-2" />
-        <section className="flex justify-between items-center">
-          {!isAddedToCart ? (
-            <button
-              type="button"
-              className="px-2 sm:px-4 py-1 border border-black text-black rounded-full text-xs sm:text-sm hover:bg-black hover:text-white transition"
-              onClick={addToCart}
-            >
-              Add to Cart
-            </button>
-          ) : (
-            <Link to="/cart" className="text-center">
+            <div className="product-card-price">
+              <p>MAD {newPrice}</p>
+              <del>MAD {price}</del>
+            </div>
+          </section>
+          <hr />
+          <section>
+            {!isAddedToCart && (
               <button
                 type="button"
-                className="px-2 sm:px-4 py-1 border border-black text-black rounded-full text-xs sm:text-sm hover:bg-black hover:text-white transition"
+                className="product-card-button"
+                onClick={addToCart}
               >
-                Go to Cart
+                Add to Cart
               </button>
-            </Link>
-          )}
-          {!isAddedToWishlist ? (
-            <BiSolidBookmarkHeart
-              className="text-xl sm:text-2xl text-black cursor-pointer"
-              onClick={addToWishlist}
-            />
-          ) : (
-            <BiSolidBookmarkHeart
-              className="text-xl sm:text-2xl text-red-500 cursor-pointer"
-              onClick={removeFromWishlist}
-            />
-          )}
-        </section>
+            )}
+            {isAddedToCart && (
+              <Link to="/cart" className="link-item">
+                <button type="button" className="product-card-button">
+                  Go to Cart
+                </button>
+              </Link>
+            )}
+            {!isAddedToWishlist && (
+              <BiSolidBookmarkHeart
+                className="product-bookmark-button"
+                onClick={addToWishlist}
+              />
+            )}
+            {isAddedToWishlist && (
+              <BiSolidBookmarkHeart
+                className="product-bookmark-button color-red"
+                onClick={removeFromWishlist}
+              />
+            )}
+          </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

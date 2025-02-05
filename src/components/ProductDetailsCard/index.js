@@ -20,6 +20,7 @@ import "./index.css";
 import ProductCard from "../ProductCard";
 import { getImageUrl } from "../../utils/getImageUrl";
 import ProductModal from "../modals/ProductModal.jsx";
+import { RecommandedProducts } from "../Products/RecommandedProducts.jsx";
 
 const ProductDetailsCard = (props) => {
   const productId = useParams("id");
@@ -86,7 +87,7 @@ const ProductDetailsCard = (props) => {
 
   const addToCart = () => {
     setIsOpen(true);
-    dispatch(addCartItem({ ...data, qty: 1 }));
+    if (isAddedToCart) dispatch(addCartItem({ ...data, qty: 1 }));
     setIsAddedToCart(true);
   };
 
@@ -106,7 +107,7 @@ const ProductDetailsCard = (props) => {
   const renderRecommandedProducts = () => (
     <div className=" mt-4 ">
       <hr className=" my-4 " />
-      <div className="flex justify-between m-3">
+      <div className="flex justify-between">
         {/* Title in French */}
         <h1 className=" font-bold ">Produits Recommandés</h1>
 
@@ -122,13 +123,7 @@ const ProductDetailsCard = (props) => {
       </div>
 
       {/* recommended Product List */}
-      <ul className="row product-list-container d-flex">
-        {filteredData.slice(0, 4).map((product) => (
-          <li className="col-12 col-md-6 col-lg-4 col-xl-3 mb-4 d-flex">
-            <ProductCard key={product.id} product={product} />
-          </li>
-        ))}
-      </ul>
+      <RecommandedProducts products={filteredData} />
     </div>
   );
 
@@ -228,29 +223,16 @@ const ProductDetailsCard = (props) => {
             <span>Price: </span> MAD{newPrice} <del>MAD{price}</del>
           </p>
           <div className="product-details-card-buttons">
-            {!isAddedToCart && (
-              <button
-                type="button"
-                className="product-details-card-cart-button"
-                onClick={addToCart}
-              >
-                <span>
-                  <BsHandbagFill />
-                </span>{" "}
-                Add to Cart
-              </button>
-            )}
-            {isAddedToCart && (
-              <Link
-                to="/cart"
-                className="link-item product-details-card-cart-button"
-              >
-                <span>
-                  <BsHandbagFill />
-                </span>
-                Go to Cart
-              </Link>
-            )}
+            <button
+              type="button"
+              className="product-details-card-cart-button"
+              onClick={addToCart}
+            >
+              <span>
+                <BsHandbagFill />
+              </span>{" "}
+              Add to Cart
+            </button>
             {!isAddedToWishlist && (
               <button
                 type="button"
