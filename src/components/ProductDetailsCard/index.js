@@ -17,7 +17,6 @@ import { statusCode } from "../../utils/statusCode";
 
 import "./index.css";
 // import useApplyFilters from "../../utils/useApplyFilters";
-import ProductCard from "../ProductCard";
 import { getImageUrl } from "../../utils/getImageUrl";
 import ProductModal from "../modals/ProductModal.jsx";
 import { RecommandedProducts } from "../Products/RecommandedProducts.jsx";
@@ -87,7 +86,7 @@ const ProductDetailsCard = (props) => {
 
   const addToCart = () => {
     setIsOpen(true);
-    if (isAddedToCart) dispatch(addCartItem({ ...data, qty: 1 }));
+    if (!isAddedToCart) dispatch(addCartItem({ ...data, qty: 1 }));
     setIsAddedToCart(true);
   };
 

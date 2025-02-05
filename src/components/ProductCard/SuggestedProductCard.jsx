@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { BiSolidBookmarkHeart } from "react-icons/bi";
 import { AiFillStar } from "react-icons/ai";
+import { AiOutlineCheckCircle } from "react-icons/ai"; // Checked icon
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCartItem } from "../../store/cartSlice";
+import { addCartItem, removeCartItem } from "../../store/cartSlice";
 import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
 import { getImageUrl } from "../../utils/getImageUrl";
 
@@ -25,8 +26,12 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
   }, [wishlistProducts, id]);
 
   const addToCart = () => {
-    setIsAddedToCart(true);
-    dispatch(addCartItem({ ...product, qty: 1 }));
+    if (isAddedToCart) {
+      dispatch(removeCartItem(product.id));
+    } else {
+      dispatch(addCartItem({ ...product, qty: 1 }));
+      setIsAddedToCart(true);
+    }
   };
 
   const addToWishlist = () => {
@@ -40,7 +45,19 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
   };
 
   return (
-    <div className="rounded-lg flex flex-col overflow-hidden bg-gray-200 shadow-sm transition-transform hover:scale-[1.01]  sm:min-w-[200px] sl:max-w-[200px] sm:max-w-[150px]">
+    <div
+      onClick={addToCart}
+      className={`relative rounded-lg flex flex-col overflow-hidden bg-gray-200 shadow-sm transition-transform sm:min-w-[200px] sl:max-w-[200px] sm:max-w-[150px] ${
+        isAddedToCart ? " " : "hover:scale-[1.01]"
+      }`}
+    >
+      {/* Checked Icon Overlay */}
+      {isAddedToCart && (
+        <div className="absolute inset-0 flex items-center justify-center  bg-black/40 ">
+          <AiOutlineCheckCircle className="text-white text-5xl" />
+        </div>
+      )}
+
       <Link
         to={allowDetails && `/product/${id}`}
         className="flex items-center justify-center overflow-hidden"
@@ -51,6 +68,7 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
           className="object-contain w-full h-32 sm:h-48"
         />
       </Link>
+
       <div className="bg-white flex flex-col flex-grow p-2 sm:p-3">
         <section className="flex justify-between">
           <div className="flex flex-col">
@@ -73,24 +91,19 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
         </section>
         <hr className="my-1 sm:my-2" />
         <section className="flex justify-between items-center">
-          {!isAddedToCart ? (
-            <button
-              type="button"
-              className="px-2 sm:px-4 py-1 border border-black text-black rounded-full text-xs sm:text-sm hover:bg-black hover:text-white transition"
-              onClick={addToCart}
-            >
-              Add to Cart
-            </button>
-          ) : (
-            <Link to="/cart" className="text-center">
-              <button
-                type="button"
-                className="px-2 sm:px-4 py-1 border border-black text-black rounded-full text-xs sm:text-sm hover:bg-black hover:text-white transition"
-              >
-                Go to Cart
-              </button>
-            </Link>
-          )}
+          <button
+            type="button"
+            className={`px-2 sm:px-4 py-1 border border-black rounded-full text-xs sm:text-sm transition ${
+              isAddedToCart
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "text-black hover:bg-black hover:text-white"
+            }`}
+            onClick={addToCart}
+            disabled={isAddedToCart}
+          >
+            {isAddedToCart ? "✔️ Added" : "Add to Cart"}
+          </button>
+
           {!isAddedToWishlist ? (
             <BiSolidBookmarkHeart
               className="text-xl sm:text-2xl text-black cursor-pointer"
