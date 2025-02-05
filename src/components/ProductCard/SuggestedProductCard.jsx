@@ -7,7 +7,7 @@ import { addCartItem } from "../../store/cartSlice";
 import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
 import { getImageUrl } from "../../utils/getImageUrl";
 
-const SuggestedProductCard = ({ product }) => {
+const SuggestedProductCard = ({ product, allowDetails }) => {
   const { id, name, brand, rating, price, newPrice, image } = product;
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
@@ -42,7 +42,7 @@ const SuggestedProductCard = ({ product }) => {
   return (
     <div className="rounded-lg flex flex-col overflow-hidden bg-gray-200 shadow-sm transition-transform hover:scale-[1.01]  sm:min-w-[200px] sl:max-w-[200px] sm:max-w-[150px]">
       <Link
-        to={`/product/${id}`}
+        to={allowDetails && `/product/${id}`}
         className="flex items-center justify-center overflow-hidden"
       >
         <img

@@ -123,7 +123,7 @@ const ProductDetailsCard = (props) => {
       </div>
 
       {/* recommended Product List */}
-      <RecommandedProducts products={filteredData} />
+      <RecommandedProducts products={filteredData} allowDetails={true} />
     </div>
   );
 

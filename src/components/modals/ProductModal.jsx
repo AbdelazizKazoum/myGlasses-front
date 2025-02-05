@@ -76,7 +76,7 @@ const ProductModal = ({
           </div>
           <h4 className="text-md font-semibold">Vous pourriez aussi aimer :</h4>
 
-          <RecommandedProducts products={accessories} />
+          <RecommandedProducts products={accessories} allowDetails={false} />
         </div>
 
         {/* Modal footer */}
