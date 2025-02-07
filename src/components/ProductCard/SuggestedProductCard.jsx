@@ -25,7 +25,8 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
     setIsAddedToWishlist(wishlistProducts.some((product) => product.id === id));
   }, [wishlistProducts, id]);
 
-  const addToCart = () => {
+  const addToCart = (e) => {
+    e.stopPropagation(); // Prevent card click behavior when adding/removing cart item
     if (isAddedToCart) {
       dispatch(removeCartItem(product.id));
     } else {
@@ -53,8 +54,16 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
     >
       {/* Checked Icon Overlay */}
       {isAddedToCart && (
-        <div className="absolute inset-0 flex items-center justify-center  bg-black/40 ">
+        <div className="absolute inset-0 flex flex-col gap-3 items-center justify-center bg-black/40">
           <AiOutlineCheckCircle className="text-white text-5xl" />
+
+          {/* "Go to Cart" Button */}
+          <Link
+            to="/cart"
+            className=" bg-orange-600 text-white py-1 px-4 rounded-full text-sm"
+          >
+            Go to Cart
+          </Link>
         </div>
       )}
 

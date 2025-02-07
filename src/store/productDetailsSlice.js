@@ -34,7 +34,9 @@ const productDetailsSlice = createSlice({
       })
       .addCase(getProductsByCategory.fulfilled, (state, action) => {
         state.status = statusCode.success;
-        state.relatedProducts = action.payload;
+        state.relatedProducts = action.payload.filter(
+          (item) => item.id !== state.id
+        );
       });
   },
 });

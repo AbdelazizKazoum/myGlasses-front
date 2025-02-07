@@ -259,7 +259,7 @@ const ProductDetailsCard = (props) => {
           </div>
         </div>
       </div>
-      <div>{renderRecommandedProducts()}</div>
+      {/* <div>{renderRecommandedProducts()}</div> */}
     </div>
   );
 
