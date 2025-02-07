@@ -49,7 +49,7 @@ export const RecommandedProducts = ({ products, allowDetails }) => {
         <div className="relative flex items-center">
           {/* Left Scroll Button */}
           <button
-            className="absolute -left-4 z-10 bg-gray-200 p-2 rounded-full"
+            className="absolute -left-9 z-10 bg-gray-200 p-2 rounded-full"
             onClick={scrollLeftHandler}
           >
             &#8592;
@@ -82,7 +82,7 @@ export const RecommandedProducts = ({ products, allowDetails }) => {
 
           {/* Right Scroll Button */}
           <button
-            className="absolute -right-4 z-10 bg-gray-200 p-2 rounded-full"
+            className="absolute -right-9 z-10 bg-gray-200 p-2 rounded-full"
             onClick={scrollRightHandler}
           >
             &#8594;

@@ -54,7 +54,7 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
     >
       {/* Checked Icon Overlay */}
       {isAddedToCart && (
-        <div className="absolute inset-0 flex flex-col gap-3 items-center justify-center bg-black/40">
+        <div className="absolute inset-0 flex flex-col gap-2 items-center justify-center bg-black/40">
           <AiOutlineCheckCircle className="text-white text-5xl" />
 
           {/* "Go to Cart" Button */}

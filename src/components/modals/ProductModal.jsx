@@ -24,7 +24,7 @@ const ProductModal = ({
       ></div>
 
       {/* Modal content */}
-      <div className="relative bg-white rounded-lg shadow-lg w-3/4  md:w-2/3  p-6 flex flex-col">
+      <div className="relative bg-white rounded-lg shadow-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2     p-6 flex flex-col max-w-lg sm:max-w-md lg:max-w-3xl">
         {/* Modal header */}
         <div className="flex items-center justify-between pb-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold">Produit ajouté au panier !</h3>
