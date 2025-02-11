@@ -27,6 +27,9 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import { AddProduct } from "./components/addProduct";
 import CreateProductPage from "./components/newProduct/Index";
+import AdminLayout from "./pages/dashboard/AdminLayout";
+import ProductsPage from "./pages/dashboard/products/Index";
+import UsersPage from "./pages/dashboard/users";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
@@ -34,9 +37,14 @@ function App() {
 
   const location = useLocation();
   const showNavbar =
-    location.pathname !== "/login" && location.pathname !== "/signup";
+    location.pathname !== "/login" &&
+    location.pathname !== "/signup" &&
+    !location.pathname.startsWith("/admin");
   const showFooter =
-    location.pathname !== "/login" && location.pathname !== "/signup";
+    location.pathname !== "/login" &&
+    location.pathname !== "/signup" &&
+    !location.pathname.startsWith("/admin");
+
   return (
     <Provider store={store}>
       {showNavbar && <Navbar />}
@@ -44,10 +52,33 @@ function App() {
         <ToastContainer />
         <div className="responsive-container">
           <Routes>
+            {/* ------------------ Admin Dashboard ----------------- */}
+            <Route
+              exact
+              path="/admin/products"
+              element={
+                <AdminLayout>
+                  <ProductsPage />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/users"
+              element={
+                <AdminLayout>
+                  <UsersPage />
+                </AdminLayout>
+              }
+            />
+
+            {/* ---------------------------------------------------- */}
             <Route exact path="/login" element={<LoginPage />} />
             <Route exact path="/signup" element={<SignUpPage />} />
             <Route exact path="/" element={<Home />} />
             <Route exact path="/products" element={<Products />} />
+
             <Route exact path="/createProduct" element={<AddProduct />} />
             <Route exact path="/newProduct" element={<CreateProductPage />} />
             <Route exact path="/product/:id" element={<ProductDetailsCard />} />
