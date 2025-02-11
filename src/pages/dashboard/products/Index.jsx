@@ -1,5 +1,11 @@
+import List from "../../../components/dashboard/products/ProductTable";
+
 function ProductsPage() {
-  return <h1 className="text-xl font-bold">Users Page</h1>;
+  return (
+    <div className=" h-full  ">
+      <List />
+    </div>
+  );
 }
 
 export default ProductsPage;

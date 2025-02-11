@@ -30,6 +30,9 @@ import CreateProductPage from "./components/newProduct/Index";
 import AdminLayout from "./pages/dashboard/AdminLayout";
 import ProductsPage from "./pages/dashboard/products/Index";
 import UsersPage from "./pages/dashboard/users";
+import AnalyticsPage from "./pages/dashboard/analytics/Index";
+import HomePage from "./pages/dashboard/home/Index";
+import CommandsPage from "./pages/dashboard/commands/Index";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
@@ -55,6 +58,16 @@ function App() {
             {/* ------------------ Admin Dashboard ----------------- */}
             <Route
               exact
+              path="/admin"
+              element={
+                <AdminLayout>
+                  <HomePage />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
               path="/admin/products"
               element={
                 <AdminLayout>
@@ -69,6 +82,36 @@ function App() {
               element={
                 <AdminLayout>
                   <UsersPage />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/analytics"
+              element={
+                <AdminLayout>
+                  <AnalyticsPage />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/analytics"
+              element={
+                <AdminLayout>
+                  <AnalyticsPage />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/commands"
+              element={
+                <AdminLayout>
+                  <CommandsPage />
                 </AdminLayout>
               }
             />
