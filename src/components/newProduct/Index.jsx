@@ -119,7 +119,8 @@ export default function CreateProductPage() {
 
     setLoading(false);
     const user = localStorage.getItem("user");
-    if (user && user.role === "admin") navigate("/products");
+    if (user && user.role !== "admin") navigate("/products");
+    else navigate("/admin/products");
   };
 
   useEffect(() => {

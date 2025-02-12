@@ -63,7 +63,7 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
               </div>
             </div>
             <button
-              className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-800"
               onClick={() => navigate(`/profile/${user?.id}`)}
             >
               View Profile

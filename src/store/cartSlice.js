@@ -1,40 +1,47 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [];
+// Retrieve cart from localStorage or initialize an empty array
+const cartData = JSON.parse(localStorage.getItem("cart")) || [];
+
+const initialState = cartData;
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addCartItem(state, action) {
-      state.push(action.payload);
+      const newState = [...state, action.payload];
+      localStorage.setItem("cart", JSON.stringify(newState));
+      return newState;
     },
 
     removeCartItem(state, action) {
-      console.log("🚀 ~ removeCartItem ~ action:", action);
-
-      return state.filter((item) => item.id !== action.payload);
+      const newState = state.filter((item) => item.id !== action.payload);
+      localStorage.setItem("cart", JSON.stringify(newState));
+      return newState;
     },
 
-    emptyCart(state, action) {
-      return initialState;
+    emptyCart() {
+      localStorage.setItem("cart", JSON.stringify([]));
+      return [];
     },
 
     increaseCartItemCount(state, action) {
-      return state.map((item) => {
-        if (item.id === action.payload) {
-          return { ...item, qty: item.qty + 1 };
-        }
-        return item;
-      });
+      const newState = state.map((item) =>
+        item.id === action.payload ? { ...item, qty: item.qty + 1 } : item
+      );
+      localStorage.setItem("cart", JSON.stringify(newState));
+      return newState;
     },
 
     decreaseCartItemCount(state, action) {
-      return state.map((item) => {
-        if (item.id === action.payload) {
-          return { ...item, qty: item.qty - 1 };
-        }
-        return item;
-      });
+      const newState = state.map((item) =>
+        item.id === action.payload && item.qty > 1
+          ? { ...item, qty: item.qty - 1 }
+          : item
+      );
+      localStorage.setItem("cart", JSON.stringify(newState));
+      return newState;
     },
   },
 });
@@ -46,4 +53,5 @@ export const {
   decreaseCartItemCount,
   increaseCartItemCount,
 } = cartSlice.actions;
+
 export default cartSlice.reducer;
