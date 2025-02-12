@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
+import CreateProductModal from "../../modals/CreateProductModal";
 
 const TableHeader = ({ searchQuery, setSearchQuery }) => {
+  // State
+  const [isOpen, setIsOpen] = useState();
+  const [product, setProduct] = useState(null);
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
+
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 flex items-center">
-      <div className="max-w-screen-xl  mx-auto  w-full">
-        <div className="relative bg-white  dark:bg-gray-800 sm:rounded-lg">
+    <div className="bg-gray-50  flex items-center">
+      <CreateProductModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        product={product}
+      />
+      <div className="  mx-auto  w-full">
+        <div className="relative bg-white   sm:rounded-lg">
           <div className="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
             <div className="w-full md:w-1/2">
               <form className="flex items-center">
@@ -18,7 +29,7 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                   <div className="absolute   inset-y-0  right-2 flex items-center pl-3 pointer-events-none">
                     <svg
                       aria-hidden="true"
-                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      className="w-5 h-5 text-gray-500 "
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +44,7 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                   <input
                     type="text"
                     id="simple-search"
-                    className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 "
                     placeholder="Search"
                     required
                     value={searchQuery}
@@ -45,7 +56,8 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
             <div className="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
               <button
                 type="button"
-                className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
+                onClick={() => setIsOpen(true)}
+                className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-500 hover:bg-primary-800 focus:outline-none "
               >
                 <svg
                   className="h-3.5 w-3.5 mr-2"
@@ -66,7 +78,7 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                 <button
                   id="actionsDropdownButton"
                   data-dropdown-toggle="actionsDropdown"
-                  className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
                   type="button"
                 >
                   <svg
@@ -89,13 +101,13 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                   className="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
                 >
                   <ul
-                    className="py-1 text-sm text-gray-700 dark:text-gray-200"
+                    className="py-1 text-sm text-gray-700"
                     aria-labelledby="actionsDropdownButton"
                   >
                     <li>
                       <a
                         href="#"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 "
                       >
                         Mass Edit
                       </a>
@@ -104,7 +116,7 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                   <div className="py-1">
                     <a
                       href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
                     >
                       Delete all
                     </a>
@@ -113,7 +125,7 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                 <button
                   id="filterDropdownButton"
                   data-dropdown-toggle="filterDropdown"
-                  className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                  className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 "
                   type="button"
                 >
                   <svg
@@ -146,9 +158,9 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                 </button>
                 <div
                   id="filterDropdown"
-                  className="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700"
+                  className="z-10 hidden w-48 p-3 bg-white rounded-lg shadow "
                 >
-                  <h6 className="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+                  <h6 className="mb-3 text-sm font-medium text-gray-900">
                     Category
                   </h6>
                   <ul
@@ -160,7 +172,7 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                         id="apple"
                         type="checkbox"
                         value=""
-                        className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                        className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 focus:ring-2 "
                       />
                       <label
                         htmlFor="apple"
@@ -174,11 +186,11 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                         id="fitbit"
                         type="checkbox"
                         value=""
-                        className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                        className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 focus:ring-2"
                       />
                       <label
                         htmlFor="fitbit"
-                        className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
+                        className="ml-2 text-sm font-medium text-gray-900"
                       >
                         Fitbit (56)
                       </label>
@@ -188,11 +200,11 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                         id="dell"
                         type="checkbox"
                         value=""
-                        className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                        className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500  focus:ring-2 "
                       />
                       <label
                         htmlFor="dell"
-                        className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
+                        className="ml-2 text-sm font-medium text-gray-900 "
                       >
                         Dell (56)
                       </label>
@@ -203,11 +215,11 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
                         type="checkbox"
                         value=""
                         checked
-                        className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                        className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500  focus:ring-2 "
                       />
                       <label
                         htmlFor="asus"
-                        className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
+                        className="ml-2 text-sm font-medium text-gray-900 "
                       >
                         Asus (97)
                       </label>

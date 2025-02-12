@@ -118,7 +118,8 @@ export default function CreateProductPage() {
     console.log("🚀 ~ handleFormSubmit ~ res:", res);
 
     setLoading(false);
-    navigate("/products");
+    const user = localStorage.getItem("user");
+    if (user && user.role === "admin") navigate("/products");
   };
 
   useEffect(() => {
@@ -137,11 +138,10 @@ export default function CreateProductPage() {
   }, []);
 
   return (
-    <div className="bg-white shadow-md p-6">
-      <div className="mx-auto rounded-lg flex flex-col sm:flex-row gap-6">
+    <div className="">
+      <div className="mx-auto rounded-lg flex flex-col sm:flex-row gap-6 ">
         {/* Product Information Section */}
-        <div className="w-full sm:w-1/2">
-          <h1 className="text-2xl font-bold mb-4">Create New Product</h1>
+        <div className="">
           <h2 className="text-lg font-semibold">Product Information</h2>
 
           <div>
@@ -501,13 +501,28 @@ export default function CreateProductPage() {
           )}
         </div>
       </div>
-      <div className="w-full flex flex-col items-center justify-center mt-6">
+      <div className="w-full flex flex-col items-center border-t justify-center mt-6">
         {/* Show error message if images are missing */}
         {imageError && (
           <p className="text-red-500 text-sm mb-2">{imageError}</p>
         )}
 
-        <button
+        <div className="flex justify-end p-4 border-gray-200">
+          <button
+            type="submit"
+            className="text-white bg-black/90 hover:bg-black/80 rounded-lg px-4 py-2"
+            onClick={handleSubmit(handleFormSubmit)}
+            disabled={loading} // Disable button when loading
+          >
+            {loading ? (
+              <Loader2 className="animate-spin mr-2" size={20} />
+            ) : (
+              "Submit Product"
+            )}{" "}
+          </button>
+        </div>
+
+        {/* <button
           type="submit"
           className="p-3 border bill-checkout-button sm:w-1/3 flex items-center justify-center"
           onClick={handleSubmit(handleFormSubmit)}
@@ -518,7 +533,7 @@ export default function CreateProductPage() {
           ) : (
             "Submit Product"
           )}
-        </button>
+        </button> */}
       </div>
     </div>
   );
