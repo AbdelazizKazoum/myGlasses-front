@@ -1,48 +1,9 @@
 import React, { useState } from "react";
 import TableHeader from "./TableHeader";
+import { getImageUrl } from "../../../utils/getImageUrl";
 
-const ProductTable = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+const ProductTable = ({ data }) => {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const users = [
-    {
-      name: "Neil Sims",
-      position: "React Developer",
-      email: "neil.sims@flowbite.com",
-      status: "Online",
-      image: "/docs/images/people/profile-picture-1.jpg",
-    },
-    {
-      name: "Bonnie Green",
-      position: "Designer",
-      email: "bonnie@flowbite.com",
-      status: "Online",
-      image: "/docs/images/people/profile-picture-3.jpg",
-    },
-    {
-      name: "Jese Leos",
-      position: "Vue JS Developer",
-      email: "jese@flowbite.com",
-      status: "Online",
-      image: "/docs/images/people/profile-picture-2.jpg",
-    },
-    {
-      name: "Thomas Lean",
-      position: "UI/UX Engineer",
-      email: "thomes@flowbite.com",
-      status: "Online",
-      image: "/docs/images/people/profile-picture-5.jpg",
-    },
-  ];
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -72,10 +33,16 @@ const ProductTable = () => {
               Name
             </th>
             <th scope="col" className="px-6 py-3">
-              Position
+              Brand
             </th>
             <th scope="col" className="px-6 py-3">
-              Status
+              Price
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Quantity
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Rating
             </th>
             <th scope="col" className="px-6 py-3">
               Action
@@ -84,11 +51,11 @@ const ProductTable = () => {
         </thead>
 
         <tbody>
-          {users
-            .filter((user) =>
-              user.name.toLowerCase().includes(searchQuery.toLowerCase())
+          {data
+            .filter((product) =>
+              product.name.toLowerCase().includes(searchQuery.toLowerCase())
             )
-            .map((user, index) => (
+            .map((product, index) => (
               <tr
                 key={index}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -108,27 +75,30 @@ const ProductTable = () => {
                     </label>
                   </div>
                 </td>
-                <th
-                  scope="row"
-                  className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                >
+                <td className="px-6 py-4 flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                   <img
-                    className="w-10 h-10 rounded-full"
-                    src={user.image}
-                    alt="User image"
+                    class="w-10 h-10 rounded-full"
+                    src={getImageUrl(product.image)}
+                    alt="Jese image"
                   />
-                  <div className="ps-3">
-                    <div className="text-base font-semibold">{user.name}</div>
-                    <div className="font-normal text-gray-500">
-                      {user.email}
-                    </div>
-                  </div>
-                </th>
-                <td className="px-6 py-4">{user.position}</td>
+
+                  {product.name}
+                </td>
+                <td className="px-6 py-4">{product.brand}</td>
+                <td className="px-6 py-4">{`$${(product.newPrice / 100).toFixed(
+                  2
+                )}`}</td>
+                <td className="px-6 py-4">{product.quantity}</td>
                 <td className="px-6 py-4">
                   <div className="flex items-center">
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>{" "}
-                    {user.status}
+                    <div
+                      className="h-2.5 w-2.5 rounded-full"
+                      style={{
+                        backgroundColor:
+                          product.rating >= 4.5 ? "green" : "yellow",
+                      }}
+                    ></div>
+                    <span className="ml-2">{product.rating}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
@@ -136,7 +106,7 @@ const ProductTable = () => {
                     href="#"
                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                   >
-                    Edit user
+                    Edit product
                   </a>
                 </td>
               </tr>

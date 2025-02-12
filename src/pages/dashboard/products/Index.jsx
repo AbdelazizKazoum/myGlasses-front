@@ -1,9 +1,24 @@
+import { useDispatch, useSelector } from "react-redux";
 import List from "../../../components/dashboard/products/ProductTable";
+import { useEffect } from "react";
+import { getProducts } from "../../../store/productsSlice";
 
 function ProductsPage() {
+  const { data } = useSelector((state) => state.products);
+  console.log("🚀 ~ ProductsPage ~ data:", data);
+
+  // Hooks
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      await dispatch(getProducts());
+    })();
+  }, [dispatch]);
+
   return (
     <div className=" h-full  ">
-      <List />
+      <List data={data} />
     </div>
   );
 }
