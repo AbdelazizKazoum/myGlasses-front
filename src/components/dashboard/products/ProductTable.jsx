@@ -75,7 +75,7 @@ const ProductTable = ({ data }) => {
                     </label>
                   </div>
                 </td>
-                <td className="px-6 py-4 flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                <td className="px-6 py-4 flex items-center gap-2 text-gray-900 whitespace-nowrap dark:text-white">
                   <img
                     class="w-10 h-10 rounded-full"
                     src={getImageUrl(product.image)}

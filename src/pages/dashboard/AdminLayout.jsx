@@ -23,7 +23,7 @@ function AdminLayout({ children }) {
             <User className="w-6 h-6 text-gray-700" />
           </div>
         </header>
-        <main className="p-6 h-full ">{children}</main>
+        <main className="p-6 h-full overflow-auto ">{children}</main>
       </div>
     </div>
   );
