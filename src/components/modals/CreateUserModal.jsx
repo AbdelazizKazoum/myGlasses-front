@@ -1,11 +1,9 @@
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../store/usersSlice";
 
 const UserModal = ({ isOpen, setIsOpen }) => {
   // Hooks
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     register,
@@ -33,7 +31,6 @@ const UserModal = ({ isOpen, setIsOpen }) => {
         className="fixed inset-0 bg-black opacity-50"
         onClick={() => setIsOpen(false)}
       ></div>
-
       <div className=" h-full max-h-fit   relative bg-white overflow-auto rounded-lg shadow-lg w-full p-6 flex flex-col max-w-2xl lg:max-w-4xl">
         <div className="flex items-center justify-between pb-4 border-b border-gray-200">
           <h3 className="text-lg font-semibold">Create User</h3>

@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 const ProtectedRoute = (props) => {
   const { user } = useSelector((state) => state.auth);
 
-  if (user) {
+  if (user.role === "admin") {
     return <Navigate to="/login" />;
   }
   return props.children;

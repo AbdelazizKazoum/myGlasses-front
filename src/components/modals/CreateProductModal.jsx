@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { getImageUrl } from "../../utils/getImageUrl";
-import { RecommandedProducts } from "../Products/RecommandedProducts";
 import CreateProductPage from "../newProduct/Index";
 
 const CreateProductModal = ({

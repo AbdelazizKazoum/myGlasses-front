@@ -5,7 +5,6 @@ import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
 import { useEffect, useState } from "react";
 import { BiSolidBookmarkHeart } from "react-icons/bi";
 import { BsHandbagFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getProductDetails,

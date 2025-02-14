@@ -12,7 +12,8 @@ export const signIn = createAsyncThunk("auth/signIn", async (data) => {
   try {
     const res = await api.post("/auth/login", data);
     if (res.data) {
-      toast.success("Login successful");
+      // toast.success("Login successful");
+      console.log("test res user :", res.data);
       return res.data;
     }
   } catch (error) {
@@ -38,7 +39,7 @@ export const logout = createAsyncThunk("auth/logout", async () => {
   try {
     const res = await api.post("/auth/logout");
     if (res.data) {
-      toast.success("Logged out successfully");
+      // toast.success("Logged out successfully");
       return res.data;
     }
   } catch (error) {
@@ -58,7 +59,7 @@ const authSlice = createSlice({
       })
       .addCase(signIn.fulfilled, (state, action) => {
         state.status = statusCode.success;
-        state.user = action.payload;
+        state.user = action.payload.user;
       })
       .addCase(signIn.rejected, (state) => {
         state.status = statusCode.failure;

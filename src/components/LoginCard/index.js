@@ -1,41 +1,53 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./index.css";
+import { signIn } from "../../store/authSlice";
 
 const LoginCard = () => {
+  // State
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
-  const [checkLogin, setCheckLogin] = useState(true);
+
   const [errorMsg, setErrorMsg] = useState("");
 
   const usersList = useSelector((state) => state.usersList);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const submitForm = (event) => {
+  const submitForm = async (event) => {
     event.preventDefault();
+
     if (emailInput !== "" && passwordInput !== "") {
-      if (
-        usersList.some(
-          (user) => emailInput === user.email && passwordInput === user.password
-        )
-      ) {
+      const res = await dispatch(
+        signIn({ email: emailInput, password: passwordInput })
+      );
+      console.log(res.payload);
+
+      const user = res?.payload?.user;
+
+      if (user) {
         setErrorMsg("");
         const loginButton = document.getElementById("loginButton");
         loginButton.textContent = "Logging In...";
         loginButton.style.backgroundColor = "#9af775";
         loginButton.style.fontWeight = "bolder";
-        Cookies.set("jwtToken", "verified");
+        // Cookies.set("jwtToken", "verified");
         setTimeout(() => {
-          navigate("/");
+          if (user.role === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
         }, 2000);
       } else {
         setErrorMsg("Email OR Password are invalid");
       }
     }
   };
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

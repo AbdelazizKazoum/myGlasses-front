@@ -27,8 +27,13 @@ const Profile = () => {
   const [editAddress, setEditAddress] = useState(false);
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  const { username, email, primaryAddress, addressList } = user;
+  const userArdess = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.auth);
+  console.log("🚀 ~ Profile ~ user:", user);
+
+  const { primaryAddress, addressList } = userArdess;
+  const { username, email } = user;
+
   const navigate = useNavigate();
 
   const submitAddressForm = (event) => {
