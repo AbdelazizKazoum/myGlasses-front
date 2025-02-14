@@ -1,24 +1,28 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getProducts } from "../../../store/productsSlice";
 import UserTable from "../../../components/dashboard/users/UsersTables";
+import Loader from "../../../components/Loader";
+import { fetchAllUsers } from "../../../store/usersSlice";
 
 function UsersPage() {
-  const { data } = useSelector((state) => state.products);
-  console.log("🚀 ~ ProductsPage ~ data:", data);
+  // Hooks
+  const { users, status } = useSelector((state) => state.users);
+  console.log("🚀 ~ = ~ data:", users);
 
   // Hooks
   const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
-      await dispatch(getProducts());
+      await dispatch(fetchAllUsers());
     })();
   }, [dispatch]);
 
+  if (status === "PENDING") return <Loader />;
+
   return (
     <div className=" h-full  ">
-      <UserTable data={data} />
+      <UserTable users={users} />
     </div>
   );
 }

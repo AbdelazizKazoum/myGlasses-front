@@ -1,21 +1,25 @@
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../../store/usersSlice";
 
 const UserModal = ({ isOpen, setIsOpen }) => {
+  // Hooks
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (data.password !== data.confirmPassword) {
       alert("Passwords do not match");
       return;
     }
     console.log("Form submitted", data);
+    await dispatch(registerUser(data));
     setIsOpen(false);
   };
 
@@ -95,7 +99,21 @@ const UserModal = ({ isOpen, setIsOpen }) => {
               {errors.cin && (
                 <p className="text-red-500">{errors.cin.message}</p>
               )}
+            </div>{" "}
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Role</label>
+              <input
+                type="text"
+                {...register("role", { required: "Role is required" })}
+                className="border rounded-lg p-2"
+              />
+              {errors.role && (
+                <p className="text-red-500">{errors.role.message}</p>
+              )}
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <label className="font-medium">Password</label>
               <input
@@ -107,9 +125,6 @@ const UserModal = ({ isOpen, setIsOpen }) => {
                 <p className="text-red-500">{errors.password.message}</p>
               )}
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
               <label className="font-medium">Confirm Password</label>
               <input

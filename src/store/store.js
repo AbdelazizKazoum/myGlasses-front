@@ -3,11 +3,11 @@ import cartSlice from "./cartSlice";
 import productsSlice from "./productsSlice";
 import wishlistSlice from "./wishlistSlice";
 import productDetailsSlice from "./productDetailsSlice";
-import userSlice from "./userSlice";
 import filtersSlice from "./filtersSlice";
 import usersListSlice from "./usersListSlice";
 import categoriesSlice from "./categorySlice";
 import authSlice from "./authSlice";
+import usersSlice from "./usersSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,10 +16,10 @@ const store = configureStore({
     categories: categoriesSlice,
     wishlist: wishlistSlice,
     productDetails: productDetailsSlice,
-    user: userSlice,
     filters: filtersSlice,
     usersList: usersListSlice,
     auth: authSlice,
+    users: usersSlice,
   },
 });
 
