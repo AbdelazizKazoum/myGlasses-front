@@ -1,7 +1,23 @@
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-const UserModal = ({ isOpen, setIsOpen, user }) => {
+const UserModal = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    if (data.password !== data.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    console.log("Form submitted", data);
+    setIsOpen(false);
+  };
 
   return (
     <div
@@ -9,18 +25,14 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
         !isOpen && "hidden"
       }`}
     >
-      {/* Overlay */}
       <div
         className="fixed inset-0 bg-black opacity-50"
         onClick={() => setIsOpen(false)}
       ></div>
 
-      {/* Modal content */}
-      <div className="relative bg-white overflow-auto rounded-lg shadow-lg w-full p-6 flex flex-col max-w-2xl lg:max-w-4xl">
-        {/* Modal header */}
+      <div className=" h-full max-h-fit   relative bg-white overflow-auto rounded-lg shadow-lg w-full p-6 flex flex-col max-w-2xl lg:max-w-4xl">
         <div className="flex items-center justify-between pb-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold">User Information</h3>
-
+          <h3 className="text-lg font-semibold">Create User</h3>
           <button
             type="button"
             className="text-gray-400 hover:bg-gray-200 rounded-full p-1"
@@ -43,33 +55,95 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
           </button>
         </div>
 
-        {/* Modal body */}
-        <div className="flex-grow">
-          {/* User Info */}
-          <div className="flex flex-col gap-4 p-2">
-            <div className="flex items-center gap-4">
-              <img
-                src={user?.avatar || "/default-avatar.png"}
-                alt="User Avatar"
-                className="w-16 h-16 rounded-full"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-4 p-2"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Username</label>
+              <input
+                type="text"
+                {...register("username", { required: "Username is required" })}
+                className="border rounded-lg p-2"
               />
-              <div>
-                <h4 className="text-lg font-semibold">
-                  {user?.name || "User Name"}
-                </h4>
-                <p className="text-gray-600">
-                  {user?.email || "user@example.com"}
-                </p>
-              </div>
+              {errors.username && (
+                <p className="text-red-500">{errors.username.message}</p>
+              )}
             </div>
-            <button
-              className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-800"
-              onClick={() => navigate(`/profile/${user?.id}`)}
-            >
-              View Profile
-            </button>
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Email</label>
+              <input
+                type="email"
+                {...register("email", { required: "Email is required" })}
+                className="border rounded-lg p-2"
+              />
+              {errors.email && (
+                <p className="text-red-500">{errors.email.message}</p>
+              )}
+            </div>
           </div>
-        </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">CIN</label>
+              <input
+                type="text"
+                {...register("cin", { required: "CIN is required" })}
+                className="border rounded-lg p-2"
+              />
+              {errors.cin && (
+                <p className="text-red-500">{errors.cin.message}</p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Password</label>
+              <input
+                type="password"
+                {...register("password", { required: "Password is required" })}
+                className="border rounded-lg p-2"
+              />
+              {errors.password && (
+                <p className="text-red-500">{errors.password.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Confirm Password</label>
+              <input
+                type="password"
+                {...register("confirmPassword", {
+                  required: "Confirm Password is required",
+                })}
+                className="border rounded-lg p-2"
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500">{errors.confirmPassword.message}</p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Upload Avatar</label>
+              <input
+                type="file"
+                accept="image/*"
+                {...register("avatar", { required: "Avatar is required" })}
+                className="border rounded-lg p-2"
+              />
+              {errors.avatar && (
+                <p className="text-red-500">{errors.avatar.message}</p>
+              )}
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-800"
+          >
+            Create User
+          </button>
+        </form>
       </div>
     </div>
   );
