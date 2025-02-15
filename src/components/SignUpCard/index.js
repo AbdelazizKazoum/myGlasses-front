@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
-import { setActiveUser } from "../../store/userSlice";
+// import { setActiveUser } from "../../store/userSlice";
 import { addUser } from "../../store/usersListSlice";
 
 import "./index.css";
@@ -42,7 +42,7 @@ const SignUpCard = () => {
           password: passwordInput,
         };
 
-        dispatch(setActiveUser(newUser));
+        // dispatch(setActiveUser(newUser));
         dispatch(addUser(newUser));
 
         setTimeout(() => {
@@ -70,7 +70,8 @@ const SignUpCard = () => {
                 placeholder="Username"
                 className="border rounded-md p-1.5 shadow-sm"
                 value={usernameInput}
-                onChange={(event) => setUsernameInput(event.target.value)} />
+                onChange={(event) => setUsernameInput(event.target.value)}
+              />
             </label>
             <label className="flex flex-col">
               <input
@@ -98,12 +99,18 @@ const SignUpCard = () => {
                 type="password"
                 placeholder="Confirm Password"
                 value={confirmPasswordInput}
-                onChange={(event) => setConfirmPasswordInput(event.target.value)}
+                onChange={(event) =>
+                  setConfirmPasswordInput(event.target.value)
+                }
                 required
               />
             </label>
             {errorMsg !== "" && <p className="sign-up-error-msg">{errorMsg}</p>}
-            <button type="submit" id="loginButton" className="login-button bg-[#111827] hover:bg-[#1F2937] text-white px-10 pt-2 pb-1.5">
+            <button
+              type="submit"
+              id="loginButton"
+              className="login-button bg-[#111827] hover:bg-[#1F2937] text-white px-10 pt-2 pb-1.5"
+            >
               Create Account
             </button>
             <p className="login-text">

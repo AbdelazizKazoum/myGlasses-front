@@ -5,7 +5,7 @@ import {
   matchPath,
   useLocation,
 } from "react-router-dom";
-import { Provider } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import store from "./store/store";
 
 import Navbar from "./components/Navbar";
@@ -15,7 +15,7 @@ import Cart from "./components/Cart";
 import Wishlist from "./components/Wishlist";
 import Products from "./components/Products";
 import ProductDetailsCard from "./components/ProductDetailsCard";
-import Profile from "./components/Profile";
+import Profile from "./pages/Profile";
 import ErrorCard from "./components/ErrorCard";
 import LoginPage from "./components/LoginPage";
 import SignUpPage from "./components/SignUpPage";
@@ -25,18 +25,24 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./App.css";
-import { AddProduct } from "./components/addProduct";
-import CreateProductPage from "./components/newProduct/Index";
 import AdminLayout from "./pages/dashboard/AdminLayout";
 import ProductsPage from "./pages/dashboard/products/Index";
 import UsersPage from "./pages/dashboard/users";
 import AnalyticsPage from "./pages/dashboard/analytics/Index";
 import HomePage from "./pages/dashboard/home/Index";
 import CommandsPage from "./pages/dashboard/commands/Index";
+import { useEffect, useState } from "react";
+import { checkAuth } from "./store/authSlice";
+import Loader from "./components/Loader";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
   // const showNavbar = location.pathname !== "/login" && location.pathname !== "/signup";
+
+  // Hooks
+
+  const { user, status } = useSelector((state) => state.auth);
+  const [loading, setLoading] = useState(true);
 
   const location = useLocation();
   const showNavbar =
@@ -47,6 +53,19 @@ function App() {
     location.pathname !== "/login" &&
     location.pathname !== "/signup" &&
     !location.pathname.startsWith("/admin");
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setLoading(true);
+
+    (async () => {
+      await dispatch(checkAuth());
+      setLoading(false);
+    })();
+  }, [dispatch]);
+
+  if (loading) return <Loader />;
 
   return (
     <Provider store={store}>
@@ -122,8 +141,6 @@ function App() {
             <Route exact path="/" element={<Home />} />
             <Route exact path="/products" element={<Products />} />
 
-            <Route exact path="/createProduct" element={<AddProduct />} />
-            <Route exact path="/newProduct" element={<CreateProductPage />} />
             <Route exact path="/product/:id" element={<ProductDetailsCard />} />
             <Route exact path="/cart" element={<Cart />} />
             <Route exact path="/wishlist" element={<Wishlist />} />

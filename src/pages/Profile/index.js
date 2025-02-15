@@ -1,59 +1,63 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./index.css";
-import { useState, useEffect } from "react";
-import { dummyAddress } from "../../eyesomeData";
+import { useState } from "react";
 import {
   addAddressItem,
   removeAddressItem,
   editAddressItem,
   setPrimaryAddress,
+  addAddress,
+  updateAddress,
+  removeAddress,
 } from "../../store/userSlice";
-import { v4 as uuidv4 } from "uuid";
 
 import "./index.css";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { checkAuth } from "../../store/authSlice";
 
 const Profile = () => {
   const [activeTabId, setActiveTabId] = useState("profile");
-  const [id, setId] = useState(uuidv4());
+  const [id, setId] = useState(null);
   const [fullName, setFullName] = useState("");
   const [mobile, setMobile] = useState("");
-  const [addressLine1, setAddressLine1] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
+  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [pincode, setPincode] = useState("");
   const [addNewAddress, setAddNewAddress] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
 
   const dispatch = useDispatch();
-  const userArdess = useSelector((state) => state.user);
   const { user } = useSelector((state) => state.auth);
   console.log("🚀 ~ Profile ~ user:", user);
 
-  const { primaryAddress, addressList } = userArdess;
-  const { username, email } = user;
+  const { username, email, primaryAddress, addressList } = user;
 
   const navigate = useNavigate();
 
-  const submitAddressForm = (event) => {
+  const submitAddressForm = async (event) => {
     event.preventDefault();
     const newAdd = {
-      id,
-      name: fullName,
+      fullName,
       mobile,
-      firstLine: addressLine1,
-      secondLine: addressLine2,
+      address,
       city,
       pincode,
     };
 
-    dispatch(setPrimaryAddress(newAdd));
+    // dispatch(setPrimaryAddress(newAdd));
 
     if (addNewAddress) {
-      dispatch(addAddressItem(newAdd));
+      await dispatch(addAddress({ userId: user.id, addressData: newAdd }));
+      await dispatch(checkAuth());
     } else if (editAddress) {
-      dispatch(editAddressItem(newAdd));
+      await dispatch(
+        updateAddress({
+          addressId: id,
+          updatedAddressData: newAdd,
+        })
+      );
+      await dispatch(checkAuth());
     }
 
     cancelAddAddress();
@@ -65,22 +69,10 @@ const Profile = () => {
     setActiveTabId(event.target.id);
   };
 
-  const setDummyValues = () => {
-    setId(uuidv4());
-    setFullName(dummyAddress.fullName);
-    setMobile(dummyAddress.mobile);
-    setAddressLine1(dummyAddress.addressLine1);
-    setAddressLine2(dummyAddress.addressLine2);
-    setCity(dummyAddress.city);
-    setPincode(dummyAddress.pincode);
-  };
-
   const setNullValues = () => {
-    setId(uuidv4());
     setFullName("");
     setMobile("");
-    setAddressLine1("");
-    setAddressLine2("");
+    setAddress("");
     setCity("");
     setPincode("");
   };
@@ -93,10 +85,9 @@ const Profile = () => {
 
   const setEditAddressValues = (address) => {
     setId(address.id);
-    setFullName(address.name);
+    setFullName(address.fullName);
     setMobile(address.mobile);
-    setAddressLine1(address.firstLine);
-    setAddressLine2(address.secondLine);
+    setAddress(address.address);
     setCity(address.city);
     setPincode(address.pincode);
   };
@@ -160,9 +151,7 @@ const Profile = () => {
             <div className="d-flex flex-column">
               <label htmlFor={address.id} className="address-label">
                 <h3>{address.name}</h3>
-                <p>
-                  {address.firstLine}, {address.secondLine}
-                </p>
+                <p>{address.address}</p>
                 <p>
                   {address.city}, {address.pincode}
                 </p>
@@ -184,8 +173,9 @@ const Profile = () => {
                 <button
                   type="button"
                   className="address-button address-remove"
-                  onClick={() => {
-                    dispatch(removeAddressItem(address.id));
+                  onClick={async () => {
+                    await dispatch(removeAddress(address.id));
+                    await dispatch(checkAuth());
                   }}
                 >
                   Remove
@@ -227,29 +217,15 @@ const Profile = () => {
         />
       </section>
       <section className="input-address">
-        <label htmlFor="addressLine1" className="form-label">
-          Flat,House No, Building
+        <label htmlFor="address" className="form-label">
+          Adress
         </label>
         <input
           type="text"
-          id="addressLine1"
-          value={addressLine1}
+          id="address"
+          value={address}
           onChange={(event) => {
-            setAddressLine1(event.target.value);
-          }}
-          required
-        />
-      </section>
-      <section className="input-address">
-        <label htmlFor="addressLine2" className="form-label">
-          Area, Colony, Street
-        </label>
-        <input
-          type="text"
-          id="addressLine2"
-          value={addressLine2}
-          onChange={(event) => {
-            setAddressLine2(event.target.value);
+            setAddress(event.target.value);
           }}
           required
         />
@@ -283,15 +259,6 @@ const Profile = () => {
         />
       </section>
       <div className="address-form-buttons-container">
-        {addNewAddress && (
-          <button
-            type="button"
-            className="address-form-button"
-            onClick={setDummyValues}
-          >
-            Fill Dummy Values
-          </button>
-        )}
         <button
           type="button"
           className="address-form-button"

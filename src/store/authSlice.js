@@ -35,6 +35,18 @@ export const refreshToken = createAsyncThunk("auth/refresh", async () => {
   }
 });
 
+export const checkAuth = createAsyncThunk("auth/profile", async () => {
+  try {
+    const res = await api.get("/auth/profile");
+    if (res.data) {
+      return res.data;
+    }
+  } catch (error) {
+    toast.error("Session expired. Please log in again.");
+    throw error;
+  }
+});
+
 export const logout = createAsyncThunk("auth/logout", async () => {
   try {
     const res = await api.post("/auth/logout");
@@ -70,6 +82,17 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
         state.status = statusCode.idle;
+      })
+      .addCase(checkAuth.pending, (state) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(checkAuth.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.user = action.payload;
+      })
+      .addCase(checkAuth.rejected, (state) => {
+        state.status = statusCode.failure;
+        state.user = null;
       });
   },
 });
