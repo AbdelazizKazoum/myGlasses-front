@@ -34,6 +34,7 @@ import CommandsPage from "./pages/dashboard/commands/Index";
 import { useEffect, useState } from "react";
 import { checkAuth } from "./store/authSlice";
 import Loader from "./components/Loader";
+import GuestOnly from "./components/ProtectedRoute/GuestOnly";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
@@ -136,8 +137,24 @@ function App() {
             />
 
             {/* ---------------------------------------------------- */}
-            <Route exact path="/login" element={<LoginPage />} />
-            <Route exact path="/signup" element={<SignUpPage />} />
+            <Route
+              exact
+              path="/login"
+              element={
+                <GuestOnly>
+                  <LoginPage />
+                </GuestOnly>
+              }
+            />
+            <Route
+              exact
+              path="/signup"
+              element={
+                <GuestOnly>
+                  <SignUpPage />
+                </GuestOnly>
+              }
+            />
             <Route exact path="/" element={<Home />} />
             <Route exact path="/products" element={<Products />} />
 

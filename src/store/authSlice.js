@@ -49,7 +49,7 @@ export const checkAuth = createAsyncThunk("auth/profile", async () => {
 
 export const logout = createAsyncThunk("auth/logout", async () => {
   try {
-    const res = await api.post("/auth/logout");
+    const res = await api.get("/auth/logout");
     if (res.data) {
       // toast.success("Logged out successfully");
       return res.data;

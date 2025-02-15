@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "./index.css";
 import { signIn } from "../../store/authSlice";
 
@@ -9,10 +8,8 @@ const LoginCard = () => {
   // State
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
-
   const [errorMsg, setErrorMsg] = useState("");
-
-  const usersList = useSelector((state) => state.usersList);
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,79 +18,39 @@ const LoginCard = () => {
     event.preventDefault();
 
     if (emailInput !== "" && passwordInput !== "") {
-      const res = await dispatch(
-        signIn({ email: emailInput, password: passwordInput })
-      );
-      console.log(res.payload);
+      setIsLoading(true); // Set loading state to true when the request starts
 
-      const user = res?.payload?.user;
+      try {
+        const res = await dispatch(
+          signIn({ email: emailInput, password: passwordInput })
+        );
+        console.log(res.payload);
 
-      if (user) {
-        setErrorMsg("");
-        const loginButton = document.getElementById("loginButton");
-        loginButton.textContent = "Logging In...";
-        loginButton.style.backgroundColor = "#9af775";
-        loginButton.style.fontWeight = "bolder";
-        // Cookies.set("jwtToken", "verified");
-        setTimeout(() => {
-          if (user.role === "admin") {
-            navigate("/admin");
-          } else {
-            navigate("/");
-          }
-        }, 2000);
-      } else {
-        setErrorMsg("Email OR Password are invalid");
+        const user = res?.payload?.user;
+
+        if (user) {
+          setErrorMsg("");
+          // After successful login, navigate to the correct page after a delay
+          setTimeout(() => {
+            if (user.role === "admin") {
+              navigate("/admin");
+            } else {
+              navigate("/");
+            }
+          }, 2000);
+        } else {
+          setErrorMsg("Email OR Password are invalid");
+        }
+      } catch (error) {
+        setErrorMsg("An error occurred. Please try again.");
+      } finally {
+        setIsLoading(false); // Set loading state to false when the request is done
       }
     }
   };
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   return (
     <>
-      {/* <form className="login-form bg-white shadow-sm" onSubmit={submitForm}>
-      <h1>Login to Your Account</h1>
-      <label htmlFor="signUpEmail">Email</label>
-      <input
-        type="email"
-        id="signUpEmail"
-        value={emailInput}
-        onChange={(event) => setEmailInput(event.target.value)}
-        required
-      />
-      <label htmlFor="signUpPassword">Password</label>
-      <input
-        type="password"
-        id="signUpPassword"
-        value={passwordInput}
-        onChange={(event) => setPasswordInput(event.target.value)}
-        required
-      />
-      {errorMsg !== "" && <p className="login-error-msg">{errorMsg}</p>}
-      <button type="submit" id="loginButton" className="login-button">
-        Login
-      </button>
-      <button
-        type="button"
-        className="guest-button"
-        onClick={() => {
-          setEmailInput("shakil@gmail.com");
-          setPasswordInput("shakil@123");
-        }}
-      >
-        Login as Guest
-      </button>
-      <p
-        className="create-account-text"
-        onClick={() => {
-          navigate("/signup");
-        }}
-      >
-        Create New Account
-      </p>
-    </form> */}
       <section className="px-7 py-10 rounded-md shadow-md bg-white/70 flex flex-col gap-6 w-full max-w-lg">
         <Link to="/">
           <h1 className="login-page-logo text-3xl">myglass</h1>
@@ -128,9 +85,12 @@ const LoginCard = () => {
               <button
                 type="submit"
                 id="loginButton"
-                className="login-button bg-[#111827] hover:bg-[#1F2937] text-white px-10 pt-2 pb-1.5"
+                className={`login-button ${
+                  isLoading ? "bg-gray-500" : "bg-[#111827] hover:bg-[#1F2937]"
+                } text-white px-10 pt-2 pb-1.5`}
+                disabled={isLoading} // Disable the button while loading
               >
-                Login
+                {isLoading ? "Logging In..." : "Login"}
               </button>
               <button
                 type="button"

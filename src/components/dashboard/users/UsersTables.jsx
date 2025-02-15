@@ -5,30 +5,6 @@ const UserTable = ({ users }) => {
   console.log("🚀 ~ UserTable ~ users:", users);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // const users = [
-  //   {
-  //     id: 1,
-  //     name: "John Doe",
-  //     email: "john@example.com",
-  //     role: "Admin",
-  //     status: "Active",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Jane Smith",
-  //     email: "jane@example.com",
-  //     role: "User",
-  //     status: "Inactive",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Alice Johnson",
-  //     email: "alice@example.com",
-  //     role: "Manager",
-  //     status: "Active",
-  //   },
-  // ];
-
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div>

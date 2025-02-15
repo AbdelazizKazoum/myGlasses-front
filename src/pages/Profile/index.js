@@ -14,7 +14,7 @@ import {
 import "./index.css";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { checkAuth } from "../../store/authSlice";
+import { checkAuth, logout } from "../../store/authSlice";
 
 const Profile = () => {
   const [activeTabId, setActiveTabId] = useState("profile");
@@ -92,11 +92,12 @@ const Profile = () => {
     setPincode(address.pincode);
   };
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
     const logoutButton = document.getElementById("logoutButton");
     logoutButton.textContent = "Logging Out...";
     logoutButton.style.fontWeight = "bolder";
-    Cookies.remove("jwtToken");
+
+    await dispatch(logout());
     setTimeout(() => {
       navigate("/login");
     }, 2000);
