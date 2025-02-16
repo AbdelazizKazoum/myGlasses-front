@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import TableHeader from "./TableHeader";
+import UserModal from "../../modals/CreateUserModal";
 
 const UserTable = ({ users }) => {
-  console.log("🚀 ~ UserTable ~ users:", users);
+  // State
   const [searchQuery, setSearchQuery] = useState("");
+  const [isOpen, setIsOpen] = useState();
+  const [editUser, setEditUser] = useState(null);
+
+  // Methods
+  const handleEdit = (user) => {
+    setIsOpen(true);
+    setEditUser(user);
+  };
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <UserModal isOpen={isOpen} setIsOpen={setIsOpen} user={editUser} />
+
       <div>
         <TableHeader
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          setIsOpen={setIsOpen}
+          isOpen={isOpen}
+          setEditUser={setEditUser}
         />
       </div>
 
@@ -66,12 +80,13 @@ const UserTable = ({ users }) => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <a
+                    <button
                       href="#"
                       className="font-medium text-blue-600 hover:underline"
+                      onClick={() => handleEdit(user)}
                     >
                       Edit User
-                    </a>
+                    </button>
                   </td>
                 </tr>
               ))}

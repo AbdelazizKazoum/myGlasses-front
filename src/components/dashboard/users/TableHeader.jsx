@@ -1,26 +1,15 @@
-import React, { useState } from "react";
-import CreateProductModal from "../../modals/CreateProductModal";
-import UserModal from "../../modals/CreateUserModal";
-
-const TableHeader = ({ searchQuery, setSearchQuery }) => {
-  // State
-  const [isOpen, setIsOpen] = useState();
-  const [product, setProduct] = useState(null);
-
+const TableHeader = ({
+  searchQuery,
+  setSearchQuery,
+  setIsOpen,
+  setEditUser,
+}) => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  const demoUser = {
-    id: "123",
-    name: "John Doe",
-    email: "johndoe@example.com",
-    avatar: "https://i.pravatar.cc/150?img=3", // Placeholder avatar
-  };
-
   return (
     <div className="bg-gray-50  flex items-center">
-      <UserModal isOpen={isOpen} setIsOpen={setIsOpen} user={demoUser} />
       <div className="  mx-auto  w-full">
         <div className="relative bg-white   sm:rounded-lg">
           <div className="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
@@ -60,7 +49,10 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
             <div className="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
               <button
                 type="button"
-                onClick={() => setIsOpen(true)}
+                onClick={() => {
+                  setEditUser(null);
+                  setIsOpen(true);
+                }}
                 className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-500 hover:bg-primary-800 focus:outline-none "
               >
                 <svg

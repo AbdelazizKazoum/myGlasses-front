@@ -11,7 +11,6 @@ const initialState = {
 export const registerUser = createAsyncThunk("users/register", async (data) => {
   try {
     const res = await api.post("/auth/register", data);
-    console.log("🚀 ~ registerUser ~ res:", res);
 
     if (res.data) {
       toast.success("User registered successfully");
@@ -106,12 +105,9 @@ const usersSlice = createSlice({
       })
       // Handle the fetchAllUsers action
       .addCase(fetchAllUsers.pending, (state) => {
-        console.log("🚀 ~ .addCase ~ state:", state);
-
         state.status = statusCode.pending;
       })
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
-        console.log("🚀 ~ .addCase ~ action:", action);
         state.status = statusCode.success;
 
         state.users = action.payload; // Replace the existing users with the fetched ones

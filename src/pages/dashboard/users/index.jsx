@@ -7,7 +7,6 @@ import { fetchAllUsers } from "../../../store/usersSlice";
 function UsersPage() {
   // Hooks
   const { users, status } = useSelector((state) => state.users);
-  console.log("🚀 ~ = ~ data:", users);
 
   // Hooks
   const dispatch = useDispatch();

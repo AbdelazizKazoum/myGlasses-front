@@ -1,27 +1,67 @@
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "../../store/usersSlice";
+import { registerUser, removeUser, updateUser } from "../../store/usersSlice";
+import { useEffect, useState } from "react";
 
-const UserModal = ({ isOpen, setIsOpen }) => {
+const UserModal = ({ isOpen, setIsOpen, user }) => {
+  // State
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
   // Hooks
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({ defaultValues: user });
 
   const onSubmit = async (data) => {
     if (data.password !== data.confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-    console.log("Form submitted", data);
-    await dispatch(registerUser(data));
-    setIsOpen(false);
+
+    const userData = {
+      email: data.email,
+      username: data.username,
+      cin: data.cin,
+      nom: data.nom,
+      prenom: data.prenom,
+      tel: data.tel || "",
+      password: data.password,
+      role: data.role,
+      status: data.status || "",
+    };
+
+    console.log("Form submitted", userData);
+
+    if (user) {
+      await dispatch(updateUser({ id: user.id, data: userData }));
+    } else {
+      await dispatch(registerUser(data));
+    }
+    // setIsOpen(false);
   };
+
+  const handleDelete = () => {
+    setShowDeleteConfirmation(true);
+  };
+
+  const confirmDelete = () => {
+    dispatch(removeUser(user.id)); // Dispatch removeUser action
+    setIsOpen(false); // Close modal after deletion
+    setShowDeleteConfirmation(false); // Hide confirmation modal
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirmation(false); // Close confirmation modal
+  };
+
+  useEffect(() => {
+    reset(user);
+  }, [reset, user]);
 
   return (
     <div
@@ -90,6 +130,32 @@ const UserModal = ({ isOpen, setIsOpen }) => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
+              <label className="font-medium">First name</label>
+              <input
+                type="text"
+                {...register("nom", { required: "First name is required" })}
+                className="border rounded-lg p-2"
+              />
+              {errors.nom && (
+                <p className="text-red-500">{errors.nom.message}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Last name</label>
+              <input
+                type="text"
+                {...register("prenom", { required: "last name is required" })}
+                className="border rounded-lg p-2"
+              />
+              {errors.prenom && (
+                <p className="text-red-500">{errors.prenom.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
               <label className="font-medium">CIN</label>
               <input
                 type="text"
@@ -99,16 +165,17 @@ const UserModal = ({ isOpen, setIsOpen }) => {
               {errors.cin && (
                 <p className="text-red-500">{errors.cin.message}</p>
               )}
-            </div>{" "}
+            </div>
+
             <div className="flex flex-col gap-2">
-              <label className="font-medium">Role</label>
+              <label className="font-medium">Phone</label>
               <input
                 type="text"
-                {...register("role", { required: "Role is required" })}
+                {...register("tel", { required: "Phone is required" })}
                 className="border rounded-lg p-2"
               />
-              {errors.role && (
-                <p className="text-red-500">{errors.role.message}</p>
+              {errors.tel && (
+                <p className="text-red-500">{errors.tel.message}</p>
               )}
             </div>
           </div>
@@ -118,7 +185,9 @@ const UserModal = ({ isOpen, setIsOpen }) => {
               <label className="font-medium">Password</label>
               <input
                 type="password"
-                {...register("password", { required: "Password is required" })}
+                {...register("password", {
+                  required: user ? false : "Password is required",
+                })}
                 className="border rounded-lg p-2"
               />
               {errors.password && (
@@ -130,7 +199,7 @@ const UserModal = ({ isOpen, setIsOpen }) => {
               <input
                 type="password"
                 {...register("confirmPassword", {
-                  required: "Confirm Password is required",
+                  required: user ? false : "Confirm Password is required",
                 })}
                 className="border rounded-lg p-2"
               />
@@ -138,6 +207,22 @@ const UserModal = ({ isOpen, setIsOpen }) => {
                 <p className="text-red-500">{errors.confirmPassword.message}</p>
               )}
             </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="font-medium">Role</label>
+              <select
+                {...register("role", { required: "Role is required" })}
+                className="border rounded-lg p-2"
+              >
+                <option value="">Select Role</option>
+                <option value="client">Client</option>
+                <option value="admin">Admin</option>
+              </select>
+              {errors.role && (
+                <p className="text-red-500">{errors.role.message}</p>
+              )}
+            </div>
+
             <div className="flex flex-col gap-2">
               <label className="font-medium">Upload Avatar</label>
               <input
@@ -152,13 +237,49 @@ const UserModal = ({ isOpen, setIsOpen }) => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-800"
-          >
-            Create User
-          </button>
+          <div className="flex gap-2 justify-end ">
+            <button
+              type="submit"
+              className=" w-44 h-12  bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-800"
+            >
+              {user ? "Update User" : "Create User"}
+            </button>
+            {user && (
+              <button
+                type="button"
+                className="w-44 h-12 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-800"
+                onClick={handleDelete}
+              >
+                Delete User
+              </button>
+            )}
+          </div>
         </form>
+
+        {/* Confirmation Modal */}
+        {showDeleteConfirmation && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h3 className="text-lg font-semibold mb-4">
+                Are you sure you want to delete this user?
+              </h3>
+              <div className="flex justify-end space-x-4">
+                <button
+                  className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+                  onClick={cancelDelete}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                  onClick={confirmDelete}
+                >
+                  Yes, Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
