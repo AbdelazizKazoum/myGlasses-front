@@ -9,7 +9,6 @@ import "./index.css";
 import PaymentPage from "../PaymentPage";
 import PaymentSuccessCard from "../PaymentSuccessCard";
 import { createCommande } from "../../store/commandeSlice";
-import { emptyCart } from "../../store/cartSlice";
 
 const CheckoutPage = () => {
   const [id, setId] = useState(uuidv4());
