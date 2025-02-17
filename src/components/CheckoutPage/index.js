@@ -8,6 +8,7 @@ import ErrorCard from "../ErrorCard";
 import "./index.css";
 import PaymentPage from "../PaymentPage";
 import PaymentSuccessCard from "../PaymentSuccessCard";
+import { createCommande } from "../../store/commandeSlice";
 
 const CheckoutPage = () => {
   const [id, setId] = useState(uuidv4());
@@ -44,6 +45,9 @@ const CheckoutPage = () => {
   };
 
   const updatePaymentSuccess = (value) => {
+    console.log("🚀 ~ updatePaymentSuccess ~ Products:", cartProducts);
+
+    // dispatch(createCommande());
     setShowPaymentSuccess(value);
   };
 

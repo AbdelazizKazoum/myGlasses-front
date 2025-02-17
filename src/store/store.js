@@ -9,6 +9,7 @@ import categoriesSlice from "./categorySlice";
 import authSlice from "./authSlice";
 import usersSlice from "./usersSlice";
 import userSlice from "./userSlice";
+import commandeSlice from "./commandeSlice";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     usersList: usersListSlice,
     auth: authSlice,
     users: usersSlice,
+    commande: commandeSlice,
   },
 });
 
