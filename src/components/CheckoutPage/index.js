@@ -23,8 +23,10 @@ const CheckoutPage = () => {
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  const { primaryAddress, addressList } = user;
+  const { user } = useSelector((state) => state.auth);
+  const { primaryAddress } = useSelector((state) => state.user);
+
+  const { addressList } = user;
   const cartProducts = useSelector((state) => state.cart);
   let total = 0;
   let totalProduct = 0;
@@ -220,7 +222,7 @@ const CheckoutPage = () => {
               type="radio"
               id={address.id}
               name="address"
-              checked={address.id === primaryAddress.id}
+              checked={address?.id === primaryAddress?.id}
               onChange={() => {
                 dispatch(setPrimaryAddress(address));
               }}

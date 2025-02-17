@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 const initialState = {
   user: null,
   status: statusCode.idle,
+  primaryAddress: null,
   loading: false,
   error: null,
 };
@@ -88,9 +89,9 @@ const userSlice = createSlice({
     },
 
     setPrimaryAddress(state, action) {
-      if (state.user) {
-        state.user.primaryAddress = action.payload;
-      }
+      console.log("🚀 ~ setPrimaryAddress ~ action:", action);
+
+      state.primaryAddress = action.payload;
     },
   },
   extraReducers: (builder) => {

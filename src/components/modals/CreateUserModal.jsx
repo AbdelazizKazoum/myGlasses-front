@@ -159,7 +159,7 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
               <label className="font-medium">CIN</label>
               <input
                 type="text"
-                {...register("cin", { required: "CIN is required" })}
+                {...register("cin")}
                 className="border rounded-lg p-2"
               />
               {errors.cin && (
@@ -171,7 +171,7 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
               <label className="font-medium">Phone</label>
               <input
                 type="text"
-                {...register("tel", { required: "Phone is required" })}
+                {...register("tel")}
                 className="border rounded-lg p-2"
               />
               {errors.tel && (
@@ -228,7 +228,7 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
               <input
                 type="file"
                 accept="image/*"
-                {...register("avatar", { required: "Avatar is required" })}
+                {...register("avatar")}
                 className="border rounded-lg p-2"
               />
               {errors.avatar && (
