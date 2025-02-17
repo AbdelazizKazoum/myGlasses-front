@@ -9,6 +9,7 @@ import "./index.css";
 import PaymentPage from "../PaymentPage";
 import PaymentSuccessCard from "../PaymentSuccessCard";
 import { createCommande } from "../../store/commandeSlice";
+import { emptyCart } from "../../store/cartSlice";
 
 const CheckoutPage = () => {
   const [id, setId] = useState(uuidv4());
@@ -44,11 +45,20 @@ const CheckoutPage = () => {
     setShowDisplayPayment(value);
   };
 
-  const updatePaymentSuccess = (value) => {
-    console.log("🚀 ~ updatePaymentSuccess ~ Products:", cartProducts);
+  const updatePaymentSuccess = async (value) => {
+    console.log("🚀 ~ updatePaymentSuccess ~ totale:", total);
 
-    // dispatch(createCommande());
-    setShowPaymentSuccess(value);
+    if (value) {
+      const res = await dispatch(
+        createCommande({ details: cartProducts, total })
+      );
+
+      if (!res.error) {
+        setShowPaymentSuccess(value);
+      }
+    } else {
+      setShowPaymentSuccess(value);
+    }
   };
 
   const submitAddressForm = (event) => {
