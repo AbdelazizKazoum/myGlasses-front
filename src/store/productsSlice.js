@@ -67,9 +67,9 @@ export const createProduct = createAsyncThunk(
 // Create new product
 export const updadeProduct = createAsyncThunk(
   "products/edit",
-  async (formData) => {
+  async ({ formData, id }) => {
     try {
-      const res = await api.patch("/product", formData, {
+      const res = await api.patch(`/product/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("🚀 ~ res:", res);

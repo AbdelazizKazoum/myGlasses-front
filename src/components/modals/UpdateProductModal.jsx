@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createProduct } from "../../store/productsSlice";
+import { createProduct, updadeProduct } from "../../store/productsSlice";
 import { Check, CircleX, Loader2, PlusCircle, Upload } from "lucide-react";
 import { SketchPicker } from "react-color";
 import { getImageUrl } from "../../utils/getImageUrl";
@@ -63,9 +63,10 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   const removeColor = (color) => {
     setColors(colors.filter((c) => c !== color));
 
-    setRemovedImages((res) =>
-      [...res, ...images[color]].filter((item) => !(item instanceof File))
-    );
+    setRemovedImages((prev) => ({
+      ...prev,
+      [color]: images[color].filter((item) => !(item instanceof File)),
+    }));
 
     setImages((prev) => {
       const newImages = { ...prev };
@@ -84,7 +85,10 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   // remove image from colors
   const removeImage = (color, index) => {
     if (!(images[color][index] instanceof File)) {
-      setRemovedImages((res) => [...res, images[color][index]]);
+      setRemovedImages((prev) => ({
+        ...prev,
+        [color]: [...(prev[color] || []), images[color][index]],
+      }));
     }
 
     setImages({
@@ -139,7 +143,9 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
       });
     });
 
-    const res = await dispatch(createProduct(formData));
+    const res = await dispatch(
+      updadeProduct({ formData, id: updateProduct.id })
+    );
     console.log("🚀 ~ handleFormSubmit ~ res:", res);
 
     setLoading(false);
