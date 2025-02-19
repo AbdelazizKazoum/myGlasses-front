@@ -101,7 +101,7 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   const removeDefaultImage = (image) => {
     setDefaultImage(null);
     if (!(image instanceof File)) {
-      setRemovedImages((res) => [...res, image]);
+      setRemovedImages((res) => ({ defaultImage: image }));
     }
   };
 
