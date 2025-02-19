@@ -1,15 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import CreateProductPage from "../newProduct/Index";
 
-const CreateProductModal = ({
-  isOpen,
-  setIsOpen,
-  productName,
-  accessories = [],
-  product,
-}) => {
-  // Hooks
-  const navigate = useNavigate();
+const CreateProductModal = ({ isOpen, setIsOpen }) => {
   return (
     <div
       className={`fixed inset-0 z-50  flex sm:items-center justify-center ${

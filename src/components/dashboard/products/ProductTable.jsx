@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import TableHeader from "./TableHeader";
 import { getImageUrl } from "../../../utils/getImageUrl";
+import UpdateProductModal from "../../modals/UpdateProductModal";
 
 const ProductTable = ({ data }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isOpenEdit, setIsOpenEdit] = useState();
+
+  const [product, setProduct] = useState(null);
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -13,6 +17,12 @@ const ProductTable = ({ data }) => {
           setSearchQuery={setSearchQuery}
         />
       </div>
+
+      <UpdateProductModal
+        isOpen={isOpenEdit}
+        setIsOpen={setIsOpenEdit}
+        updateProduct={product}
+      />
 
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -101,9 +111,16 @@ const ProductTable = ({ data }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <a href="#" className="font-medium text hover:underline">
+                  <button
+                    href="#"
+                    className="font-medium text hover:underline"
+                    onClick={() => {
+                      setProduct(product);
+                      setIsOpenEdit(true);
+                    }}
+                  >
                     Edit product
-                  </a>
+                  </button>
                 </td>
               </tr>
             ))}

@@ -5,7 +5,6 @@ import { getProducts } from "../../../store/productsSlice";
 
 function ProductsPage() {
   const { data } = useSelector((state) => state.products);
-  console.log("🚀 ~ ProductsPage ~ data:", data);
 
   // Hooks
   const dispatch = useDispatch();
