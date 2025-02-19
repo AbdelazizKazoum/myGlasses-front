@@ -5,10 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { createProduct } from "../../store/productsSlice";
 import { Check, CircleX, Loader2, PlusCircle, Upload } from "lucide-react";
 import { SketchPicker } from "react-color";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
-  console.log("🚀 ~ UpdateProductModal ~ product:", updateProduct);
-
   // State --------------------------------------------->
   const [product, setProduct] = useState({
     name: "",
@@ -24,7 +23,9 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   });
   const [colors, setColors] = useState([]);
   const [images, setImages] = useState({});
-  console.log("🚀 ~ UpdateProductModal ~ images:", images);
+  const [removedImages, setRemovedImages] = useState([]);
+  console.log("🚀 ~ UpdateProductModal ~ removedImages:", removedImages);
+
   const [colorPicker, setColorPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#000000");
   const [activeColor, setActiveColor] = useState("#c15353");
@@ -61,11 +62,17 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   // Remove color action
   const removeColor = (color) => {
     setColors(colors.filter((c) => c !== color));
+
+    setRemovedImages((res) =>
+      [...res, ...images[color]].filter((item) => !(item instanceof File))
+    );
+
     setImages((prev) => {
       const newImages = { ...prev };
       delete newImages[color];
       return newImages;
     });
+
     if (activeColor === color) setActiveColor(null);
   };
 
@@ -76,10 +83,22 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
 
   // remove image from colors
   const removeImage = (color, index) => {
+    if (!(images[color][index] instanceof File)) {
+      setRemovedImages((res) => [...res, images[color][index]]);
+    }
+
     setImages({
       ...images,
       [color]: images[color].filter((_, i) => i !== index),
     });
+  };
+
+  // remove image from colors
+  const removeDefaultImage = (image) => {
+    setDefaultImage(null);
+    if (!(image instanceof File)) {
+      setRemovedImages((res) => [...res, image]);
+    }
   };
 
   const handleFormSubmit = async (data) => {
@@ -104,19 +123,21 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
 
     const formData = new FormData();
     formData.append("product-information", JSON.stringify(data));
+    formData.append("removed-images", JSON.stringify(removedImages));
+
     formData.append("defaultImage", defaultImage);
 
     Object.keys(images).forEach((color) => {
       images[color].forEach((file) => {
-        const newFileName = file.name.split(" ").join("_");
-        const fileWithNewName = new File([file], newFileName, {
-          type: file.type,
-        });
-        formData.append(color, fileWithNewName);
+        if (file instanceof File) {
+          const newFileName = file?.name?.split(" ").join("_");
+          const fileWithNewName = new File([file], newFileName, {
+            type: file.type,
+          });
+          formData.append(color, fileWithNewName);
+        }
       });
     });
-
-    console.log("Form Data Submitted:", data);
 
     const res = await dispatch(createProduct(formData));
     console.log("🚀 ~ handleFormSubmit ~ res:", res);
@@ -145,14 +166,16 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   useEffect(() => {
     reset(updateProduct);
 
-    setColors(updateProduct?.detail?.map((item) => item.color) || []);
+    if (updateProduct?.detail?.length > 0) {
+      setColors(updateProduct?.detail?.map((item) => item.color) || []);
 
-    if (updateProduct) {
       setImages(
         ...updateProduct?.detail?.map((item) => {
-          return { [item.color]: [item.images.map((el) => el.image)] };
+          return { [item?.color]: [...item.images.map((el) => el.image)] };
         })
       );
+
+      setDefaultImage(updateProduct.image);
     }
   }, [reset, updateProduct]);
 
@@ -441,14 +464,18 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
                       {defaultImage && (
                         <div className="relative border flex justify-center items-center">
                           <img
-                            src={URL.createObjectURL(defaultImage)}
+                            src={
+                              defaultImage instanceof File
+                                ? URL.createObjectURL(defaultImage)
+                                : getImageUrl(defaultImage)
+                            }
                             alt={`Product in ${activeColor}`}
                             className="w-16 h-16 object-cover rounded"
                           />
 
                           <CircleX
                             className="bg-white text-gray-600 rounded-full absolute -top-3 -right-3 cart-product-update-icon"
-                            onClick={() => setDefaultImage(null)}
+                            onClick={() => removeDefaultImage(defaultImage)}
                           />
                         </div>
                       )}
@@ -549,7 +576,11 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
                             className="relative border flex justify-center items-center"
                           >
                             <img
-                              // src={URL.createObjectURL(file)}
+                              src={
+                                file instanceof File
+                                  ? URL.createObjectURL(file)
+                                  : getImageUrl(file)
+                              }
                               alt={`Product in ${activeColor}`}
                               className="w-16 h-16 object-cover rounded"
                             />

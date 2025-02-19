@@ -46,7 +46,7 @@ export const getProducts = createAsyncThunk("products/get", async () => {
 //
 // Create new product
 export const createProduct = createAsyncThunk(
-  "products/get",
+  "products/new",
   async (formData) => {
     try {
       const res = await api.post("/product", formData, {
@@ -60,6 +60,26 @@ export const createProduct = createAsyncThunk(
       }
     } catch (error) {
       toast.error(" Faild to create this product !  ");
+    }
+  }
+);
+
+// Create new product
+export const updadeProduct = createAsyncThunk(
+  "products/edit",
+  async (formData) => {
+    try {
+      const res = await api.patch("/product", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("🚀 ~ res:", res);
+
+      if (res.data) {
+        toast.success("Product updated successfully");
+        return res.data;
+      }
+    } catch (error) {
+      toast.error(" Faild to update this product !  ");
     }
   }
 );
