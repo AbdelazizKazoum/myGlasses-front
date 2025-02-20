@@ -8,6 +8,7 @@ import { SketchPicker } from "react-color";
 import { getImageUrl } from "../../utils/getImageUrl";
 
 const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
+  console.log("🚀 ~ UpdateProductModal ~ updateProduct:", updateProduct);
   // State --------------------------------------------->
   const [product, setProduct] = useState({
     name: "",
@@ -23,8 +24,9 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   });
   const [colors, setColors] = useState([]);
   const [images, setImages] = useState({});
+
   const [removedImages, setRemovedImages] = useState([]);
-  console.log("🚀 ~ UpdateProductModal ~ removedImages:", removedImages);
+  const [removedColors, setRemovedColors] = useState([]);
 
   const [colorPicker, setColorPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#000000");
@@ -63,6 +65,10 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   const removeColor = (color) => {
     setColors(colors.filter((c) => c !== color));
 
+    if (!removedColors.find((item) => item === color)) {
+      setRemovedColors((prev) => [...prev, color]);
+    }
+
     setRemovedImages((prev) => ({
       ...prev,
       [color]: images[color].filter((item) => !(item instanceof File)),
@@ -84,6 +90,10 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
 
   // remove image from colors
   const removeImage = (color, index) => {
+    // if (images[color].length <= 1) {
+    //   setRemovedColors((prev) => [...prev, color]);
+    // }
+
     if (!(images[color][index] instanceof File)) {
       setRemovedImages((prev) => ({
         ...prev,
@@ -101,7 +111,7 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
   const removeDefaultImage = (image) => {
     setDefaultImage(null);
     if (!(image instanceof File)) {
-      setRemovedImages((res) => ({ defaultImage: image }));
+      setRemovedImages((prev) => ({ ...prev, defaultImage: image }));
     }
   };
 
@@ -128,6 +138,7 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
     const formData = new FormData();
     formData.append("product-information", JSON.stringify(data));
     formData.append("removed-images", JSON.stringify(removedImages));
+    formData.append("removed-colors", JSON.stringify(removedColors));
 
     formData.append("defaultImage", defaultImage);
 
@@ -175,11 +186,12 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
     if (updateProduct?.detail?.length > 0) {
       setColors(updateProduct?.detail?.map((item) => item.color) || []);
 
-      setImages(
-        ...updateProduct?.detail?.map((item) => {
-          return { [item?.color]: [...item.images.map((el) => el.image)] };
-        })
-      );
+      const transformedData = updateProduct?.detail?.reduce((acc, item) => {
+        acc[item.color] = item.images.map((img) => img.image);
+        return acc;
+      }, {});
+
+      setImages(transformedData);
 
       setDefaultImage(updateProduct.image);
     }
