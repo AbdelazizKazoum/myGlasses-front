@@ -23,6 +23,8 @@ const CheckoutPage = () => {
   const [showDisplayPayment, setShowDisplayPayment] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
+  const [showAddressWarning, setShowAddressWarning] = useState(false);
+
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { primaryAddress } = useSelector((state) => state.user);
@@ -39,6 +41,14 @@ const CheckoutPage = () => {
     totalDiscount += product.qty * (product.price - product.newPrice);
     subtotal += product.qty * product.price;
   });
+
+  const handlePlaceOrder = () => {
+    if (!primaryAddress) {
+      setShowAddressWarning(true);
+      return;
+    }
+    setShowConfirm(true);
+  };
 
   const updateDisplayPayment = (value) => {
     setShowDisplayPayment(value);
@@ -242,10 +252,8 @@ const CheckoutPage = () => {
             />
             <div className="d-flex flex-column">
               <label htmlFor={address.id} className="address-label">
-                <h3>{address.name}</h3>
-                <p>
-                  {address.firstLine}, {address.secondLine}
-                </p>
+                <h3>{address.address}</h3>
+
                 <p>
                   {address.city}, {address.pincode}
                 </p>
@@ -304,9 +312,7 @@ const CheckoutPage = () => {
       <button
         type="button"
         className="bill-checkout-button"
-        onClick={() => {
-          setShowConfirm(true);
-        }}
+        onClick={handlePlaceOrder}
       >
         Place Order
       </button>
@@ -397,6 +403,21 @@ const CheckoutPage = () => {
       )}
       {showPaymentSuccess && (
         <PaymentSuccessCard updatePaymentSuccess={updatePaymentSuccess} />
+      )}
+
+      {showAddressWarning && (
+        <div className="eyesome-modal">
+          <div className="confirm-order-card">
+            <h2 className=" text-red-500 my-2">Address Required</h2>
+            <p>You must choose an address before placing an order.</p>
+            <button
+              className="bill-checkout-button "
+              onClick={() => setShowAddressWarning(false)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
