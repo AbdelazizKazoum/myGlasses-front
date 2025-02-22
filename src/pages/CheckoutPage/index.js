@@ -1,23 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { dummyAddress } from "../../eyesomeData";
-import { addAddressItem, setPrimaryAddress } from "../../store/userSlice";
-import { v4 as uuidv4 } from "uuid";
-import ErrorCard from "../ErrorCard";
 
 import "./index.css";
-import PaymentPage from "../PaymentPage";
-import PaymentSuccessCard from "../PaymentSuccessCard";
 import { createCommande } from "../../store/commandeSlice";
+import { addAddress, setPrimaryAddress } from "../../store/userSlice";
+import ErrorCard from "../../components/ErrorCard";
+import PaymentPage from "../../components/PaymentPage";
+import PaymentSuccessCard from "../../components/PaymentSuccessCard";
+import AddressForm from "../../components/profile/AddressForm";
+import { checkAuth } from "../../store/authSlice";
 
 const CheckoutPage = () => {
-  const [id, setId] = useState(uuidv4());
-  const [fullName, setFullName] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [addressLine1, setAddressLine1] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
-  const [city, setCity] = useState("");
-  const [pincode, setPincode] = useState("");
   const [addNewAddress, setAddNewAddress] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showDisplayPayment, setShowDisplayPayment] = useState(false);
@@ -41,6 +34,13 @@ const CheckoutPage = () => {
     totalDiscount += product.qty * (product.price - product.newPrice);
     subtotal += product.qty * product.price;
   });
+
+  const handleSubmitAddress = async (addressData) => {
+    await dispatch(addAddress({ userId: user.id, addressData }));
+
+    await dispatch(checkAuth());
+    setAddNewAddress(false);
+  };
 
   const handlePlaceOrder = () => {
     if (!primaryAddress) {
@@ -70,161 +70,6 @@ const CheckoutPage = () => {
     }
   };
 
-  const submitAddressForm = (event) => {
-    event.preventDefault();
-    const newAdd = {
-      id,
-      name: fullName,
-      mobile,
-      firstLine: addressLine1,
-      secondLine: addressLine2,
-      city,
-      pincode,
-    };
-
-    dispatch(setPrimaryAddress(newAdd));
-
-    if (addNewAddress) {
-      dispatch(addAddressItem(newAdd));
-    }
-
-    cancelAddAddress();
-  };
-
-  const setDummyValues = () => {
-    setId(uuidv4());
-    setFullName(dummyAddress.fullName);
-    setMobile(dummyAddress.mobile);
-    setAddressLine1(dummyAddress.addressLine1);
-    setAddressLine2(dummyAddress.addressLine2);
-    setCity(dummyAddress.city);
-    setPincode(dummyAddress.pincode);
-  };
-
-  const setNullValues = () => {
-    setId(uuidv4());
-    setFullName("");
-    setMobile("");
-    setAddressLine1("");
-    setAddressLine2("");
-    setCity("");
-    setPincode("");
-  };
-
-  const cancelAddAddress = () => {
-    setNullValues();
-    setAddNewAddress(false);
-  };
-
-  const renderAddressForm = () => (
-    <form onSubmit={submitAddressForm} className="address-form">
-      <section className="input-name">
-        <label htmlFor="name" className="form-label">
-          Full Name
-        </label>
-        <input
-          type="text"
-          value={fullName}
-          onChange={(event) => {
-            setFullName(event.target.value);
-          }}
-          required
-        />
-      </section>
-      <section className="input-mobile">
-        <label htmlFor="mobile" className="form-label">
-          Mobile
-        </label>
-        <input
-          type="text"
-          id="mobile"
-          value={mobile}
-          onChange={(event) => {
-            setMobile(event.target.value);
-          }}
-          required
-        />
-      </section>
-      <section className="input-address">
-        <label htmlFor="addressLine1" className="form-label">
-          Flat,House No, Building
-        </label>
-        <input
-          type="text"
-          id="addressLine1"
-          value={addressLine1}
-          onChange={(event) => {
-            setAddressLine1(event.target.value);
-          }}
-          required
-        />
-      </section>
-      <section className="input-address">
-        <label htmlFor="addressLine2" className="form-label">
-          Area, Colony, Street
-        </label>
-        <input
-          type="text"
-          id="addressLine2"
-          value={addressLine2}
-          onChange={(event) => {
-            setAddressLine2(event.target.value);
-          }}
-          required
-        />
-      </section>
-      <section className="input-city">
-        <label htmlFor="city" className="form-label">
-          City
-        </label>
-        <input
-          type="text"
-          id="city"
-          value={city}
-          onChange={(event) => {
-            setCity(event.target.value);
-          }}
-          required
-        />
-      </section>
-      <section className="input-pincode">
-        <label htmlFor="pincode" className="form-label">
-          Pincode
-        </label>
-        <input
-          type="text"
-          id="pincode"
-          value={pincode}
-          onChange={(event) => {
-            setPincode(event.target.value);
-          }}
-          required
-        />
-      </section>
-      <div className="address-form-buttons-container">
-        {addNewAddress && (
-          <button
-            type="button"
-            className="address-form-button"
-            onClick={setDummyValues}
-          >
-            Fill Dummy Values
-          </button>
-        )}
-        <button
-          type="button"
-          className="address-form-button"
-          onClick={cancelAddAddress}
-        >
-          Cancel
-        </button>
-        <button type="submit" className="address-form-button">
-          Save
-        </button>
-      </div>
-    </form>
-  );
-
   const renderUserAddress = () => (
     <>
       <h1 className="checkout-container-address">Address</h1>
@@ -237,7 +82,12 @@ const CheckoutPage = () => {
       >
         + Add New Address
       </button>
-      {addNewAddress && renderAddressForm()}
+      {addNewAddress && (
+        <AddressForm
+          onCancel={setAddNewAddress}
+          onSubmit={handleSubmitAddress}
+        />
+      )}
       {addressList &&
         addressList.map((address) => (
           <li key={address.id} className="address-card mb-3 !bg-[#F9FAFB]">

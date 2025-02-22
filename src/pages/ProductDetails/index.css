@@ -91,7 +91,6 @@
 .about-product-text {
   font-size: 1.1rem;
   font-weight: 500;
-  margin-bottom: 12px;
 }
 
 .about-product-details {
@@ -141,7 +140,6 @@
   color: #000000;
   font-weight: 500;
   font-size: 1rem;
-  margin-right: 10px;
 }
 
 .product-details-card-price > del {
@@ -150,6 +148,10 @@
   font-size: 0.8rem;
   margin-right: 10px;
 }
+.border {
+  border-color: #eab308 !important ;
+  border-radius: 10px;
+}
 
 .product-details-card-buttons {
   display: flex;
@@ -157,26 +159,13 @@
 }
 
 .product-details-card-cart-button {
-  color: #000000;
-  background-color: #ffffff;
   font-size: 0.9rem;
   outline: none;
-  border: 1px solid #000000;
-  border-radius: 20px;
-  padding: 8px 20px;
+  border-radius: 10px;
+  padding: 6px 20px;
   margin: 10px 20px 10px 0;
-  display: flex;
-  justify-content: center;
-  align-items: last baseline;
-  line-height: 1;
   transition-duration: 0s;
   font-weight: 500;
-}
-
-.product-details-card-cart-button:hover {
-  color: #ffffff;
-  background-color: #000000;
-  border-color: transparent;
 }
 
 .product-details-card-cart-button > span {

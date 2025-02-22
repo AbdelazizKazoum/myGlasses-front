@@ -14,12 +14,11 @@ import Home from "./components/Home";
 import Cart from "./components/Cart";
 import Wishlist from "./components/Wishlist";
 import Products from "./components/Products";
-import ProductDetailsCard from "./components/ProductDetailsCard";
+import ProductDetailsCard from "./pages/ProductDetails";
 import Profile from "./pages/Profile";
 import ErrorCard from "./components/ErrorCard";
 import LoginPage from "./components/LoginPage";
 import SignUpPage from "./components/SignUpPage";
-import CheckoutPage from "./components/CheckoutPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,6 +34,7 @@ import { useEffect, useState } from "react";
 import { checkAuth } from "./store/authSlice";
 import Loader from "./components/Loader";
 import GuestOnly from "./components/ProtectedRoute/GuestOnly";
+import CheckoutPage from "./pages/CheckoutPage";
 
 function App() {
   // Determine if Navbar should be displayed based on current path

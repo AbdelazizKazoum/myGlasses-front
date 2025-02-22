@@ -1,7 +1,10 @@
 import { AiFillStar } from "react-icons/ai";
 import { useParams } from "react-router-dom";
-import { addCartItem } from "../../store/cartSlice";
-import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
+import { addCartItem } from "../../store/cartSlice.js";
+import {
+  addWishlistItem,
+  removeWishlistItem,
+} from "../../store/wishlistSlice.js";
 import { useEffect, useState } from "react";
 import { BiSolidBookmarkHeart } from "react-icons/bi";
 import { BsHandbagFill } from "react-icons/bs";
@@ -9,16 +12,17 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   getProductDetails,
   getProductsByCategory,
-} from "../../store/productDetailsSlice";
-import Loader from "../Loader";
-import ErrorCard from "../ErrorCard";
-import { statusCode } from "../../utils/statusCode";
+} from "../../store/productDetailsSlice.js";
+import Loader from "../../components/Loader/index.js";
+import ErrorCard from "../../components/ErrorCard/index.js";
+import { statusCode } from "../../utils/statusCode.js";
 
 import "./index.css";
 // import useApplyFilters from "../../utils/useApplyFilters";
-import { getImageUrl } from "../../utils/getImageUrl";
-import ProductModal from "../modals/ProductModal.jsx";
-import { RecommandedProducts } from "../Products/RecommandedProducts.jsx";
+import { getImageUrl } from "../../utils/getImageUrl.js";
+import ProductModal from "../../components/modals/ProductModal.jsx";
+import { RecommandedProducts } from "../../components/Products/RecommandedProducts.jsx";
+import { Heart } from "lucide-react";
 
 const ProductDetailsCard = (props) => {
   const productId = useParams("id");
@@ -136,7 +140,8 @@ const ProductDetailsCard = (props) => {
 
       <div className="product-details-card gap-5 pt-8">
         <div>
-          <div className="relative h-[85%] p-7 bg-black/[0.075] flex items-center justify-center rounded-lg">
+          {/* bg-black/[0.075] */}
+          <div className="relative h-[85%] bg-black/[0.075] p-7 flex items-center justify-center rounded-lg">
             <img
               className="product-details-card-image"
               src={
@@ -148,67 +153,69 @@ const ProductDetailsCard = (props) => {
 
           {/* Display images */}
           <div>
-            <div className="flex gap-4 py-4 justify-center overflow-x-auto">
+            <div className="flex gap-3 py-4 justify-center overflow-x-auto  ">
               {data?.detail &&
                 data?.detail[imagesIndex]?.images?.map((item, index) => (
-                  <img
-                    key={index}
-                    src={getImageUrl(item?.image)}
-                    alt="Thumbnail 1"
-                    className="size-16 sm:size-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                    onClick={() => {
-                      setDisplayImage(item.image);
-                    }}
-                  />
+                  <div className=" border  bg-black/[0.075] border-primary-500 p-2 size-14  sm:size-14 ">
+                    {" "}
+                    <img
+                      key={index}
+                      src={getImageUrl(item?.image)}
+                      alt="Thumbnail 1"
+                      className=" h-full w-full object-contain  rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                      onClick={() => {
+                        setDisplayImage(item.image);
+                      }}
+                    />
+                  </div>
                 ))}
             </div>
           </div>
         </div>
 
-        <div className="p-4 product-details-card-description">
-          <h1 className="product-details-card-title">{name}</h1>
-          <p className="product-details-card-info">{description}</p>
-          <div className="flex gap-1 py-2">
+        <div className="p-4 product-details-card-description bg-white rounded">
+          <h1 className=" text-3xl font-bold ">{name}</h1>
+          <p className="product-details-card-info font-semibold my-2">
+            {description}
+          </p>
+          <div className="flex gap-1 py-2 mb-2">
             <p className="product-details-card-rating flex">
-              <AiFillStar className="color-yellow" />
-              <AiFillStar className="color-yellow" />
-              <AiFillStar className="color-yellow" />
-              <AiFillStar className="color-yellow" />
-              <AiFillStar className="color-yellow" />
+              <AiFillStar className=" text-primary-500 " />
+              <AiFillStar className=" text-primary-500 " />
+              <AiFillStar className=" text-primary-500 " />
+              <AiFillStar className=" text-primary-500 " />
+              <AiFillStar className=" text-primary-500 " />
             </p>
             <div>
               <span className="text-gray-400">({rating}) Rating</span>
             </div>
           </div>
-          <p className="about-product-text pt-2">About Product</p>
-          <div className="about-product-details">
-            <li>
-              <span>Brand: </span>
-              {brand}
-            </li>
-            <li>
-              <span>Gender: </span>
-              {gender}
-            </li>
-            <li>
-              <span>Category: </span>
-              {category}
-            </li>
-            <li>
-              <span>Weight: </span>
-              {weight}
-            </li>
+
+          <div>
+            <div className=" bg-primary-500/10 p-1.5 rounded flex ">
+              <p className="text-primary-500 font-bold">
+                Popular frame! 918 people have their eyes on this frame.
+              </p>
+            </div>
           </div>
+
+          <p className="product-details-card-price">
+            <span> Price : </span> MAD{newPrice} <del>MAD{price}</del>
+          </p>
 
           {/* Show colors */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Color:</h3>
+            {/* <h3 className="text-lg font-semibold mb-2">Color:</h3> */}
             <div className="flex space-x-2">
               {detail?.map((item, index) => (
                 <button
                   key={index}
                   style={{ backgroundColor: item.color }}
-                  className={`w-8 h-8  rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
+                  className={` ${
+                    imagesIndex === index
+                      ? "outline-none ring-offset-4 ring-1 ring-primary-500  "
+                      : ""
+                  } w-6  h-6  rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
                   onClick={() => {
                     setImagesIndex(index);
                   }}
@@ -217,13 +224,36 @@ const ProductDetailsCard = (props) => {
             </div>
           </div>
 
-          <p className="product-details-card-price">
-            <span>Price: </span> MAD{newPrice} <del>MAD{price}</del>
-          </p>
-          <div className="product-details-card-buttons">
+          <div
+            style={{ backgroundColor: "#FBFAF7" }}
+            className=" rounded  p-2 "
+          >
+            <p className="about-product-text pt-2">About Product</p>
+            <hr className="my-3"></hr>
+            <div className="about-product-details">
+              <li>
+                <span>Brand: </span>
+                {brand}
+              </li>
+              <li>
+                <span>Gender: </span>
+                {gender}
+              </li>
+              <li>
+                <span>Category: </span>
+                {category}
+              </li>
+              <li>
+                <span>Weight: </span>
+                {weight}
+              </li>
+            </div>
+          </div>
+
+          <div className=" flex h-16 ">
             <button
               type="button"
-              className="product-details-card-cart-button"
+              className="product-details-card-cart-button flex justify-center items-center flex-1 bg-primary-500 border-none text-white hover:bg-primary-300 "
               onClick={addToCart}
             >
               <span>
@@ -232,27 +262,15 @@ const ProductDetailsCard = (props) => {
               Add to Cart
             </button>
             {!isAddedToWishlist && (
-              <button
-                type="button"
-                className="product-details-card-cart-button"
-                onClick={addToWishlist}
-              >
-                <span>
-                  <BiSolidBookmarkHeart />
-                </span>{" "}
-                Wishlist Item
+              <button type="button" className=" " onClick={addToWishlist}>
+                <Heart className=" hover:text-primary-500  " size={30} />
               </button>
             )}
             {isAddedToWishlist && (
-              <button
-                type="button"
-                className="product-details-card-cart-button"
-                onClick={removeFromWishlist}
-              >
+              <button type="button" className="" onClick={removeFromWishlist}>
                 <span>
-                  <BiSolidBookmarkHeart />
+                  <Heart className=" text-primary-500  " size={30} />
                 </span>
-                Remove from Wishlist
               </button>
             )}
           </div>

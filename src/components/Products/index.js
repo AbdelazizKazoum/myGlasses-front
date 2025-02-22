@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../../store/productsSlice";
 import ProductCard from "../ProductCard";
 import FiltersGroup from "../FiltersGroup";
+
 import "./index.css";
 import { useEffect, useState } from "react";
 import { statusCode } from "../../utils/statusCode";
@@ -11,6 +12,8 @@ import ErrorCard from "../ErrorCard";
 import ScrollToTop from "../ScrollToTop";
 import { updatePriceSort } from "../../store/filtersSlice";
 import useApplyFilters from "../../utils/useApplyFilters";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Products = () => {
   const [showArrow, setShowArrow] = useState(false);
