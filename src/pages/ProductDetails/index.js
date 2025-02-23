@@ -6,7 +6,6 @@ import {
   removeWishlistItem,
 } from "../../store/wishlistSlice.js";
 import { useEffect, useState } from "react";
-import { BiSolidBookmarkHeart } from "react-icons/bi";
 import { BsHandbagFill } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -21,8 +20,9 @@ import "./index.css";
 // import useApplyFilters from "../../utils/useApplyFilters";
 import { getImageUrl } from "../../utils/getImageUrl.js";
 import ProductModal from "../../components/modals/ProductModal.jsx";
-import { RecommandedProducts } from "../../components/Products/RecommandedProducts.jsx";
 import { Heart } from "lucide-react";
+import RelatedProducts from "../../components/Products/RelatedProducts.jsx";
+import { productsList } from "../../eyesomeData/index.js";
 
 const ProductDetailsCard = (props) => {
   const productId = useParams("id");
@@ -105,30 +105,6 @@ const ProductDetailsCard = (props) => {
 
   if (loading && !detail) return <Loader />;
 
-  // Recommanded Products
-  const renderRecommandedProducts = () => (
-    <div className=" mt-4 ">
-      <hr className=" my-4 " />
-      <div className="flex justify-between">
-        {/* Title in French */}
-        <h1 className=" font-bold ">Produits Recommandés</h1>
-
-        {/* Show More button */}
-        {filteredData.length > visibleItems && (
-          <button
-            className="show-more-button underline "
-            onClick={handleShowMore}
-          >
-            Voir plus
-          </button>
-        )}
-      </div>
-
-      {/* recommended Product List */}
-      <RecommandedProducts products={filteredData} allowDetails={true} />
-    </div>
-  );
-
   const renderProductDetailsCardSuccessView = () => (
     <div className="flex flex-col">
       <ProductModal
@@ -156,7 +132,7 @@ const ProductDetailsCard = (props) => {
             <div className="flex gap-3 py-4 justify-center overflow-x-auto  ">
               {data?.detail &&
                 data?.detail[imagesIndex]?.images?.map((item, index) => (
-                  <div className=" border  bg-black/[0.075] border-primary-500 p-2 size-14  sm:size-14 ">
+                  <div className=" border border-image  bg-black/[0.075] border-primary-500 p-2 size-14  sm:size-14 ">
                     {" "}
                     <img
                       key={index}
@@ -229,7 +205,7 @@ const ProductDetailsCard = (props) => {
             className=" rounded  p-2 "
           >
             <p className="about-product-text pt-2">About Product</p>
-            <hr className="my-3"></hr>
+            <hr className="mb-3 mt-2"></hr>
             <div className="about-product-details">
               <li>
                 <span>Brand: </span>
@@ -276,7 +252,10 @@ const ProductDetailsCard = (props) => {
           </div>
         </div>
       </div>
-      {/* <div>{renderRecommandedProducts()}</div> */}
+      <div>
+        {" "}
+        <RelatedProducts products={productsList} allowDetails={true} />
+      </div>
     </div>
   );
 
