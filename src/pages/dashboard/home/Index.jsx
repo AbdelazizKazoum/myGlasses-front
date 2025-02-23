@@ -15,10 +15,30 @@ import { Card, CardContent } from "../../../components/ui/Card";
 import { useNavigate } from "react-router-dom";
 
 const stats = [
-  { title: "Total Orders", value: "1,230", icon: ShoppingCart },
-  { title: "Total Revenue", value: "$45,000", icon: BarChart },
-  { title: "Total Users", value: "5,320", icon: Users },
-  { title: "Total Products", value: "320", icon: Package },
+  {
+    title: "Total Orders",
+    value: "1,230",
+    icon: ShoppingCart,
+    color: "red",
+  },
+  {
+    title: "Total Revenue",
+    value: "$45,000",
+    icon: BarChart,
+    color: "green",
+  },
+  {
+    title: "Total Users",
+    value: "5,320",
+    icon: Users,
+    color: "blue",
+  },
+  {
+    title: "Total Products",
+    value: "320",
+    icon: Package,
+    color: "yellow",
+  },
 ];
 
 const salesData = [
@@ -48,14 +68,14 @@ const HomePage = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map(({ title, value, icon: Icon }, index) => (
+        {stats.map(({ title, value, icon: Icon, color, bg }, index) => (
           <Card
             key={index}
             className="p-4 flex items-center justify-between shadow-md"
           >
             <CardContent className="flex flex-row items-center gap-4">
-              <div className="p-3 bg-gray-100 rounded-full">
-                <Icon className="w-6 h-6 text-blue-600" />
+              <div className={`p-3 bg-${color}-500/20 rounded-full`}>
+                <Icon className={`w-6 h-6 text-${color}-500  `} />
               </div>
               <div>
                 <p className="text-gray-500 text-sm">{title}</p>
