@@ -1,23 +1,24 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import { getImageUrl } from "../../../utils/getImageUrl";
+import Select from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./index.css";
-import Select from "react-select";
 import { FaCalendarAlt } from "react-icons/fa";
+import CommandDetailModal from "../../modals/CommandDetailModal";
+import { selectStyles, statusOptions } from "../../../utils/utils";
+import { useDispatch } from "react-redux";
+import { getCommandes, updateCommande } from "../../../store/commandeSlice";
 
 const CommandsTable = ({ commands }) => {
   const [selectedCommand, setSelectedCommand] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedUsername, setSelectedUsername] = useState("");
+  const [newTotal, setNewTotal] = useState(selectedCommand?.total); // State to manage total price
+  const [newStatus, setNewStatus] = useState(""); // State to manage status
 
-  const statusOptions = [
-    { value: "", label: "Tous les statuts" },
-    { value: "en attente", label: "En attente" },
-    { value: "confirmé", label: "Confirmé" },
-  ];
+  // Hooks
+  const dispatch = useDispatch();
 
   const filteredCommands = commands.filter((command) => {
     const matchesDate = selectedDate
@@ -35,42 +36,28 @@ const CommandsTable = ({ commands }) => {
     return matchesDate && matchesStatus && matchesUsername;
   });
 
-  const selectStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      // backgroundColor: "#f7f7f7", // Change background color of the control (select box)
-      borderColor: "#ccc", // Default border color
-      color: "#333", // Default text color
-      "&:hover": {
-        borderColor: "#eab308", // Change border color on hover
-      },
-      boxShadow: state.isFocused ? "0 0 0 1px #eab308" : "none", // Border color on focus
-    }),
-    menu: (provided) => ({
-      ...provided,
-      backgroundColor: "#fff", // Background color of the dropdown menu
-      color: "#333", // Text color in the menu
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected
-        ? "#eab308"
-        : state.isFocused
-        ? "#f0f0f0"
-        : "#fff", // Option background on hover or selected
-      color: state.isSelected ? "#fff" : "#333", // Option text color
-      "&:hover": {
-        backgroundColor: "", // Hover background color of the options
-      },
-    }),
-    singleValue: (provided) => ({
-      ...provided,
-      color: "#333", // Text color for selected value
-    }),
-    placeholder: (provided) => ({
-      ...provided,
-      color: "#aaa", // Placeholder text color
-    }),
+  const handleUpdateCommand = async () => {
+    if (selectedCommand) {
+      const updatedCommand = {
+        ...selectedCommand,
+        total: newTotal || selectedCommand.total,
+        statut: newStatus || selectedCommand.statut,
+      };
+
+      await dispatch(
+        updateCommande({
+          id: selectedCommand.id,
+          data: { newTotal, statut: newStatus },
+        })
+      );
+
+      await dispatch(getCommandes());
+
+      setSelectedCommand(updatedCommand);
+      setNewTotal(""); // Clear the new total input
+      setNewStatus(""); // Clear the new status input
+      setSelectedCommand(null);
+    }
   };
 
   return (
@@ -92,7 +79,7 @@ const CommandsTable = ({ commands }) => {
           value={selectedStatus}
           onChange={setSelectedStatus}
           className="w-full outline-none border-select"
-          styles={selectStyles} // Apply custom styles here
+          styles={selectStyles}
         />
         <input
           type="text"
@@ -165,42 +152,15 @@ const CommandsTable = ({ commands }) => {
       )}
 
       {selectedCommand && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-lg font-semibold mb-4">
-              Détails de la commande
-            </h2>
-            <p className="text-lg font-bold text-gray-800 mb-4">
-              Total: {selectedCommand.total} DH
-            </p>
-            <ul className="mb-4">
-              {selectedCommand.details.map((detail, index) => (
-                <li
-                  key={index}
-                  className="border-b py-2 flex items-center gap-4"
-                >
-                  <img
-                    src={getImageUrl(detail.product.image)}
-                    alt={detail.product.name}
-                    className="w-12 h-12 object-cover rounded"
-                  />
-                  <div>
-                    <p className="font-semibold">{detail.product.name}</p>
-                    <p>
-                      {detail.quantite} x {detail.prix_vente} DH
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <button
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              onClick={() => setSelectedCommand(null)}
-            >
-              Fermer
-            </button>
-          </div>
-        </div>
+        <CommandDetailModal
+          selectedCommand={selectedCommand}
+          setSelectedCommand={setSelectedCommand}
+          newTotal={newTotal}
+          setNewTotal={setNewTotal}
+          newStatus={newStatus}
+          setNewStatus={setNewStatus}
+          handleUpdateCommand={handleUpdateCommand}
+        />
       )}
     </div>
   );

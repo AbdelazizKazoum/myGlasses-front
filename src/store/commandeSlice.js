@@ -60,6 +60,21 @@ export const deleteCommande = createAsyncThunk(
   }
 );
 
+// Delete a commande by ID
+export const updateCommande = createAsyncThunk(
+  "commandes/update",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(`/commande/${id}`, data);
+      toast.success("Commande updated successfully");
+      return res.data;
+    } catch (error) {
+      toast.error("Failed to updated commande");
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const commandeSlice = createSlice({
   name: "commande",
   initialState,
