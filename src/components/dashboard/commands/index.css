@@ -1,0 +1,8 @@
+.react-datepicker-wrapper {
+  display: flex !important;
+}
+
+.border-select {
+  outline: none;
+  border: 2px yellow !important;
+}

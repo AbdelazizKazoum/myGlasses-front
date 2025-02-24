@@ -1,24 +1,105 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
 import { getImageUrl } from "../../../utils/getImageUrl";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./index.css";
+import Select from "react-select";
+import { FaCalendarAlt } from "react-icons/fa";
 
 const CommandsTable = ({ commands }) => {
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCommand, setSelectedCommand] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedUsername, setSelectedUsername] = useState("");
 
-  const filteredCommands = commands.filter((command) =>
-    dayjs(command.date_commande).format("DD/MM/YYYY").includes(searchQuery)
-  );
+  const statusOptions = [
+    { value: "", label: "Tous les statuts" },
+    { value: "en attente", label: "En attente" },
+    { value: "confirmé", label: "Confirmé" },
+  ];
+
+  const filteredCommands = commands.filter((command) => {
+    const matchesDate = selectedDate
+      ? dayjs(command.date_commande).isSame(selectedDate, "day")
+      : true;
+    const matchesStatus = selectedStatus
+      ? command.statut === selectedStatus.value
+      : true;
+    const matchesUsername = selectedUsername
+      ? command?.utilisateur?.username
+          .toLowerCase()
+          .includes(selectedUsername.toLowerCase())
+      : true;
+
+    return matchesDate && matchesStatus && matchesUsername;
+  });
+
+  const selectStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      // backgroundColor: "#f7f7f7", // Change background color of the control (select box)
+      borderColor: "#ccc", // Default border color
+      color: "#333", // Default text color
+      "&:hover": {
+        borderColor: "#eab308", // Change border color on hover
+      },
+      boxShadow: state.isFocused ? "0 0 0 1px #eab308" : "none", // Border color on focus
+    }),
+    menu: (provided) => ({
+      ...provided,
+      backgroundColor: "#fff", // Background color of the dropdown menu
+      color: "#333", // Text color in the menu
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected
+        ? "#eab308"
+        : state.isFocused
+        ? "#f0f0f0"
+        : "#fff", // Option background on hover or selected
+      color: state.isSelected ? "#fff" : "#333", // Option text color
+      "&:hover": {
+        backgroundColor: "", // Hover background color of the options
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#333", // Text color for selected value
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: "#aaa", // Placeholder text color
+    }),
+  };
 
   return (
-    <div className="overflow-x-auto shadow-md sm:rounded-lg">
-      <div className="p-4">
+    <div className="overflow-x-auto shadow-md sm:rounded-lg h-full">
+      <div className="p-4 flex gap-4 items-center z-50">
+        <div className="relative w-full">
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            dateFormat="dd/MM/yyyy"
+            className="p-2 border rounded w-full flex outline-primary-500"
+            placeholderText="Filtrer par date"
+            styles={{ display: "flex" }}
+          />
+          <FaCalendarAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+        </div>
+        <Select
+          options={statusOptions}
+          value={selectedStatus}
+          onChange={setSelectedStatus}
+          className="w-full outline-none border-select"
+          styles={selectStyles} // Apply custom styles here
+        />
         <input
           type="text"
-          placeholder="Rechercher par date (DD/MM/YYYY)"
-          className="p-2 border rounded w-full"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Filtrer par utilisateur"
+          className="p-2 rounded w-full border"
+          value={selectedUsername}
+          onChange={(e) => setSelectedUsername(e.target.value)}
         />
       </div>
 

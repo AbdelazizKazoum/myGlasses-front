@@ -132,7 +132,11 @@ const ProductDetailsCard = (props) => {
             <div className="flex gap-3 py-4 justify-center overflow-x-auto  ">
               {data?.detail &&
                 data?.detail[imagesIndex]?.images?.map((item, index) => (
-                  <div className=" border border-image  bg-black/[0.075] border-primary-500 p-2 size-14  sm:size-14 ">
+                  <div
+                    className={`  border ${
+                      displayImage === item.image && "border-image"
+                    }  bg-black/[0.075] border-primary-500 p-2 size-14  sm:size-14`}
+                  >
                     {" "}
                     <img
                       key={index}
@@ -191,9 +195,10 @@ const ProductDetailsCard = (props) => {
                     imagesIndex === index
                       ? "outline-none ring-offset-4 ring-1 ring-primary-500  "
                       : ""
-                  } w-6  h-6  rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300`}
+                  } w-6  h-6  rounded-full focus:outline-none `}
                   onClick={() => {
                     setImagesIndex(index);
+                    setDisplayImage(data?.detail[index]?.images[0]?.image);
                   }}
                 ></button>
               ))}
