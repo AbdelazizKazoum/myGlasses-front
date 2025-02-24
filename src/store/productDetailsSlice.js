@@ -34,7 +34,7 @@ const productDetailsSlice = createSlice({
       })
       .addCase(getProductsByCategory.fulfilled, (state, action) => {
         state.status = statusCode.success;
-        state.relatedProducts = action.payload.filter(
+        state.relatedProducts = action?.payload?.filter(
           (item) => item.id !== state.data.id
         );
       });

@@ -22,7 +22,8 @@ import { getImageUrl } from "../../utils/getImageUrl.js";
 import ProductModal from "../../components/modals/ProductModal.jsx";
 import { Heart } from "lucide-react";
 import RelatedProducts from "../../components/Products/RelatedProducts.jsx";
-import { productsList } from "../../eyesomeData/index.js";
+import useApplyFilters from "../../utils/useApplyFilters.js";
+import { getProducts } from "../../store/productsSlice.js";
 
 const ProductDetailsCard = (props) => {
   const productId = useParams("id");
@@ -34,6 +35,8 @@ const ProductDetailsCard = (props) => {
     status,
     relatedProducts: filteredData,
   } = useSelector((state) => state.productDetails);
+
+  const productsData = useApplyFilters();
 
   // const filteredData = useApplyFilters();
 
@@ -81,6 +84,9 @@ const ProductDetailsCard = (props) => {
 
   useEffect(() => {
     (async () => {
+      if (productsData?.length === 0) {
+        dispatch(getProducts());
+      }
       dispatch(getProductsByCategory("ACCESSOIRES"));
       await dispatch(getProductDetails(productId.id));
       setLoading(false);
@@ -153,7 +159,7 @@ const ProductDetailsCard = (props) => {
           </div>
         </div>
 
-        <div className="p-4 product-details-card-description bg-white rounded">
+        <div className=" product-details-card-description bg-white rounded">
           <h1 className=" text-3xl font-bold ">{name}</h1>
           <p className="product-details-card-info font-semibold my-2">
             {description}
@@ -259,7 +265,7 @@ const ProductDetailsCard = (props) => {
       </div>
       <div>
         {" "}
-        <RelatedProducts products={productsList} allowDetails={true} />
+        <RelatedProducts products={productsData} allowDetails={true} />
       </div>
     </div>
   );

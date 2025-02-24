@@ -2,11 +2,16 @@ import { useState, useRef } from "react";
 import ProductCard from "../ProductCard";
 import PropTypes from "prop-types";
 import { getImageUrl } from "../../utils/getImageUrl";
+import { Link, useNavigate } from "react-router-dom";
 
 const FeaturedProducts = ({ products, allowDetails }) => {
+  console.log("🚀 ~ FeaturedProducts ~ products:", products);
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsToShow = 4; // Number of items to show at once
   const scrollContainerRef = useRef(null); // Reference for the scroll container
+
+  // Hooks
+  const navigate = useNavigate();
 
   // Handle scrolling left and right
   const handleLeftClick = () => {
@@ -44,12 +49,12 @@ const FeaturedProducts = ({ products, allowDetails }) => {
 
   return (
     <div>
-      <div className="mx-auto max-w-7xl py-16 ">
-        <h2 className="text-2xl text-center font-bold tracking-tight text-gray-900">
+      <div className="mx-auto  py-20 ">
+        <h2 className="text-3xl text-center font-bold tracking-tight text-gray-900">
           Similar Products
         </h2>
 
-        <div className="mt-6 relative">
+        <div className="mt-10 relative">
           <div className="flex justify-between items-center">
             <button
               onClick={handleLeftClick}
@@ -67,24 +72,26 @@ const FeaturedProducts = ({ products, allowDetails }) => {
                 {products
                   .slice(currentIndex, currentIndex + itemsToShow)
                   .map((item) => (
-                    <div key={item.id} className="group relative">
+                    <div
+                      key={item.id}
+                      className="group relative cursor-pointer"
+                      onClick={() => navigate(`/product/${item.id}`)}
+                    >
                       <div className="lg:aspect-auto lg:h-40 bg-black/[0.075]">
                         <img
                           src={getImageUrl(item.image)}
                           alt={item.name}
-                          className="aspect-square w-full h-full rounded-md object-contain group-hover:opacity-75"
+                          className="aspect-square w-full h-full cursor-pointer rounded-md object-contain group-hover:opacity-75"
                         />
                       </div>
                       <div className="mt-4 flex justify-between">
                         <div>
                           <h3 className="text-sm text-gray-700">
-                            <a href="#">
-                              <span
-                                aria-hidden="true"
-                                className="absolute inset-0"
-                              ></span>
-                              {item.name}
-                            </a>
+                            <span
+                              aria-hidden="true"
+                              className="absolute inset-0"
+                            ></span>
+                            {item.name}
                           </h3>
                           <p className="mt-1 text-sm text-gray-500">
                             {item.brand}

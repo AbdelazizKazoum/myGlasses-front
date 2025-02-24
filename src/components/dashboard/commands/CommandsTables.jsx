@@ -8,6 +8,7 @@ import CommandDetailModal from "../../modals/CommandDetailModal";
 import { selectStyles, statusOptions } from "../../../utils/utils";
 import { useDispatch } from "react-redux";
 import { getCommandes, updateCommande } from "../../../store/commandeSlice";
+import "./index.css";
 
 const CommandsTable = ({ commands }) => {
   const [selectedCommand, setSelectedCommand] = useState(null);
@@ -95,7 +96,7 @@ const CommandsTable = ({ commands }) => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="px-6 py-3">
-                ID
+                Client
               </th>
               <th scope="col" className="px-6 py-3">
                 Date
