@@ -19,25 +19,29 @@ const stats = [
     title: "Total Orders",
     value: "1,230",
     icon: ShoppingCart,
-    color: "red",
+    color: "text-red-500",
+    bg: " bg-red-500/20  ",
   },
   {
     title: "Total Revenue",
     value: "$45,000",
     icon: BarChart,
-    color: "green",
+    color: "text-green-500",
+    bg: " bg-green-500/20  ",
   },
   {
     title: "Total Users",
     value: "5,320",
     icon: Users,
-    color: "blue",
+    color: "text-blue-500",
+    bg: " bg-blue-500/20  ",
   },
   {
     title: "Total Products",
     value: "320",
     icon: Package,
-    color: "yellow",
+    color: "text-yellow-500",
+    bg: " bg-yellow-500/20  ",
   },
 ];
 
@@ -74,8 +78,8 @@ const HomePage = () => {
             className="p-4 flex items-center justify-between shadow-md"
           >
             <CardContent className="flex flex-row items-center gap-4">
-              <div className={`p-3 bg-${color}-500/20 rounded-full`}>
-                <Icon className={`w-6 h-6 text-${color}-500  `} />
+              <div className={`p-3 ${bg} rounded-full`}>
+                <Icon className={`w-6 h-6 ${color}  `} />
               </div>
               <div>
                 <p className="text-gray-500 text-sm">{title}</p>
