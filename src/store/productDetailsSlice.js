@@ -45,7 +45,7 @@ export const getProductDetails = createAsyncThunk(
   "productDetails/get",
   async (id) => {
     try {
-      const response = await api.get("http://localhost:5000/product");
+      const response = await api.get("/product");
 
       return response.data.find((product) => product.id === id);
     } catch (error) {
@@ -58,7 +58,7 @@ export const getProductsByCategory = createAsyncThunk(
   "productByCategory/get",
   async (category) => {
     try {
-      const response = await api.get("http://localhost:5000/product");
+      const response = await api.get("/product");
 
       return response.data.filter((product) => product.category === category);
     } catch (error) {

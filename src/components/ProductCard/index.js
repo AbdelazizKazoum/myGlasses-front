@@ -10,6 +10,8 @@ import { getImageUrl } from "../../utils/getImageUrl";
 
 const ProductCard = (props) => {
   const { product } = props;
+  console.log("🚀 ~ ProductCard ~ product:", product);
+
   const { id, name, brand, rating, price, newPrice, image } = product;
 
   const [isAddedToCart, setIsAddedToCart] = useState(false);
