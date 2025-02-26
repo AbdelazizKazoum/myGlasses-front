@@ -23,7 +23,7 @@ const TrendingProductCard = (props) => {
               </div>
             </div>
           </section>
-          <section className="trending-product-image-container">
+          <section className="trending-product-image-container p-4">
             <img
               src={getImageUrl(image)}
               alt="trendingProduct"
