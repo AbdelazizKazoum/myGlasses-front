@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createProduct, updadeProduct } from "../../store/productsSlice";
+import {
+  createProduct,
+  getProducts,
+  updadeProduct,
+} from "../../store/productsSlice";
 import { Check, CircleX, Loader2, PlusCircle, Upload } from "lucide-react";
 import { SketchPicker } from "react-color";
 import { getImageUrl } from "../../utils/getImageUrl";
@@ -157,7 +161,15 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
     const res = await dispatch(
       updadeProduct({ formData, id: updateProduct.id })
     );
-    console.log("🚀 ~ handleFormSubmit ~ res:", res);
+
+    console.log("🚀 ~ handleFormSubmit ~ res:", res.payload);
+
+    if (res.payload) {
+      console.log("🚀 ~ handleFormSubmit ~ res.payload:", res.payload);
+
+      await dispatch(getProducts());
+      setIsOpen(false);
+    }
 
     setLoading(false);
     const user = localStorage.getItem("user");
