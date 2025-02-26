@@ -37,6 +37,8 @@ const SignUpCard = () => {
         prenom: data.lastName,
         tel: data.phone,
         password: data.password,
+        cin: data.cin || "",
+
         role: "client",
       };
 
