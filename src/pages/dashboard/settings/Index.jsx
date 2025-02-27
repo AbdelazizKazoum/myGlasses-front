@@ -1,39 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaList, FaUser, FaGlobe } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addCategory,
+  getCategories,
+  updateCategory,
+} from "../../../store/categorySlice";
+import Loader from "../../../components/Loader";
+import { getImageUrl } from "../../../utils/getImageUrl";
 
 const SettingsPage = () => {
   const [selectedTab, setSelectedTab] = useState("categories");
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Electronics" },
-    { id: 2, name: "Clothing" },
-    { id: 3, name: "Home & Kitchen" },
-  ]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newCategory, setNewCategory] = useState("");
-  const [editingCategory, setEditingCategory] = useState(null);
 
-  const handleAddCategory = () => {
-    if (newCategory.trim()) {
-      if (editingCategory) {
-        setCategories(
-          categories.map((cat) =>
-            cat.id === editingCategory.id ? { ...cat, name: newCategory } : cat
-          )
-        );
-        setEditingCategory(null);
-      } else {
-        setCategories([...categories, { id: Date.now(), name: newCategory }]);
-      }
-      setNewCategory("");
-      setIsModalOpen(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [categoryImage, setCategoryImage] = useState(null);
+
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Hooks
+  const dispatch = useDispatch();
+  const { data: categories } = useSelector((state) => state.categories);
+
+  useEffect(() => {
+    (async () => {
+      await dispatch(getCategories());
+      setLoading(false);
+    })();
+  }, [dispatch]);
+
+  const handleAddCategory = async () => {
+    console.log(categoryImage);
+    console.log(displayName);
+    console.log(categoryName);
+
+    const formData = new FormData();
+
+    formData.append(
+      "data",
+      JSON.stringify({ displayText: displayName, category: categoryName })
+    );
+
+    formData.append("file", categoryImage);
+
+    if (editingCategory) {
+      await dispatch(updateCategory({ formData, id: editingCategory.id }));
+    } else {
+      await dispatch(addCategory(formData));
+    }
+
+    setIsModalOpen(false);
+    await dispatch(getCategories());
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+
+    if (file && file.type.startsWith("image/")) {
+      setCategoryImage(file);
+    } else {
+      console.error("Invalid file type. Please upload an image.");
     }
   };
 
   const handleEditCategory = (category) => {
     setEditingCategory(category);
-    setNewCategory(category.name);
+    setCategoryName(category.category);
+    setDisplayName(category.displayText);
+
     setIsModalOpen(true);
   };
+
+  const clearEdit = () => {
+    setDisplayName("");
+    setCategoryImage(null);
+    setDisplayName("");
+  };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="flex flex-col lg:flex-row h-full bg-gray-100">
@@ -85,7 +131,7 @@ const SettingsPage = () => {
                 <button
                   onClick={() => {
                     setEditingCategory(null);
-                    setNewCategory("");
+                    clearEdit("");
                     setIsModalOpen(true);
                   }}
                   className="bg-primary-500 text-white px-4 py-2 rounded-lg"
@@ -94,20 +140,28 @@ const SettingsPage = () => {
                 </button>
               </div>
               <div className="border rounded p-3">
-                {" "}
-                <div className="grid text-gray-600 grid-cols-2 gap-4 border-b font-semibold p-2">
-                  <span>ID</span>
+                <div className="grid text-gray-600 grid-cols-3 gap-4 border-b font-semibold p-2">
+                  <span>IMAGE</span>
                   <span>CATEGORY NAME</span>
+                  <span>DISPLAY NAME</span>
                 </div>
-                <ul className="">
+                <ul>
                   {categories.map((category) => (
                     <li
                       key={category.id}
-                      className="grid grid-cols-2 gap-4 p-3 border-b items-center"
+                      className="grid grid-cols-3 gap-4 p-3 border-b items-center"
                     >
-                      <span className=" text-gray-600 ">{category.id}</span>
+                      <span className="text-gray-600 w-10 h-10  overflow-hidden">
+                        <img
+                          src={getImageUrl(category.imageUrl)}
+                          className=" w-full h-full object-cover rounded-full "
+                          alt=""
+                          srcset=""
+                        />
+                      </span>
+                      <span className="text-gray-600">{category.category}</span>
                       <span className="flex justify-between items-center text-gray-600">
-                        {category.name}
+                        {category.displayText}
                         <button
                           onClick={() => handleEditCategory(category)}
                           className="text-blue-500"
@@ -147,10 +201,23 @@ const SettingsPage = () => {
             </h3>
             <input
               type="text"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
               className="w-full p-2 border rounded-lg mb-4"
               placeholder="Enter category name"
+            />
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              className="w-full p-2 border rounded-lg mb-4"
+              placeholder="Enter category display name "
+            />
+            <input
+              type="file"
+              onChange={(e) => handleImageUpload(e)}
+              className="w-full p-2 border rounded-lg mb-4"
+              placeholder="Chose category image "
             />
             <div className="flex justify-end gap-2">
               <button
@@ -161,7 +228,7 @@ const SettingsPage = () => {
               </button>
               <button
                 onClick={handleAddCategory}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+                className="px-4 py-2 bg-primary-500 text-white rounded-lg"
               >
                 {editingCategory ? "Save" : "Add"}
               </button>

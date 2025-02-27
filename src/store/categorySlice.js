@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { statusCode } from "../utils/statusCode";
 import api from "../lib/api";
+import { toast } from "react-toastify";
 
 const initialState = {
   data: [],
@@ -32,5 +33,32 @@ export const getCategories = createAsyncThunk("categories/get", async () => {
     return res.data;
   }
 });
+
+export const addCategory = createAsyncThunk("categories/add", async (data) => {
+  try {
+    const res = await api.post("/category", data);
+    toast.success("Category created successfully");
+
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    toast.error("Failed to create category !");
+  }
+});
+
+export const updateCategory = createAsyncThunk(
+  "categories/update",
+  async ({ formData, id }) => {
+    try {
+      const res = await api.patch(`/category/${id}`, formData);
+      toast.success("Category updated successfully");
+
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to updated category !");
+    }
+  }
+);
 
 export default categoriesSlice.reducer;
