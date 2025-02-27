@@ -35,6 +35,7 @@ import { checkAuth } from "./store/authSlice";
 import Loader from "./components/Loader";
 import GuestOnly from "./components/ProtectedRoute/GuestOnly";
 import CheckoutPage from "./pages/CheckoutPage";
+import SettingsPage from "./pages/dashboard/settings/Index";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
@@ -132,6 +133,16 @@ function App() {
               element={
                 <AdminLayout>
                   <CommandsPage />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/settings"
+              element={
+                <AdminLayout>
+                  <SettingsPage />
                 </AdminLayout>
               }
             />
