@@ -163,11 +163,10 @@ const UpdateProductModal = ({ isOpen, setIsOpen, updateProduct }) => {
     );
 
     console.log("🚀 ~ handleFormSubmit ~ res:", res.payload);
+    await dispatch(getProducts());
 
     if (res.payload) {
       console.log("🚀 ~ handleFormSubmit ~ res.payload:", res.payload);
-
-      await dispatch(getProducts());
       setIsOpen(false);
     }
 

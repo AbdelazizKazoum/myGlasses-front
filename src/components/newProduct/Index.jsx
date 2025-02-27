@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { SketchPicker } from "react-color";
 import { PlusCircle, Check, Upload, CircleX, Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { createProduct } from "../../store/productsSlice";
+import { createProduct, getProducts } from "../../store/productsSlice";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 
@@ -115,7 +115,7 @@ export default function CreateProductPage() {
     console.log("Form Data Submitted:", data);
 
     const res = await dispatch(createProduct(formData));
-    console.log("🚀 ~ handleFormSubmit ~ res:", res);
+    await dispatch(getProducts());
 
     setLoading(false);
     const user = localStorage.getItem("user");
