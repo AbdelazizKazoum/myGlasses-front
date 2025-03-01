@@ -36,6 +36,7 @@ import Loader from "./components/Loader";
 import GuestOnly from "./components/ProtectedRoute/GuestOnly";
 import CheckoutPage from "./pages/CheckoutPage";
 import SettingsPage from "./pages/dashboard/settings/Index";
+import AddProduct from "./pages/dashboard/products/add/Index";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
@@ -43,7 +44,6 @@ function App() {
 
   // Hooks
 
-  const { user, status } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
 
   const location = useLocation();
@@ -93,6 +93,16 @@ function App() {
               element={
                 <AdminLayout>
                   <ProductsPage />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/products/add"
+              element={
+                <AdminLayout>
+                  <AddProduct />
                 </AdminLayout>
               }
             />

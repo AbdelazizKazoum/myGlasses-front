@@ -6,7 +6,7 @@ function NavItem({ to, icon, label }) {
   return (
     <Link
       to={to}
-      className={`flex items-center space-x-3 p-2 rounded-md transition-colors ${
+      className={` text-gray-700 flex items-center space-x-3 p-2 rounded-md transition-colors ${
         isActive ? "bg-gray-200" : "hover:bg-gray-100"
       }`}
     >

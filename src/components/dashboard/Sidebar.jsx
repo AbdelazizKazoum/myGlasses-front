@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   BarChart,
   Home,
@@ -6,11 +7,16 @@ import {
   ShoppingCart,
   Users,
   X,
+  ChevronDown,
+  ChevronUp,
+  Circle,
 } from "lucide-react";
 import NavItem from "./NavItem";
 import { IoGlasses } from "react-icons/io5";
 
 function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
+
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-20 w-64 bg-white p-4 shadow-md transform ${
@@ -27,10 +33,42 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
           <X />
         </button>
       </div>
-      <nav className="mt-4 space-y-2 w-full ">
+      <nav className="mt-4 space-y-2 w-full">
         <NavItem to="/admin" icon={<Home />} label="Home" />
         <NavItem to="/admin/analytics" icon={<BarChart />} label="Analytics" />
-        <NavItem to="/admin/products" icon={<ShoppingBag />} label="Products" />
+
+        {/* Products Dropdown */}
+        <div className="w-full flex flex-col justify-start">
+          <button
+            onClick={() => setIsProductsOpen(!isProductsOpen)}
+            className="flex items-center justify-between w-full p-2 text-gray-700 rounded-lg hover:bg-gray-100"
+          >
+            <div className="flex items-center">
+              <ShoppingBag className="mr-2" />
+              <span>Products</span>
+            </div>
+            {isProductsOpen ? (
+              <ChevronUp size={18} />
+            ) : (
+              <ChevronDown size={18} />
+            )}
+          </button>
+          {isProductsOpen && (
+            <div className="ml-4 mt-1 space-y-1 w-full">
+              <NavItem
+                to="/admin/products"
+                label="Products List"
+                icon={<Circle size={6} />}
+              />
+              <NavItem
+                to="/admin/products/add"
+                label="Add Product"
+                icon={<Circle size={6} />}
+              />
+            </div>
+          )}
+        </div>
+
         <NavItem
           to="/admin/commands"
           icon={<ShoppingCart />}
