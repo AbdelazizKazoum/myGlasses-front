@@ -7,6 +7,8 @@ import TextInput from "../../../../components/ui/TextInput";
 import SelectInput from "../../../../components/ui/SelectInput";
 import TextArea from "../../../../components/ui/TextArea";
 import NumberInput from "../../../../components/ui/NumberInput";
+import VariantForm from "../../../../components/dashboard/products/VariantForm";
+import VariantGrid from "../../../../components/dashboard/products/VariantGrid";
 
 // Validation schema using Zod
 const productSchema = z.object({
@@ -142,91 +144,12 @@ const ProductCreation = () => {
       </form>
 
       {product && (
-        <div className="mt-6 p-6 bg-gray-100 rounded-lg">
+        <div className="mt-6 p-6 bg-white  rounded-lg">
           <h2 className="text-lg font-semibold mb-4">Add Variants</h2>
           <VariantForm setVariants={setVariants} />
           <VariantGrid variants={variants} />
         </div>
       )}
-    </div>
-  );
-};
-
-const VariantForm = ({ setVariants }) => {
-  const { register, handleSubmit, reset } = useForm();
-  const onSubmit = (data) => {
-    setVariants((prev) => [...prev, data]);
-    reset();
-  };
-
-  return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="bg-white p-4 shadow rounded-md"
-    >
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label>Color</label>
-          <input
-            {...register("color", { required: true })}
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label>Size</label>
-          <select
-            {...register("size", { required: true })}
-            className="border p-2 w-full"
-          >
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-          </select>
-        </div>
-        <div>
-          <label>Quantity</label>
-          <input
-            type="number"
-            {...register("qte", { required: true })}
-            className="border p-2 w-full"
-          />
-        </div>
-        <div>
-          <label>Images</label>
-          <input
-            type="file"
-            {...register("images")}
-            multiple
-            className="border p-2 w-full"
-          />
-        </div>
-      </div>
-      <button type="submit" className="bg-green-500 text-white px-4 py-2 mt-4">
-        Add Variant
-      </button>
-    </form>
-  );
-};
-
-const VariantGrid = ({ variants }) => {
-  return (
-    <div className="grid grid-cols-3 gap-4 mt-4">
-      {variants.map((variant, index) => (
-        <div key={index} className="bg-white p-4 shadow rounded-md">
-          <p>
-            <strong>Color:</strong> {variant.color}
-          </p>
-          <p>
-            <strong>Size:</strong> {variant.size}
-          </p>
-          <p>
-            <strong>Quantity:</strong> {variant.qte}
-          </p>
-          <button className="bg-yellow-500 text-white px-2 py-1 mt-2">
-            Update
-          </button>
-        </div>
-      ))}
     </div>
   );
 };
