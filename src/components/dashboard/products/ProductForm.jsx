@@ -58,19 +58,7 @@ const ProductForm = ({ onSubmit, product }) => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
-    defaultValues: product ?? {
-      name: "test",
-      description: "TEST",
-      brand: "test",
-      category: "Sports",
-      gender: "Male",
-      weight: "100",
-      quantity: "00",
-      price: "40",
-      newPrice: "10",
-      trending: true,
-      image: null,
-    },
+    defaultValues: product,
   });
 
   if (loading) return <Loader />;
@@ -92,6 +80,7 @@ const ProductForm = ({ onSubmit, product }) => {
               name="image"
               setValue={setValue}
               errors={errors}
+              defaultImage={product ? product.image : null}
             />
           </div>
           <div className=" col-span-2 flex flex-col gap-3 mt-4">

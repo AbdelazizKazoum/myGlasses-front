@@ -6,6 +6,7 @@ import SelectInput from "../../ui/SelectInput";
 import NumberInput from "../../ui/NumberInput";
 import ColorPickerField from "./ColorPickerField";
 import { CircleX, Upload } from "lucide-react";
+import { getImageUrl } from "../../../utils/getImageUrl";
 
 // Validation schema using Zod
 const variantSchema = z.object({
@@ -17,9 +18,9 @@ const variantSchema = z.object({
   images: z.any().optional(),
 });
 
-const VariantForm = ({ setVariants }) => {
-  const [images, setImages] = useState([]);
+const VariantForm = ({ setVariants, images, setImages, variant }) => {
   console.log("🚀 ~ VariantForm ~ images:", images);
+
   const {
     register,
     handleSubmit,
@@ -28,20 +29,26 @@ const VariantForm = ({ setVariants }) => {
     setValue,
   } = useForm({
     resolver: zodResolver(variantSchema),
+    defaultValues: variant,
   });
 
   const onSubmit = (data) => {
-    setVariants({ ...data, images });
+    // Send actual files in the images field
+    setVariants({ ...data, images: images.map((img) => img) });
     reset();
+    setImages([]); // Reset images state after submission
   };
 
   // Handle image upload
   const handleImageUpload = (e) => {
-    const newImages = [...images];
-    for (let i = 0; i < e.target.files.length; i++) {
-      newImages.push(URL.createObjectURL(e.target.files[i])); // Create an object URL for preview
-    }
-    setImages(newImages);
+    const files = Array.from(e.target.files); // Convert FileList to an array
+    const newImages = files.map((file) => file);
+    setImages((prevImages) => [...prevImages, ...newImages]);
+  };
+
+  // Handle image removal
+  const handleRemoveImage = (index) => {
+    setImages(images.filter((_, i) => i !== index));
   };
 
   return (
@@ -76,39 +83,40 @@ const VariantForm = ({ setVariants }) => {
         />
 
         {/* Images Input */}
-        <div className=" col-span-2 ">
+        <div className="col-span-2">
           <label>Upload Images</label>
-          <div className="flex flex-wrap gap-4 mt-2  border p-3 rounded">
+          <div className="flex flex-wrap gap-4 mt-2 border p-3 rounded">
             {/* Display Uploaded Images as Boxes */}
             {images.map((image, index) => (
-              <div key={index} className="relative border p-2 rounded ">
+              <div key={index} className="relative border p-2 rounded">
                 <div
-                  className="w-20   h-20 bg-gray-200 flex items-center justify-center"
+                  className="w-20 h-20 bg-gray-200 flex items-center justify-center"
                   style={{
-                    backgroundImage: `url(${image})`,
+                    backgroundImage: `url(${
+                      image instanceof File
+                        ? URL.createObjectURL(image)
+                        : getImageUrl(image)
+                    })`,
                     backgroundSize: "cover",
                   }}
                 />
                 <button
                   type="button"
                   className="absolute -top-3 -right-3 bg-white text-gray-700 rounded-full text-xs p-1"
-                  onClick={() =>
-                    setImages(images.filter((_, i) => i !== index))
-                  }
+                  onClick={() => handleRemoveImage(index)}
                 >
                   <CircleX />
                 </button>
               </div>
             ))}
 
+            {/* Upload Image Button */}
             <div className="border p-2 rounded">
-              {" "}
-              {/* Upload Image Button */}
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer  flex justify-center items-center bg-gray-200  w-20 h-20 text-gray-500 text-2xl"
+                className="cursor-pointer flex justify-center items-center bg-gray-200 w-20 h-20 text-gray-500 text-2xl"
               >
-                <Upload className="  " />
+                <Upload />
               </label>
               <input
                 type="file"

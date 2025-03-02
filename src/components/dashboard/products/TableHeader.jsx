@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import CreateProductModal from "../../modals/CreateProductModal";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const TableHeader = ({ searchQuery, setSearchQuery }) => {
   // State
-  const [isOpen, setIsOpen] = useState();
-  const [product, setProduct] = useState(null);
+
+  // Hooks
+  const navigate = useNavigate();
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -12,12 +13,6 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
 
   return (
     <div className="bg-gray-50  flex items-center">
-      <CreateProductModal
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        product={product}
-      />
-
       <div className="  mx-auto  w-full">
         <div className="relative bg-white   sm:rounded-lg">
           <div className="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
@@ -57,7 +52,7 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
             <div className="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
               <button
                 type="button"
-                onClick={() => setIsOpen(true)}
+                onClick={() => navigate("/admin/products/add")}
                 className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-500 hover:bg-primary-800 focus:outline-none "
               >
                 <svg

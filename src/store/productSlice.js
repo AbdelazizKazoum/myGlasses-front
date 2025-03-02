@@ -12,7 +12,14 @@ const initialState = {
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+    setProduct(state, action) {
+      state.product = action.payload;
+    },
+    setVariants(state, action) {
+      state.variants = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       //Fetch Products
@@ -109,12 +116,12 @@ export const addProduct = createAsyncThunk("products/new", async (formData) => {
   }
 });
 
-// Create new product
+// Add variant for the product
 export const addVariant = createAsyncThunk(
   "product/add-variant",
-  async ({ formData, id }) => {
+  async ({ formData, id }, { rejectWithValue }) => {
     try {
-      const res = await api.post("/detail-product", formData, {
+      const res = await api.post(`/detail-product/add/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       if (res.data) {
@@ -122,7 +129,12 @@ export const addVariant = createAsyncThunk(
         return res.data;
       }
     } catch (error) {
-      toast.error(" Faild to add this Variant !  ");
+      console.log("🚀 ~ error:", error);
+
+      toast.error(
+        error.response?.data?.message ?? "Faild to add this Variant ! "
+      );
+      return rejectWithValue(error.response.data);
     }
   }
 );

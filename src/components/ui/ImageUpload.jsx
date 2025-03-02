@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { getImageUrl } from "../../utils/getImageUrl";
 
-const ImageUpload = ({ label, name, setValue, errors }) => {
-  const [preview, setPreview] = useState(null);
+const ImageUpload = ({ label, name, setValue, errors, defaultImage }) => {
+  const [preview, setPreview] = useState(defaultImage ?? null);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -22,7 +23,7 @@ const ImageUpload = ({ label, name, setValue, errors }) => {
       >
         {preview ? (
           <img
-            src={preview}
+            src={preview instanceof File ? preview : getImageUrl(preview)}
             alt="Preview"
             className="w-full h-full object-cover rounded-md"
           />

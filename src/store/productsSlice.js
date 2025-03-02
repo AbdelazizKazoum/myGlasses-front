@@ -14,8 +14,6 @@ const productsSlice = createSlice({
   initialState,
   reducers: {
     filterByCategory(state, action) {
-      console.log("🚀 ~ filterByCategory ~ state:", state.data);
-
       state.filteredProducts = state.data.filter(
         (item) => item.category === action.payload
       );
