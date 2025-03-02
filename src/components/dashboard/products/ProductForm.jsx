@@ -30,7 +30,7 @@ const productSchema = z.object({
   image: z.instanceof(File, { message: "Image is required" }).optional(),
 });
 
-const ProductForm = ({ onSubmit }) => {
+const ProductForm = ({ onSubmit, product }) => {
   const [categories, setCategories] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -58,7 +58,7 @@ const ProductForm = ({ onSubmit }) => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(productSchema),
-    defaultValues: {
+    defaultValues: product ?? {
       name: "test",
       description: "TEST",
       brand: "test",
@@ -95,16 +95,22 @@ const ProductForm = ({ onSubmit }) => {
             />
           </div>
           <div className=" col-span-2 flex flex-col gap-3 mt-4">
-            {" "}
+            <TextInput
+              label="Name"
+              name="name"
+              errors={errors}
+              register={register}
+            />{" "}
             <TextInput
               label="Brand"
               name="brand"
               errors={errors}
               register={register}
-            />{" "}
-            <TextInput
-              label="Name"
-              name="name"
+            />
+            <SelectInput
+              label="Category"
+              name="category"
+              options={categories}
               errors={errors}
               register={register}
             />
@@ -119,13 +125,6 @@ const ProductForm = ({ onSubmit }) => {
           />
         </div>
 
-        <SelectInput
-          label="Category"
-          name="category"
-          options={categories}
-          errors={errors}
-          register={register}
-        />
         <SelectInput
           label="Gender"
           name="gender"
@@ -162,8 +161,11 @@ const ProductForm = ({ onSubmit }) => {
         <CheckboxInput label="Trending" name="trending" register={register} />
       </div>
 
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2 mt-4">
-        Create Product
+      <button
+        type="submit"
+        className="bg-primary-500 text-white px-4 py-2 mt-4"
+      >
+        {product ? "Update Product" : "Create Product"}
       </button>
     </form>
   );

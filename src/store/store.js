@@ -10,11 +10,13 @@ import authSlice from "./authSlice";
 import usersSlice from "./usersSlice";
 import userSlice from "./userSlice";
 import commandeSlice from "./commandeSlice";
+import productSlice from "./productSlice";
 
 const store = configureStore({
   reducer: {
     cart: cartSlice,
     products: productsSlice,
+    product: productSlice,
     categories: categoriesSlice,
     wishlist: wishlistSlice,
     productDetails: productDetailsSlice,

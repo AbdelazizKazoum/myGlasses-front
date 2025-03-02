@@ -15,6 +15,7 @@ const productSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      //Fetch Products
       .addCase(getProduct.pending, (state, action) => {
         state.status = statusCode.pending;
       })
@@ -24,9 +25,9 @@ const productSlice = createSlice({
       .addCase(getProduct.fulfilled, (state, action) => {
         state.status = statusCode.success;
         state.data = action.payload;
-      });
+      })
 
-    builder
+      // Add New Product
       .addCase(addProduct.pending, (state, action) => {
         state.status = statusCode.pending;
       })
@@ -36,16 +37,61 @@ const productSlice = createSlice({
       .addCase(addProduct.fulfilled, (state, action) => {
         state.status = statusCode.success;
         state.product = action.payload;
+      })
+
+      // Update Product
+      .addCase(updadeProduct.pending, (state, action) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(updadeProduct.rejected, (state, action) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(updadeProduct.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.product = action.payload;
+      })
+
+      //Get Variants
+      .addCase(getVariants.pending, (state, action) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(getVariants.rejected, (state, action) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(getVariants.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.variants = action.payload;
+      })
+
+      //Get Variants
+      .addCase(addVariant.pending, (state, action) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(addVariant.rejected, (state, action) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(addVariant.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.variants.push(action.payload);
       });
   },
 });
 
-export const getProduct = createAsyncThunk("products/get", async (id) => {
+export const getProduct = createAsyncThunk("product/get", async (id) => {
   const res = await api.get(`/product/${id}`);
   if (res.data) {
     return res.data;
   }
 });
+export const getVariants = createAsyncThunk(
+  "product/get-variant",
+  async (id) => {
+    const res = await api.get(`/detail-product/${id}`);
+    if (res.data) {
+      return res.data;
+    }
+  }
+);
 
 //
 // Create new product
@@ -64,24 +110,42 @@ export const addProduct = createAsyncThunk("products/new", async (formData) => {
 });
 
 // Create new product
-// export const updadeProduct = createAsyncThunk(
-//   "products/edit",
-//   async ({ formData, id }) => {
-//     try {
-//       const res = await api.patch(`/product/${id}`, formData, {
-//         headers: { "Content-Type": "multipart/form-data" },
-//       });
-//       console.log("🚀 ~ res:", res);
+export const addVariant = createAsyncThunk(
+  "product/add-variant",
+  async ({ formData, id }) => {
+    try {
+      const res = await api.post("/detail-product", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (res.data) {
+        toast.success("Variant added successfully");
+        return res.data;
+      }
+    } catch (error) {
+      toast.error(" Faild to add this Variant !  ");
+    }
+  }
+);
 
-//       if (res.data) {
-//         toast.success("Product updated successfully");
-//         return res.data;
-//       }
-//     } catch (error) {
-//       toast.error(" Faild to update this product !  ");
-//     }
-//   }
-// );
+// Update product
+export const updadeProduct = createAsyncThunk(
+  "product/edit",
+  async ({ formData, id }) => {
+    try {
+      const res = await api.patch(`/product/update/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log("🚀 ~ res:", res);
+
+      if (res.data) {
+        toast.success("Product updated successfully");
+        return res.data;
+      }
+    } catch (error) {
+      toast.error(" Faild to update this product !  ");
+    }
+  }
+);
 
 // export const {} = productSlice.actions;
 
