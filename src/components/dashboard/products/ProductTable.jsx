@@ -1,28 +1,42 @@
 import React, { useState } from "react";
 import TableHeader from "./TableHeader";
 import { getImageUrl } from "../../../utils/getImageUrl";
-import UpdateProductModal from "../../modals/UpdateProductModal";
+import { useNavigate } from "react-router-dom";
+import { setProduct } from "../../../store/productSlice";
+import { useDispatch } from "react-redux";
 
 const ProductTable = ({ data }) => {
+  // State
   const [searchQuery, setSearchQuery] = useState("");
-  const [isOpenEdit, setIsOpenEdit] = useState();
 
-  const [product, setProduct] = useState(null);
+  // Hooks
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  const handleEditProduct = (product) => {
+    dispatch(setProduct(product));
+    navigate("/admin/products/add");
+  };
+
+  const handleAddProduct = () => {
+    dispatch(setProduct(null));
+    navigate("/admin/products/add");
+  };
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div>
         <TableHeader
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          handleAddProduct={handleAddProduct}
         />
       </div>
 
-      <UpdateProductModal
+      {/* <UpdateProductModal
         isOpen={isOpenEdit}
         setIsOpen={setIsOpenEdit}
         updateProduct={product}
-      />
+      /> */}
 
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -114,10 +128,7 @@ const ProductTable = ({ data }) => {
                   <button
                     href="#"
                     className="font-medium text hover:underline"
-                    onClick={() => {
-                      setProduct(product);
-                      setIsOpenEdit(true);
-                    }}
+                    onClick={() => handleEditProduct(product)}
                   >
                     Edit product
                   </button>

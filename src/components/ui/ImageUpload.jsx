@@ -7,7 +7,7 @@ const ImageUpload = ({ label, name, setValue, errors, defaultImage }) => {
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setPreview(URL.createObjectURL(file));
+      setPreview(file);
       setValue(name, file);
     }
   };
@@ -23,7 +23,11 @@ const ImageUpload = ({ label, name, setValue, errors, defaultImage }) => {
       >
         {preview ? (
           <img
-            src={preview instanceof File ? preview : getImageUrl(preview)}
+            src={
+              preview instanceof File
+                ? URL.createObjectURL(preview)
+                : getImageUrl(preview)
+            }
             alt="Preview"
             className="w-full h-full object-cover rounded-md"
           />

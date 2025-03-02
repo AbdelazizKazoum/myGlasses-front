@@ -14,6 +14,8 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     setProduct(state, action) {
+      console.log("🚀 ~ setProduct ~ action:", action);
+
       state.product = action.payload;
     },
     setVariants(state, action) {
@@ -91,11 +93,13 @@ export const getProduct = createAsyncThunk("product/get", async (id) => {
   }
 });
 export const getVariants = createAsyncThunk(
-  "product/get-variant",
-  async (id) => {
-    const res = await api.get(`/detail-product/${id}`);
-    if (res.data) {
+  "product/get-variants",
+  async (id, rejectWithValue) => {
+    try {
+      const res = await api.get(`/detail-product/get/${id}`);
       return res.data;
+    } catch (error) {
+      return rejectWithValue("faild ro fetch variants !");
     }
   }
 );
@@ -159,6 +163,6 @@ export const updadeProduct = createAsyncThunk(
   }
 );
 
-// export const {} = productSlice.actions;
+export const { setProduct, setVariants } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -1,12 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const TableHeader = ({ searchQuery, setSearchQuery }) => {
-  // State
-
-  // Hooks
-  const navigate = useNavigate();
-
+const TableHeader = ({ searchQuery, setSearchQuery, handleAddProduct }) => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -52,7 +47,7 @@ const TableHeader = ({ searchQuery, setSearchQuery }) => {
             <div className="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
               <button
                 type="button"
-                onClick={() => navigate("/admin/products/add")}
+                onClick={() => handleAddProduct()}
                 className="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-primary-500 hover:bg-primary-800 focus:outline-none "
               >
                 <svg

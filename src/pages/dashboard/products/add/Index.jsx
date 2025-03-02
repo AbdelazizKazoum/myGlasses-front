@@ -4,17 +4,21 @@ import ProductForm from "../../../../components/dashboard/products/ProductForm";
 import {
   addProduct,
   addVariant,
+  getVariants,
   updadeProduct,
 } from "../../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ProductCreation = () => {
   // State
+  const [loading, setLoading] = useState(false);
 
   // Hooks
   const dispatch = useDispatch();
   const { product, variants } = useSelector((state) => state.product);
+  console.log("🚀 ~ ProductCreation ~ variants:", variants);
+
   const [images, setImages] = useState([]); // Stores actual file objects with previews
   const [editVariant, setEditVariant] = useState(null); // Stores actual file objects with previews
 
@@ -59,6 +63,16 @@ const ProductCreation = () => {
     console.log("🚀 ~ handleEditButton ~ data:", data);
   };
 
+  useEffect(() => {
+    setLoading(true);
+    if (product) {
+      (async () => {
+        await dispatch(getVariants(product.id));
+      })();
+    }
+    setLoading(false);
+  }, [dispatch, product]);
+
   return (
     <div className="container mx-auto p-6">
       {/* Product Form */}
@@ -73,7 +87,11 @@ const ProductCreation = () => {
             setImages={setImages}
             variant={editVariant}
           />
-          <VariantGrid variants={variants} onEdit={handleEditButton} />
+          <VariantGrid
+            variants={variants}
+            onEdit={handleEditButton}
+            loading={loading}
+          />
         </div>
       )}
     </div>
