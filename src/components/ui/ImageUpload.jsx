@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getImageUrl } from "../../utils/getImageUrl";
 
 const ImageUpload = ({ label, name, setValue, errors, defaultImage }) => {
-  const [preview, setPreview] = useState(defaultImage ?? null);
+  const [preview, setPreview] = useState(null);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -11,6 +11,10 @@ const ImageUpload = ({ label, name, setValue, errors, defaultImage }) => {
       setValue(name, file);
     }
   };
+
+  useEffect(() => {
+    setPreview(defaultImage);
+  }, [defaultImage]);
 
   return (
     <div className="flex flex-col w-full">

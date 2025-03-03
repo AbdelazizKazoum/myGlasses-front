@@ -12,6 +12,7 @@ import { getCategories } from "../../../store/categorySlice";
 import Loader from "../../Loader";
 import AdminError from "../../ErrorCard/AdminError";
 import ImageUpload from "../../ui/ImageUpload";
+import { setProduct } from "../../../store/productSlice";
 
 // Validation schema using Zod
 const productSchema = z.object({
@@ -35,7 +36,18 @@ const ProductForm = ({ onSubmit, product }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Hooks
   const dispatch = useDispatch();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(productSchema),
+  });
 
   useEffect(() => {
     (async () => {
@@ -51,15 +63,28 @@ const ProductForm = ({ onSubmit, product }) => {
     })();
   }, [dispatch]);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(productSchema),
-    defaultValues: product,
-  });
+  const handleCancelButton = () => {
+    dispatch(setProduct(null));
+    setValue("image", null);
+  };
+
+  useEffect(() => {
+    if (product) reset(product);
+    else
+      reset({
+        name: null,
+        brand: null,
+        category: null,
+        description: null,
+        gender: null,
+        weight: null,
+        quantity: null,
+        price: null,
+        newPrice: null,
+        trending: false,
+      });
+    setValue("image", null);
+  }, [product, reset, setValue]);
 
   if (loading) return <Loader />;
   if (error) return <AdminError message={error} />;
@@ -150,12 +175,23 @@ const ProductForm = ({ onSubmit, product }) => {
         <CheckboxInput label="Trending" name="trending" register={register} />
       </div>
 
-      <button
-        type="submit"
-        className="bg-primary-500 text-white px-4 py-2 mt-4"
-      >
-        {product ? "Update Product" : "Create Product"}
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          className="bg-primary-500 text-white px-4 py-2 mt-4"
+        >
+          {product ? "Update Product" : "Create Product"}
+        </button>
+        {product && (
+          <button
+            type="button"
+            className="bg-red-400 text-white px-4 py-2 mt-4"
+            onClick={() => handleCancelButton()}
+          >
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
 };

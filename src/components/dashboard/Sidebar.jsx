@@ -13,9 +13,14 @@ import {
 } from "lucide-react";
 import NavItem from "./NavItem";
 import { IoGlasses } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { setProduct } from "../../store/productSlice";
 
 function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+
+  // Hooks
+  const dispatch = useDispatch();
 
   return (
     <aside
@@ -54,15 +59,18 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
             )}
           </button>
           {isProductsOpen && (
-            <div className="ml-4 mt-1 space-y-1 w-full">
+            <div
+              className="ml-6 mt-1 space-y-1 w-full"
+              onClick={() => dispatch(setProduct(null))}
+            >
               <NavItem
                 to="/admin/products"
-                label="Products List"
+                label="List"
                 icon={<Circle size={6} />}
               />
               <NavItem
                 to="/admin/products/add"
-                label="Add Product"
+                label="Add"
                 icon={<Circle size={6} />}
               />
             </div>
