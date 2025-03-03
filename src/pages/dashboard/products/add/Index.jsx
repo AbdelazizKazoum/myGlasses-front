@@ -6,6 +6,7 @@ import {
   addVariant,
   getVariants,
   updadeProduct,
+  updateVariant,
 } from "../../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -13,14 +14,14 @@ import { useEffect, useState } from "react";
 const ProductCreation = () => {
   // State
   const [loading, setLoading] = useState(false);
+  const [images, setImages] = useState([]); // Stores actual file objects with previews
+  const [editVariant, setEditVariant] = useState(null); // Stores actual file objects with previews
+  const [removedImages, setRemovedImages] = useState([]); // We store here the images that must be removed from db while editing the product
+  console.log("🚀 ~ ProductCreation ~ removedImages:", removedImages);
 
   // Hooks
   const dispatch = useDispatch();
   const { product, variants } = useSelector((state) => state.product);
-  console.log("🚀 ~ ProductCreation ~ variants:", variants);
-
-  const [images, setImages] = useState([]); // Stores actual file objects with previews
-  const [editVariant, setEditVariant] = useState(null); // Stores actual file objects with previews
 
   const submitProduct = async (data) => {
     const formData = new FormData();
@@ -48,19 +49,35 @@ const ProductCreation = () => {
 
     formData.append("variant", JSON.stringify(rest));
 
+    // Check if existed images in db are removed in the update, if true we send it to the api to delete them in the server
+    if (removedImages.length > 0) {
+      formData.append("removedImages", JSON.stringify(removedImages));
+    }
+
     if (images) {
       images.forEach((image) => {
         formData.append("files", image);
       });
     }
 
-    const res = await dispatch(addVariant({ formData, id: product.id }));
+    if (editVariant) {
+      const res = await dispatch(
+        updateVariant({ formData, id: editVariant.id })
+      );
+      console.log("🚀 ~ submitVariant ~ res:", res);
+    } else {
+      const res = await dispatch(addVariant({ formData, id: product.id }));
+      console.log("🚀 ~ submitVariant ~ res:", res);
+    }
 
-    console.log("🚀 ~ submitVariant ~ res:", res);
+    setEditVariant(null);
+    setRemovedImages([]);
+    setImages([]);
   };
 
   const handleEditButton = (data) => {
-    console.log("🚀 ~ handleEditButton ~ data:", data);
+    setEditVariant(data);
+    setRemovedImages([]);
   };
 
   useEffect(() => {
@@ -86,6 +103,8 @@ const ProductCreation = () => {
             images={images}
             setImages={setImages}
             variant={editVariant}
+            setRemovedImages={setRemovedImages}
+            handleEditButton={handleEditButton}
           />
           <VariantGrid
             variants={variants}

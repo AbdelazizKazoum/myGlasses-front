@@ -72,7 +72,7 @@ const productSlice = createSlice({
         state.variants = action.payload;
       })
 
-      //Get Variants
+      //Add Variants
       .addCase(addVariant.pending, (state, action) => {
         state.status = statusCode.pending;
       })
@@ -82,6 +82,22 @@ const productSlice = createSlice({
       .addCase(addVariant.fulfilled, (state, action) => {
         state.status = statusCode.success;
         state.variants.push(action.payload);
+      })
+
+      //Update Variants
+      .addCase(updateVariant.pending, (state, action) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(updateVariant.rejected, (state, action) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(updateVariant.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.variants = state.variants.map((item) => {
+          if (item.id === action.payload.id) {
+            return action.payload;
+          } else return item;
+        });
       });
   },
 });
@@ -137,6 +153,28 @@ export const addVariant = createAsyncThunk(
 
       toast.error(
         error.response?.data?.message ?? "Faild to add this Variant ! "
+      );
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+// Add variant for the product
+export const updateVariant = createAsyncThunk(
+  "product/edit-variant",
+  async ({ formData, id }, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(`/detail-product/update/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (res.data) {
+        toast.success("Variant updated successfully");
+        return res.data;
+      }
+    } catch (error) {
+      console.log("🚀 ~ error:", error);
+      toast.error(
+        error.response?.data?.message ?? "Faild to update this Variant ! "
       );
       return rejectWithValue(error.response.data);
     }
