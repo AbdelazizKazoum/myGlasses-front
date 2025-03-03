@@ -11,7 +11,7 @@ import { getImageUrl } from "../../../utils/getImageUrl";
 const variantSchema = z.object({
   color: z.string().min(1, "Color is required"),
   size: z.string().min(1, "Size is required"),
-  qte: z.string().min(1, "Quantity is required"),
+  qte: z.number().min(1, "Quantity is required"),
   images: z.any().optional(),
 });
 
