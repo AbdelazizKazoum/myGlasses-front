@@ -5,6 +5,7 @@ import api from "../lib/api";
 const initialState = {
   data: {},
   status: statusCode.idle,
+  accessoires: [],
   relatedProducts: [],
 };
 
@@ -34,35 +35,64 @@ const productDetailsSlice = createSlice({
       })
       .addCase(getProductsByCategory.fulfilled, (state, action) => {
         state.status = statusCode.success;
-        state.relatedProducts = action?.payload?.filter(
-          (item) => item.id !== state.data.id
-        );
+        state.relatedProducts = action?.payload;
+      });
+
+    builder
+      .addCase(getAccessoires.pending, (state, action) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(getAccessoires.rejected, (state, action) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(getAccessoires.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.accessoires = action?.payload;
       });
   },
 });
 
 export const getProductDetails = createAsyncThunk(
   "productDetails/get",
-  async (id) => {
+  async (id, { rejectWithValue }) => {
     try {
-      const response = await api.get("/product");
+      const response = await api.get(`/product/${id}`);
 
-      return response.data.find((product) => product.id === id);
+      return response.data;
     } catch (error) {
       console.error(error);
+      return rejectWithValue(
+        error.response?.data?.message || "failed to fetch products !"
+      );
     }
   }
 );
 
 export const getProductsByCategory = createAsyncThunk(
   "productByCategory/get",
-  async (category) => {
+  async (category, { rejectWithValue }) => {
     try {
-      const response = await api.get("/product");
+      const response = await api.get(`/product/category/${category}`);
 
-      return response.data.filter((product) => product.category === category);
+      return response.data;
     } catch (error) {
       console.error(error);
+      return rejectWithValue("failed to fetch products with this caregory");
+    }
+  }
+);
+
+export const getAccessoires = createAsyncThunk(
+  "productByCategory/accessoires",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/product/category/ACCESSOIRES`);
+
+      return response.data;
+    } catch (error) {
+      console.log("🚀 ~ error:", error);
+
+      return rejectWithValue("failed to fetch products with this caregory");
     }
   }
 );

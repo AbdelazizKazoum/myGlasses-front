@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { BsHandbagFill } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  getAccessoires,
   getProductDetails,
   getProductsByCategory,
 } from "../../store/productDetailsSlice.js";
@@ -22,8 +23,6 @@ import { getImageUrl } from "../../utils/getImageUrl.js";
 import ProductModal from "../../components/modals/ProductModal.jsx";
 import { Heart } from "lucide-react";
 import RelatedProducts from "../../components/Products/RelatedProducts.jsx";
-import useApplyFilters from "../../utils/useApplyFilters.js";
-import { getProducts } from "../../store/productsSlice.js";
 
 const ProductDetailsCard = (props) => {
   const productId = useParams("id");
@@ -33,12 +32,9 @@ const ProductDetailsCard = (props) => {
   const {
     data,
     status,
-    relatedProducts: filteredData,
+    relatedProducts: categoryProducts,
+    accessoires,
   } = useSelector((state) => state.productDetails);
-
-  const productsData = useApplyFilters();
-
-  // const filteredData = useApplyFilters();
 
   const {
     id,
@@ -59,13 +55,7 @@ const ProductDetailsCard = (props) => {
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
   const [displayImage, setDisplayImage] = useState(null);
 
-  const [visibleItems, setVisibleItems] = useState(4);
   const [isOpen, setIsOpen] = useState(false);
-
-  // this state for loasing more recommanded products
-  const handleShowMore = () => {
-    setVisibleItems(visibleItems + 4); // Load 4 more items each time
-  };
 
   const [imagesIndex, setImagesIndex] = useState(0);
 
@@ -84,14 +74,15 @@ const ProductDetailsCard = (props) => {
 
   useEffect(() => {
     (async () => {
-      if (productsData?.length === 0) {
-        dispatch(getProducts());
-      }
-      dispatch(getProductsByCategory("ACCESSOIRES"));
       await dispatch(getProductDetails(productId.id));
+
+      await dispatch(getProductsByCategory(category));
+
+      await dispatch(getAccessoires());
+
       setLoading(false);
     })();
-  }, [dispatch, productId.id]);
+  }, [category, dispatch, productId.id]);
 
   const addToCart = () => {
     setIsOpen(true);
@@ -114,7 +105,7 @@ const ProductDetailsCard = (props) => {
   const renderProductDetailsCardSuccessView = () => (
     <div className="flex flex-col">
       <ProductModal
-        accessories={filteredData}
+        accessories={accessoires}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         product={data}
@@ -265,7 +256,7 @@ const ProductDetailsCard = (props) => {
       </div>
       <div>
         {" "}
-        <RelatedProducts products={productsData} allowDetails={true} />
+        <RelatedProducts products={categoryProducts} allowDetails={true} />
       </div>
     </div>
   );
