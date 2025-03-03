@@ -14,8 +14,6 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     setProduct(state, action) {
-      console.log("🚀 ~ setProduct ~ action:", action);
-
       state.product = action.payload;
     },
     setVariants(state, action) {
@@ -172,7 +170,6 @@ export const updateVariant = createAsyncThunk(
         return res.data;
       }
     } catch (error) {
-      console.log("🚀 ~ error:", error);
       toast.error(
         error.response?.data?.message ?? "Faild to update this Variant ! "
       );
