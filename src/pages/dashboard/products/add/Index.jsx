@@ -9,7 +9,7 @@ import {
   updateVariant,
 } from "../../../../store/productSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const ProductCreation = () => {
   // State
@@ -23,6 +23,9 @@ const ProductCreation = () => {
   const dispatch = useDispatch();
   const { product, variants } = useSelector((state) => state.product);
 
+  // Ref to scroll to the bottom after submission
+  const bottomRef = useRef(null);
+
   const submitProduct = async (data) => {
     const formData = new FormData();
 
@@ -32,12 +35,13 @@ const ProductCreation = () => {
     formData.append("product", JSON.stringify(rest));
 
     if (product) {
-      const res = await dispatch(updadeProduct({ formData, id: product.id }));
-      console.log("🚀 ~ onSubmit ~ res:", res);
+      await dispatch(updadeProduct({ formData, id: product.id }));
     } else {
-      const res = await dispatch(addProduct(formData));
-      console.log("🚀 ~ onSubmit ~ res:", res);
+      await dispatch(addProduct(formData));
     }
+
+    // Scroll to the bottom after submission
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const submitVariant = async (data) => {
@@ -73,6 +77,9 @@ const ProductCreation = () => {
     setEditVariant(null);
     setRemovedImages([]);
     setImages([]);
+
+    // Scroll to the bottom after submission
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleEditButton = (data) => {
@@ -96,7 +103,7 @@ const ProductCreation = () => {
       <ProductForm onSubmit={submitProduct} product={product} />
 
       {product && (
-        <div className="mt-6 p-6 bg-white  rounded-lg">
+        <div className="mt-6 p-6 bg-white rounded-lg">
           <h2 className="text-lg font-semibold mb-4">Add Variants</h2>
           <VariantForm
             setVariants={submitVariant}
@@ -113,6 +120,9 @@ const ProductCreation = () => {
           />
         </div>
       )}
+
+      {/* Reference for scrolling */}
+      <div ref={bottomRef}></div>
     </div>
   );
 };

@@ -54,7 +54,9 @@ const productSlice = createSlice({
         state.status = statusCode.failure;
       })
       .addCase(updadeProduct.fulfilled, (state, action) => {
+        console.log("🚀 ~ .addCase ~ action:", action);
         state.status = statusCode.success;
+
         state.product = action.payload;
       })
 

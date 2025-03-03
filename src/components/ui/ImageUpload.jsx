@@ -14,7 +14,8 @@ const ImageUpload = ({ label, name, setValue, errors, defaultImage }) => {
 
   useEffect(() => {
     setPreview(defaultImage);
-  }, [defaultImage]);
+    setValue(name, defaultImage);
+  }, [defaultImage, name, setValue]);
 
   return (
     <div className="flex flex-col w-full">

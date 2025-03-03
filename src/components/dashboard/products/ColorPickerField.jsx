@@ -1,11 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
 import { Dialog } from "@headlessui/react";
 import { CheckCircle } from "lucide-react";
 
-const ColorPickerField = ({ label, name, setValue, error }) => {
+const famousColors = {
+  Red: "#FF0000",
+  Green: "#008000",
+  Blue: "#0000FF",
+  Yellow: "#FFFF00",
+  Orange: "#FFA500",
+  Purple: "#800080",
+  Black: "#000000",
+  White: "#FFFFFF",
+};
+
+const ColorPickerField = ({ label, name, setValue, error, watch }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedColor, setSelectedColor] = useState("#000000"); // Default color
+  const [selectedColor, setSelectedColor] = useState("#000000");
+  const [colorInput, setColorInput] = useState("#000000");
+
+  const watchedColor = watch(name);
+
+  useEffect(() => {
+    if (watchedColor) {
+      setSelectedColor(watchedColor);
+      setColorInput(watchedColor);
+    }
+  }, [watchedColor]);
+
+  const handleInputChange = (e) => {
+    const color = e.target.value;
+    setColorInput(color);
+    if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+      setSelectedColor(color);
+    }
+  };
+
+  const handleSelectChange = (e) => {
+    const color = e.target.value;
+    setSelectedColor(color);
+    setColorInput(color);
+  };
+
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+    setColorInput(color);
+  };
 
   return (
     <div>
@@ -14,17 +54,14 @@ const ColorPickerField = ({ label, name, setValue, error }) => {
         className="flex items-center gap-2 border p-2 rounded cursor-pointer"
         onClick={() => setIsOpen(true)}
       >
-        {/* Color Preview Circle */}
         <div
           className="w-6 h-6 rounded-full border"
           style={{ backgroundColor: selectedColor }}
         ></div>
-        {/* Color Code Display */}
         <span className="text-gray-700">{selectedColor}</span>
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      {/* Color Picker Dialog */}
       {isOpen && (
         <Dialog
           open={isOpen}
@@ -33,12 +70,35 @@ const ColorPickerField = ({ label, name, setValue, error }) => {
         >
           <div className="bg-white p-6 rounded-md shadow-lg w-80">
             <h2 className="text-lg font-semibold mb-4">Pick a Color</h2>
-            <div className="w-full flex justify-center items-center">
+            <div className=" w-full flex justify-center">
               <HexColorPicker
                 color={selectedColor}
-                onChange={setSelectedColor}
+                onChange={handleColorChange}
               />
             </div>
+
+            <input
+              type="text"
+              className="mt-3 w-full p-2 border rounded text-center"
+              value={colorInput}
+              onChange={handleInputChange}
+            />
+
+            <select
+              className="mt-3 w-full p-2 border rounded bg-white "
+              onChange={handleSelectChange}
+              value={selectedColor}
+            >
+              <option className="" value="">
+                Select a color
+              </option>
+              {Object.entries(famousColors).map(([name, hex]) => (
+                <option className="" key={hex} value={hex}>
+                  {name}
+                </option>
+              ))}
+            </select>
+
             <div className="flex justify-end gap-2 mt-4">
               <button
                 onClick={() => setIsOpen(false)}

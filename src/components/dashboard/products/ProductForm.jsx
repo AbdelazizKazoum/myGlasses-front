@@ -24,11 +24,16 @@ const productSchema = z.object({
     errorMap: () => ({ message: "Gender is required" }),
   }),
   weight: z.string().optional(),
-  quantity: z.string().min(1, "Quantity is required"),
-  price: z.string().min(1, "Price is required"),
-  newPrice: z.string().optional(),
+  quantity: z.number().min(1, "Quantity is required"),
+  price: z.number().min(1, "Price is required"),
+  newPrice: z.number().optional(),
   trending: z.boolean().optional(),
-  image: z.instanceof(File, { message: "Image is required" }).optional(),
+  image: z
+    .union([
+      z.instanceof(File, { message: "Invalid file format" }),
+      z.string().min(1, "Invalid image string"),
+    ])
+    .optional(),
 });
 
 const ProductForm = ({ onSubmit, product }) => {
@@ -36,7 +41,6 @@ const ProductForm = ({ onSubmit, product }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Hooks
   const dispatch = useDispatch();
 
   const {
@@ -44,7 +48,7 @@ const ProductForm = ({ onSubmit, product }) => {
     handleSubmit,
     setValue,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting }, // <-- Get isSubmitting from formState
   } = useForm({
     resolver: zodResolver(productSchema),
   });
@@ -69,8 +73,10 @@ const ProductForm = ({ onSubmit, product }) => {
   };
 
   useEffect(() => {
-    if (product) reset(product);
-    else
+    if (product) {
+      reset(product);
+      setValue("image", product.image);
+    } else {
       reset({
         name: null,
         brand: null,
@@ -83,7 +89,8 @@ const ProductForm = ({ onSubmit, product }) => {
         newPrice: null,
         trending: false,
       });
-    setValue("image", null);
+      setValue("image", null);
+    }
   }, [product, reset, setValue]);
 
   if (loading) return <Loader />;
@@ -98,8 +105,7 @@ const ProductForm = ({ onSubmit, product }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <div className=" col-span-2 gap-4 grid grid-cols-3 ">
-          {" "}
-          <div className=" row-span-2 col-span-1 ">
+          <div className="row-span-2 col-span-1">
             <ImageUpload
               label="Product Image"
               name="image"
@@ -108,13 +114,13 @@ const ProductForm = ({ onSubmit, product }) => {
               defaultImage={product ? product.image : null}
             />
           </div>
-          <div className=" col-span-2 flex flex-col gap-3 mt-4">
+          <div className="col-span-2 flex flex-col gap-3 mt-4">
             <TextInput
               label="Name"
               name="name"
               errors={errors}
               register={register}
-            />{" "}
+            />
             <TextInput
               label="Brand"
               name="brand"
@@ -178,20 +184,51 @@ const ProductForm = ({ onSubmit, product }) => {
       <div className="flex gap-2">
         <button
           type="submit"
-          className="bg-primary-500 text-white px-4 py-2 mt-4"
+          className="bg-primary-500 rounded text-white px-4 py-2 mt-4 flex items-center justify-center"
+          disabled={isSubmitting} // <-- Disable button while submitting
         >
-          {product ? "Update Product" : "Create Product"}
+          {isSubmitting ? (
+            <>
+              <span className="loader mr-2"></span>{" "}
+              {/* <-- Simple loading spinner */}
+              Processing...
+            </>
+          ) : product ? (
+            "Update Product"
+          ) : (
+            "Create Product"
+          )}
         </button>
         {product && (
           <button
             type="button"
-            className="bg-red-400 text-white px-4 py-2 mt-4"
+            className="bg-red-400 text-white rounded px-4 py-2 mt-4"
             onClick={() => handleCancelButton()}
           >
             Cancel
           </button>
         )}
       </div>
+
+      {/* CSS for loader animation */}
+      <style jsx>{`
+        .loader {
+          border: 2px solid white;
+          border-top: 2px solid transparent;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+          animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
     </form>
   );
 };
