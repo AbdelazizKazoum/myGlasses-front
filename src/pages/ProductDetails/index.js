@@ -7,7 +7,7 @@ import {
   addWishlistItem,
   removeWishlistItem,
 } from "../../store/wishlistSlice.js";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsHandbagFill } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -25,6 +25,7 @@ import { getImageUrl } from "../../utils/getImageUrl.js";
 import ProductModal from "../../components/modals/ProductModal.jsx";
 import { Heart } from "lucide-react";
 import RelatedProducts from "../../components/Products/RelatedProducts.jsx";
+import { color } from "framer-motion";
 
 const ProductDetailsCard = (props) => {
   // Hooks
@@ -112,26 +113,35 @@ const ProductDetailsCard = (props) => {
   };
 
   // Handle variant selection
-  const handleVariantSelection = (color, size) => {
-    setSelectedColor(color);
-    setSelectedSize(size);
+  const handleVariantSelection = useCallback(
+    (color, size) => {
+      setSelectedColor(color);
+      setSelectedSize(size);
 
-    // Find the selected variant
-    const variant = detail.find(
-      (item) => item.color === color && item.size === size
-    );
+      // Find the selected variant
+      const variant = detail.find(
+        (item) => item.color === color && item.size === size
+      );
 
-    if (variant) {
-      setSelectedVariant(variant);
-      setVariantQty(variant?.qte || 0); // Update quantity for the selected variant
-      setDisplayImage(variant?.images?.[0]?.image || image); // Set first image or default image
-      setShowVariantAlert(false); // Hide alert if variant exists
-    } else {
-      setSelectedVariant(null);
-      setVariantQty(null);
-      setShowVariantAlert(true); // Show alert if variant doesn't exist
+      if (variant) {
+        setSelectedVariant(variant);
+        setVariantQty(variant?.qte || 0); // Update quantity for the selected variant
+        setDisplayImage(variant?.images?.[0]?.image || image); // Set first image or default image
+        setShowVariantAlert(false); // Hide alert if variant exists
+      } else {
+        setSelectedVariant(null);
+        setVariantQty(null);
+        setShowVariantAlert(true); // Show alert if variant doesn't exist
+      }
+    },
+    [detail, image]
+  );
+
+  useEffect(() => {
+    if (detail) {
+      handleVariantSelection(detail[0]?.color, detail[0]?.size);
     }
-  };
+  }, [data, detail, handleVariantSelection]);
 
   if (loading && !detail) return <Loader />;
 
