@@ -261,7 +261,7 @@ const ProductDetailsCard = (props) => {
 
           {/* Show alert if variant doesn't exist */}
           {showVariantAlert && (
-            <div className="bg-red-500/10 p-2 rounded flex items-center">
+            <div className="bg-red-500/10 p-2 rounded flex mb-3 items-center">
               <AlertCircle className="text-red-500 mr-2" />
               <p className="text-red-500 font-bold">
                 Not available. Select a different size or color.
@@ -276,7 +276,7 @@ const ProductDetailsCard = (props) => {
               <p className="text-red-500 font-bold">Sold Out</p>
             </div>
           ) : (
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-lg mb-3">
               Available Quantity: {variantQty}
             </p>
           )}
