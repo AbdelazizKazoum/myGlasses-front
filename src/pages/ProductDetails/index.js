@@ -1,11 +1,13 @@
 import { AiFillStar } from "react-icons/ai";
 import { useParams } from "react-router-dom";
 import { addCartItem } from "../../store/cartSlice.js";
+import { AlertCircle } from "lucide-react";
+
 import {
   addWishlistItem,
   removeWishlistItem,
 } from "../../store/wishlistSlice.js";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BsHandbagFill } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -25,10 +27,9 @@ import { Heart } from "lucide-react";
 import RelatedProducts from "../../components/Products/RelatedProducts.jsx";
 
 const ProductDetailsCard = (props) => {
+  // Hooks
   const productId = useParams("id");
   const dispatch = useDispatch();
-
-  // Hooks
   const {
     data,
     status,
@@ -54,15 +55,25 @@ const ProductDetailsCard = (props) => {
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
   const [displayImage, setDisplayImage] = useState(null);
-
   const [isOpen, setIsOpen] = useState(false);
-
-  const [imagesIndex, setImagesIndex] = useState(0);
-
   const [loading, setLoading] = useState(true);
-
   const cartProducts = useSelector((state) => state.cart);
   const wishlistProducts = useSelector((state) => state.wishlist);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState();
+  const [showVariantAlert, setShowVariantAlert] = useState(false); // To show the alert message
+  const [variantQty, setVariantQty] = useState(null); // To store the quantity of the selected variant
+
+  // Extract unique colors and sizes
+  const uniqueColors = useMemo(() => {
+    return [...new Set(detail?.map((item) => item.color))];
+  }, [detail]);
+  const uniqueSizes = useMemo(() => {
+    return [
+      ...new Set(detail?.map((item) => item.size).filter((size) => size)),
+    ];
+  }, [detail]);
 
   useEffect(() => {
     setIsAddedToCart(cartProducts.some((product) => product.id === id));
@@ -100,6 +111,28 @@ const ProductDetailsCard = (props) => {
     setIsAddedToWishlist(false);
   };
 
+  // Handle variant selection
+  const handleVariantSelection = (color, size) => {
+    setSelectedColor(color);
+    setSelectedSize(size);
+
+    // Find the selected variant
+    const variant = detail.find(
+      (item) => item.color === color && item.size === size
+    );
+
+    if (variant) {
+      setSelectedVariant(variant);
+      setVariantQty(variant?.qte || 0); // Update quantity for the selected variant
+      setDisplayImage(variant?.images?.[0]?.image || image); // Set first image or default image
+      setShowVariantAlert(false); // Hide alert if variant exists
+    } else {
+      setSelectedVariant(null);
+      setVariantQty(null);
+      setShowVariantAlert(true); // Show alert if variant doesn't exist
+    }
+  };
+
   if (loading && !detail) return <Loader />;
 
   const renderProductDetailsCardSuccessView = () => (
@@ -124,29 +157,26 @@ const ProductDetailsCard = (props) => {
             />
           </div>
 
-          {/* Display images */}
-          <div>
-            <div className="flex gap-3 py-4 justify-center overflow-x-auto  ">
-              {data?.detail &&
-                data?.detail[imagesIndex]?.images?.map((item, index) => (
-                  <div
-                    className={`  border ${
-                      displayImage === item.image && "border-image"
-                    }  bg-black/[0.075] border-primary-500 p-2 size-14  sm:size-14`}
-                  >
-                    {" "}
-                    <img
-                      key={index}
-                      src={getImageUrl(item?.image)}
-                      alt="Thumbnail 1"
-                      className=" h-full w-full object-contain  rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                      onClick={() => {
-                        setDisplayImage(item.image);
-                      }}
-                    />
-                  </div>
-                ))}
-            </div>
+          {/* Display Images */}
+          <div className="flex gap-3 py-4 justify-center overflow-x-auto">
+            {selectedVariant?.images?.map((item, index) => (
+              <div
+                className={`  border ${
+                  displayImage === item.image && "border-image"
+                }  bg-black/[0.075] border-primary-500 p-2 size-14  sm:size-14`}
+              >
+                {" "}
+                <img
+                  key={index}
+                  src={getImageUrl(item?.image)}
+                  alt="Thumbnail 1"
+                  className=" h-full w-full object-contain  rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                  onClick={() => {
+                    setDisplayImage(item.image);
+                  }}
+                />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -180,27 +210,66 @@ const ProductDetailsCard = (props) => {
             <span> Price : </span> MAD{newPrice} <del>MAD{price}</del>
           </p>
 
-          {/* Show colors */}
+          {/* Show Colors */}
           <div className="mb-6">
-            {/* <h3 className="text-lg font-semibold mb-2">Color:</h3> */}
+            <h3 className="text-lg font-semibold mb-2">Color:</h3>
             <div className="flex space-x-2">
-              {detail?.map((item, index) => (
+              {uniqueColors.map((color, index) => (
                 <button
                   key={index}
-                  style={{ backgroundColor: item.color }}
-                  className={` ${
-                    imagesIndex === index
-                      ? "outline-none ring-offset-4 ring-1 ring-primary-500  "
+                  style={{ backgroundColor: color }}
+                  className={`w-6 h-6 rounded-full ${
+                    selectedColor === color
+                      ? "outline-none ring-offset-4 ring-1 ring-primary-500"
                       : ""
-                  } w-6  h-6  rounded-full focus:outline-none `}
-                  onClick={() => {
-                    setImagesIndex(index);
-                    setDisplayImage(data?.detail[index]?.images[0]?.image);
-                  }}
+                  }`}
+                  onClick={() => handleVariantSelection(color, selectedSize)}
                 ></button>
               ))}
             </div>
           </div>
+
+          {/* Show Sizes */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Size:</h3>
+            <div className="flex space-x-2">
+              {uniqueSizes.map((size, index) => (
+                <button
+                  key={index}
+                  className={`px-3 py-1 border rounded ${
+                    selectedSize === size
+                      ? "bg-primary-500 text-white"
+                      : "bg-gray-200"
+                  }`}
+                  onClick={() => handleVariantSelection(selectedColor, size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Show alert if variant doesn't exist */}
+          {showVariantAlert && (
+            <div className="bg-red-500/10 p-2 rounded flex items-center">
+              <AlertCircle className="text-red-500 mr-2" />
+              <p className="text-red-500 font-bold">
+                Not available. Select a different size or color.
+              </p>
+            </div>
+          )}
+
+          {/* Show quantity or sold out message */}
+          {variantQty !== null && variantQty === 0 ? (
+            <div className="bg-red-500/10 p-2 rounded flex items-center">
+              <AlertCircle className="text-red-500 mr-2" />
+              <p className="text-red-500 font-bold">Sold Out</p>
+            </div>
+          ) : (
+            <p className="text-gray-600 text-lg">
+              Available Quantity: {variantQty}
+            </p>
+          )}
 
           <div
             style={{ backgroundColor: "#FBFAF7" }}
@@ -231,14 +300,26 @@ const ProductDetailsCard = (props) => {
           <div className=" flex h-16 ">
             <button
               type="button"
-              className="product-details-card-cart-button flex justify-center items-center flex-1 bg-primary-500 border-none text-white hover:bg-primary-300 "
+              className={`product-details-card-cart-button flex justify-center items-center flex-1 text-white border-none 
+    ${
+      !selectedVariant || variantQty === 0
+        ? "bg-gray-400 cursor-not-allowed opacity-50"
+        : "bg-primary-500 hover:bg-primary-300"
+    }`}
               onClick={addToCart}
+              style={{
+                pointerEvents:
+                  !selectedVariant || variantQty === 0 ? "none" : "auto",
+              }}
             >
-              <span>
-                <BsHandbagFill />
-              </span>{" "}
-              Add to Cart
+              {isAddedToCart ? (
+                <BsHandbagFill className="mr-2" />
+              ) : (
+                <BsHandbagFill className="mr-2" />
+              )}
+              {isAddedToCart ? "Go to cart" : "Add to Cart"}
             </button>
+
             {!isAddedToWishlist && (
               <button type="button" className=" " onClick={addToWishlist}>
                 <Heart className=" hover:text-primary-500  " size={30} />

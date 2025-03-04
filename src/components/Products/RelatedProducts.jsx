@@ -1,11 +1,9 @@
 import { useState, useRef } from "react";
-import ProductCard from "../ProductCard";
 import PropTypes from "prop-types";
 import { getImageUrl } from "../../utils/getImageUrl";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const FeaturedProducts = ({ products, allowDetails }) => {
-  console.log("🚀 ~ FeaturedProducts ~ products:", products);
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsToShow = 4; // Number of items to show at once
   const scrollContainerRef = useRef(null); // Reference for the scroll container
