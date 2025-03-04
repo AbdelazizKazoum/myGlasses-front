@@ -42,7 +42,6 @@ export const checkAuth = createAsyncThunk("auth/profile", async () => {
       return res.data;
     }
   } catch (error) {
-    toast.error("Session expired. Please log in again.");
     throw error;
   }
 });
