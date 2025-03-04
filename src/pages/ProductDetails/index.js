@@ -261,7 +261,7 @@ const ProductDetailsCard = (props) => {
 
           {/* Show quantity or sold out message */}
           {variantQty !== null && variantQty === 0 ? (
-            <div className="bg-red-500/10 p-2 rounded flex items-center">
+            <div className="bg-red-500/10 p-2 rounded flex items-center mb-3">
               <AlertCircle className="text-red-500 mr-2" />
               <p className="text-red-500 font-bold">Sold Out</p>
             </div>
