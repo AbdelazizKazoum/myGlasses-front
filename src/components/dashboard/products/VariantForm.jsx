@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,15 +26,13 @@ const VariantForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset,
     setValue,
     watch,
   } = useForm({
     resolver: zodResolver(variantSchema),
   });
-
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (variant) {
@@ -46,13 +44,12 @@ const VariantForm = ({
   }, [variant, reset, setImages]);
 
   const onSubmit = async (data) => {
-    setLoading(true);
     try {
       setVariants({ ...data, images });
       reset();
       setImages([]);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
     }
   };
 
@@ -107,7 +104,6 @@ const VariantForm = ({
               <div key={index} className="relative border p-2 rounded">
                 <div className="w-20 h-20 overflow-hidden bg-gray-200 flex items-center justify-center">
                   <img
-                    className=""
                     alt=""
                     src={
                       image instanceof File
@@ -153,9 +149,9 @@ const VariantForm = ({
         <button
           type="submit"
           className="bg-primary-500 rounded text-white px-4 py-2 mt-4"
-          disabled={loading}
+          disabled={isSubmitting}
         >
-          {loading
+          {isSubmitting
             ? "Processing..."
             : variant
             ? "Update Variant"

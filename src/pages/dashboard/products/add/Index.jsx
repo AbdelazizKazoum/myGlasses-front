@@ -17,7 +17,6 @@ const ProductCreation = () => {
   const [images, setImages] = useState([]); // Stores actual file objects with previews
   const [editVariant, setEditVariant] = useState(null); // Stores actual file objects with previews
   const [removedImages, setRemovedImages] = useState([]); // We store here the images that must be removed from db while editing the product
-  console.log("🚀 ~ ProductCreation ~ removedImages:", removedImages);
 
   // Hooks
   const dispatch = useDispatch();
@@ -45,10 +44,7 @@ const ProductCreation = () => {
   };
 
   const submitVariant = async (data) => {
-    console.log("🚀 ~ submitVariant ~ data:", data);
-
     const formData = new FormData();
-
     const { images, ...rest } = data;
 
     formData.append("variant", JSON.stringify(rest));
@@ -65,13 +61,9 @@ const ProductCreation = () => {
     }
 
     if (editVariant) {
-      const res = await dispatch(
-        updateVariant({ formData, id: editVariant.id })
-      );
-      console.log("🚀 ~ submitVariant ~ res:", res);
+      await dispatch(updateVariant({ formData, id: editVariant.id }));
     } else {
-      const res = await dispatch(addVariant({ formData, id: product.id }));
-      console.log("🚀 ~ submitVariant ~ res:", res);
+      await dispatch(addVariant({ formData, id: product.id }));
     }
 
     setEditVariant(null);
