@@ -1,251 +1,175 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import "./index.css";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CreditCard, Building, Truck } from "lucide-react";
+import { z } from "zod";
 
-const PaymentPage = (props) => {
-  const { updateDisplayPayment, updatePaymentSuccess } = props;
-  const [displayUpi, setDisplayUpi] = useState(false);
-  const [displayDebit, setDisplayDebit] = useState(false);
-  const [displayCredit, setDisplayCredit] = useState(false);
-  const [displayNetBanking, setDisplayNetBanking] = useState(false);
-  const [inputCardNumber, setInputCardNumber] = useState("");
-  const [inputCardHolderName, setInputCardHolderName] = useState("");
-  const [inputCvv, setInputCvv] = useState("");
-  const [inputExpiry, setInputExpiry] = useState("");
-  const [inputUserId, setInputUserId] = useState("");
-  const [inputPassword, setInputPassword] = useState("");
+const paymentSchema = z.object({
+  cardNumber: z.string().min(16, "Card number must be 16 digits"),
+  expiry: z.string().min(5, "Invalid expiry date (MM/YY)"),
+  cvv: z.string().min(3, "CVV must be 3 digits"),
+  cardHolderName: z.string().min(2, "Enter a valid name"),
+  userId: z.string().optional(),
+  password: z.string().optional(),
+});
 
-  const cartProducts = useSelector((state) => state.cart);
-  let total = 0;
-  cartProducts.forEach((item) => {
-    total += item.newPrice * item.qty;
+const PaymentPage = ({ updateDisplayPayment, updatePaymentSuccess }) => {
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(paymentSchema),
   });
 
-  const renderUpiView = () => (
-    <section className="upi-container">
-      <button type="button">
-        <img
-          className="upi-option"
-          src="https://res.cloudinary.com/ddaimmqrr/image/upload/v1694840792/Eyesome/1220356_paytm_icon_tlxkqj.png"
-          alt="paytm"
-        />
-      </button>
-      <button type="button">
-        <img
-          className="upi-option"
-          src="https://res.cloudinary.com/ddaimmqrr/image/upload/v1694840792/Eyesome/phonepay_tuqitg.png"
-          alt="phonepay"
-        />
-      </button>
-      <button type="button">
-        <img
-          className="upi-option"
-          src="https://res.cloudinary.com/ddaimmqrr/image/upload/v1694840792/Eyesome/7123945_logo_pay_google_gpay_icon_r8lj3z.png"
-          alt="googlepay"
-        />
-      </button>
-      <button type="button">
-        <img
-          className="upi-option"
-          src="https://res.cloudinary.com/ddaimmqrr/image/upload/v1694840792/Eyesome/bhim_st6uma.png"
-          alt="bhim"
-        />
-      </button>
-    </section>
+  const cartProducts = useSelector((state) => state.cart);
+  const total = cartProducts.reduce(
+    (sum, item) => sum + item.newPrice * item.qty,
+    0
   );
 
-  const renderCardDetailsView = () => (
-    <section className="card-details-container">
-      <h2>Add New Card</h2>
-      <form className="row">
-        <label className="col-12 col-sm-8">
-          Card Number
-          <br />
-          <input
-            type="text"
-            placeholder="000000000000"
-            value={inputCardNumber}
-            onChange={(event) => {
-              setInputCardNumber(event.target.value);
-            }}
-          />
-        </label>
-        <label className="col-12 col-sm-4">
-          Expiry Date
-          <br />
-          <input
-            type="text"
-            placeholder="00/00"
-            value={inputExpiry}
-            onChange={(event) => {
-              setInputExpiry(event.target.value);
-            }}
-          />
-        </label>
+  const paymentMethods = [
+    { id: "credit", name: "Credit Card", icon: <CreditCard size={24} /> },
+    { id: "debit", name: "Debit Card", icon: <CreditCard size={24} /> },
+    { id: "netBanking", name: "Net Banking", icon: <Building size={24} /> },
+    { id: "cod", name: "Cash On Delivery", icon: <Truck size={24} /> },
+  ];
 
-        <label className="col-12 col-sm-8">
-          Card Holder's Name
-          <br />
-          <input
-            type="text"
-            placeholder="Rakesh Roshan"
-            value={inputCardHolderName}
-            onChange={(event) => {
-              setInputCardHolderName(event.target.value);
-            }}
-          />
-        </label>
-
-        <label className="col-12 col-sm-4">
-          CVV
-          <br />
-          <input
-            type="text"
-            placeholder="000"
-            value={inputCvv}
-            onChange={(event) => {
-              setInputCvv(event.target.value);
-            }}
-          />
-        </label>
-      </form>
-    </section>
-  );
-
-  const renderNetBankingView = () => (
-    <section className="card-details-container">
-      <h2>Enter New Banking Details</h2>
-      <form className="row">
-        <label className="col-12">
-          UserID
-          <br />
-          <input
-            type="text"
-            placeholder="00000000"
-            value={inputUserId}
-            onChange={(event) => {
-              setInputUserId(event.target.value);
-            }}
-          />
-        </label>
-
-        <label className="col-12">
-          Password
-          <br />
-          <input
-            type="text"
-            placeholder="********"
-            value={inputPassword}
-            onChange={(event) => {
-              setInputPassword(event.target.value);
-            }}
-          />
-        </label>
-      </form>
-    </section>
-  );
+  const onSubmit = (data) => {
+    console.log("Payment Data:", data);
+    updateDisplayPayment(false);
+    updatePaymentSuccess(true);
+  };
 
   return (
-    <div className="eyesome-modal">
-      <div className="payment-container">
-        <header>
-          <h2>Payments</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <header className="flex justify-between items-center border-b pb-3">
+          <h2 className="text-xl font-semibold">Payments</h2>
           <button
-            type="button"
-            className="payment-cross-button"
-            onClick={() => {
-              updateDisplayPayment(false);
-            }}
+            className="text-gray-500 hover:text-gray-700"
+            onClick={() => updateDisplayPayment(false)}
           >
-            X
+            ✕
           </button>
         </header>
-        <section>
-          <li>
-            <label htmlFor="credit">
-              <input
-                type="radio"
-                id="credit"
-                name="paymentMethod"
-                onChange={() => {
-                  setDisplayCredit(true);
-                  setDisplayUpi(false);
-                  setDisplayDebit(false);
-                  setDisplayNetBanking(false);
-                }}
-              />
-              Credit Card
-            </label>
-            {displayCredit && renderCardDetailsView()}
-          </li>
-          <li>
-            <label htmlFor="debit">
-              <input
-                type="radio"
-                id="debit"
-                name="paymentMethod"
-                onChange={() => {
-                  setDisplayDebit(true);
-                  setDisplayCredit(false);
-                  setDisplayUpi(false);
-                  setDisplayNetBanking(false);
-                }}
-              />
-              Debit Card
-            </label>
-            {displayDebit && renderCardDetailsView()}
-          </li>
-          <li>
-            <label htmlFor="netBanking">
-              <input
-                type="radio"
-                id="netBanking"
-                name="paymentMethod"
-                onChange={() => {
-                  setDisplayNetBanking(true);
-                  setDisplayDebit(false);
-                  setDisplayCredit(false);
-                  setDisplayUpi(false);
-                }}
-              />
-              Net Banking
-            </label>
-            {displayNetBanking && renderNetBankingView()}
-          </li>
-          <li>
-            <label htmlFor="cod">
-              <input
-                type="radio"
-                id="cod"
-                name="paymentMethod"
-                onChange={() => {
-                  setDisplayNetBanking(false);
-                  setDisplayDebit(false);
-                  setDisplayCredit(false);
-                  setDisplayUpi(false);
-                }}
-                defaultChecked
-              />
-              Cash On Delivery
-            </label>
-          </li>
+
+        {/* Payment Method Selection */}
+        <section className="mt-4 grid grid-cols-2 gap-3">
+          {paymentMethods.map((method) => (
+            <button
+              key={method.id}
+              className={`flex items-center justify-center space-x-2 p-4 rounded-lg border transition ${
+                paymentMethod === method.id
+                  ? "border-blue-500 bg-blue-100"
+                  : "border-gray-300 bg-gray-100 hover:border-gray-500"
+              }`}
+              onClick={() => setPaymentMethod(method.id)}
+            >
+              {method.icon}
+              <span className="text-sm font-medium">{method.name}</span>
+            </button>
+          ))}
         </section>
-        <footer>
-          <h2>৳ {total}</h2>
-          <button
-            type="button"
-            className="payment-confirm-button"
-            onClick={() => {
-              updateDisplayPayment(false);
-              updatePaymentSuccess(true);
-            }}
-          >
-            Pay Now
-          </button>
-        </footer>
+
+        {/* Payment Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-4">
+          {["credit", "debit"].includes(paymentMethod) && (
+            <>
+              <h3 className="text-lg font-semibold">Card Details</h3>
+              <input
+                {...register("cardNumber")}
+                type="text"
+                placeholder="Card Number"
+                className="input-field"
+              />
+              {errors.cardNumber && (
+                <p className="text-red-500 text-sm">
+                  {errors.cardNumber.message}
+                </p>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                <input
+                  {...register("expiry")}
+                  type="text"
+                  placeholder="Expiry Date (MM/YY)"
+                  className="input-field"
+                />
+                <input
+                  {...register("cvv")}
+                  type="text"
+                  placeholder="CVV"
+                  className="input-field"
+                />
+              </div>
+              {errors.expiry && (
+                <p className="text-red-500 text-sm">{errors.expiry.message}</p>
+              )}
+              {errors.cvv && (
+                <p className="text-red-500 text-sm">{errors.cvv.message}</p>
+              )}
+
+              <input
+                {...register("cardHolderName")}
+                type="text"
+                placeholder="Card Holder's Name"
+                className="input-field"
+              />
+              {errors.cardHolderName && (
+                <p className="text-red-500 text-sm">
+                  {errors.cardHolderName.message}
+                </p>
+              )}
+            </>
+          )}
+
+          {paymentMethod === "netBanking" && (
+            <>
+              <h3 className="text-lg font-semibold">Net Banking Details</h3>
+
+              <input
+                {...register("userId")}
+                type="text"
+                placeholder="User ID"
+                className="input-field"
+              />
+
+              <input
+                {...register("password")}
+                type="password"
+                placeholder="Password"
+                className="input-field"
+              />
+            </>
+          )}
+
+          {paymentMethod === "cod" && (
+            <p className="text-sm text-gray-600">
+              Pay with cash upon delivery.
+            </p>
+          )}
+
+          {/* Footer */}
+          <footer className="mt-6 flex justify-between items-center">
+            <h3 className="text-lg font-bold">{total} MAD</h3>
+            <button
+              type="submit"
+              className="bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-800 transition"
+            >
+              Pay Now
+            </button>
+          </footer>
+        </form>
       </div>
     </div>
   );
 };
 
 export default PaymentPage;
+
+// Tailwind classes used
+// .input-field => "w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
