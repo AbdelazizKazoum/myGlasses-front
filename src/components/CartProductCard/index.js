@@ -15,7 +15,17 @@ import { TbCurrencyDirham } from "react-icons/tb";
 import { getImageUrl } from "../../utils/getImageUrl";
 const CartProductCard = (props) => {
   const { product } = props;
-  const { id, name, image, newPrice, price, qty } = product;
+  const {
+    id,
+    name,
+    image,
+    newPrice,
+    price,
+    qty,
+    color,
+    size,
+    vailableQuantity,
+  } = product;
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
 
   const wishlistProducts = useSelector((state) => state.wishlist);
@@ -49,7 +59,7 @@ const CartProductCard = (props) => {
   };
 
   return (
-    <li className="cart-product-card shadow-sm">
+    <li className="cart-product-card w-full bg-white p-[15px] mb-3 rounded flex items-center  shadow-sm">
       <img
         className="cart-product-image"
         src={getImageUrl(image)}
@@ -57,6 +67,18 @@ const CartProductCard = (props) => {
       />
       <div className="cart-product-details">
         <h1>{name}</h1>
+
+        {color && (
+          <div className="flex mt-0 mb-2">
+            color :
+            <span
+              style={{ backgroundColor: color }}
+              className=" mx-2 w-6 h-6 rounded-full"
+            ></span>
+            Size : <span className=" ml-2">{size}</span>
+          </div>
+        )}
+
         <p>
           Quantity:{" "}
           <AiFillMinusCircle

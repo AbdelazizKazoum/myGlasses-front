@@ -1,17 +1,10 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  matchPath,
-  useLocation,
-} from "react-router-dom";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { Provider, useDispatch } from "react-redux";
 import store from "./store/store";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
-import Cart from "./components/Cart";
 import Wishlist from "./components/Wishlist";
 import Products from "./components/Products";
 import ProductDetailsCard from "./pages/ProductDetails";
@@ -37,6 +30,7 @@ import GuestOnly from "./components/ProtectedRoute/GuestOnly";
 import CheckoutPage from "./pages/CheckoutPage";
 import SettingsPage from "./pages/dashboard/settings/Index";
 import AddProduct from "./pages/dashboard/products/add/Index";
+import Cart from "./pages/cart";
 
 function App() {
   // Determine if Navbar should be displayed based on current path

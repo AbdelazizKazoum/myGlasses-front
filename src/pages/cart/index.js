@@ -1,8 +1,8 @@
 import "./index.css";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import CartProductCard from "../CartProductCard";
-import BillCard from "../BillCard";
+import CartProductCard from "../../components/CartProductCard";
+import BillCard from "../../components/BillCard";
 
 const Cart = () => {
   const cartProducts = useSelector((state) => state.cart);

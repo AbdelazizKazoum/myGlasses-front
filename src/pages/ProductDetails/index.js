@@ -26,6 +26,7 @@ import ProductModal from "../../components/modals/ProductModal.jsx";
 import { Heart } from "lucide-react";
 import RelatedProducts from "../../components/Products/RelatedProducts.jsx";
 import { color } from "framer-motion";
+import NotFound from "../../components/ErrorCard/NotFound.jsx";
 
 const ProductDetailsCard = (props) => {
   // Hooks
@@ -77,8 +78,10 @@ const ProductDetailsCard = (props) => {
   }, [detail]);
 
   useEffect(() => {
-    setIsAddedToCart(cartProducts.some((product) => product.id === id));
-  }, [cartProducts, id]);
+    setIsAddedToCart(
+      cartProducts.some((variant) => variant.id === selectedVariant?.id)
+    );
+  }, [cartProducts, selectedVariant?.id]);
 
   useEffect(() => {
     setIsAddedToWishlist(wishlistProducts.some((product) => product.id === id));
@@ -90,15 +93,32 @@ const ProductDetailsCard = (props) => {
 
       await dispatch(getProductsByCategory(category));
 
-      await dispatch(getAccessoires());
-
       setLoading(false);
     })();
   }, [category, dispatch, productId.id]);
 
+  useEffect(() => {
+    (async () => {
+      await dispatch(getAccessoires());
+    })();
+  }, [dispatch]);
+
   const addToCart = () => {
     setIsOpen(true);
-    if (!isAddedToCart) dispatch(addCartItem({ ...data, qty: 1 }));
+    if (!isAddedToCart)
+      dispatch(
+        addCartItem({
+          ...selectedVariant,
+          name,
+          price,
+          newPrice,
+          color: selectedColor,
+          size: selectedSize,
+          image: selectedVariant.images[0].image,
+          availableQuantity: variantQty,
+          qty: 1,
+        })
+      );
     setIsAddedToCart(true);
   };
 
@@ -144,6 +164,8 @@ const ProductDetailsCard = (props) => {
   }, [data, detail, handleVariantSelection]);
 
   if (loading && !detail) return <Loader />;
+
+  if (!data) return <NotFound message={"Product is not found."} />;
 
   const renderProductDetailsCardSuccessView = () => (
     <div className="flex flex-col">
@@ -356,6 +378,7 @@ const ProductDetailsCard = (props) => {
     switch (status) {
       case statusCode.pending:
         return <Loader />;
+
       case statusCode.success:
         return renderProductDetailsCardSuccessView();
       case statusCode.failure:
