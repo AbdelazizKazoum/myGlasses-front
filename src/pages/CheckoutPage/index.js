@@ -58,7 +58,11 @@ const CheckoutPage = () => {
   const updatePaymentSuccess = async (value) => {
     if (value) {
       const res = await dispatch(
-        createCommande({ details: cartProducts, total })
+        createCommande({
+          details: cartProducts,
+          total,
+          address: primaryAddress,
+        })
       );
 
       if (!res.error) {
@@ -239,11 +243,11 @@ const CheckoutPage = () => {
           </div>
           <div className="flex justify-between text-sm">
             <p>Subtotal</p>
-            <span className="font-medium">৳ {subtotal}</span>
+            <span className="font-medium">{subtotal} MAD</span>
           </div>
           <div className="flex justify-between text-sm text-green-500">
             <p>Discount</p>
-            <span>-৳ {totalDiscount}</span>
+            <span>- {totalDiscount} MAD</span>
           </div>
           <div className="flex justify-between text-sm">
             <p>Delivery Charges</p>
@@ -252,7 +256,7 @@ const CheckoutPage = () => {
           <hr className="my-2" />
           <div className="flex justify-between font-semibold text-lg">
             <p>Total</p>
-            <span>৳ {total}</span>
+            <span>{total} MAD</span>
           </div>
         </div>
 

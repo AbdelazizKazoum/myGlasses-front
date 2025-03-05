@@ -39,8 +39,8 @@ export const createCommande = createAsyncThunk(
       toast.success("Commande created successfully");
       return res.data;
     } catch (error) {
-      toast.error("Failed to create commande");
-      return rejectWithValue(error.response?.data || error.message);
+      toast.error(error.response?.data.message ?? "Failed to create commande");
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
