@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,12 +34,18 @@ const VariantForm = ({
     resolver: zodResolver(variantSchema),
   });
 
+  const [stockQty, setStockQty] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addedQty, setAddedQty] = useState(0);
+
   useEffect(() => {
     if (variant) {
       reset(variant);
       setImages(variant?.images?.map((item) => item.image) || []);
+      setStockQty(variant.stock.quantity || 0);
     } else {
       reset({ size: null, color: null, qte: null });
+      setStockQty(0);
     }
   }, [variant, reset, setImages]);
 
@@ -50,6 +56,17 @@ const VariantForm = ({
       setImages([]);
     } catch (error) {
       console.error("Error submitting form:", error);
+    }
+  };
+  const handleStockUpdate = () => {
+    const qty = Number(addedQty);
+    if (qty > 0) {
+      const newStock = stockQty + qty;
+
+      setStockQty(newStock);
+      setIsModalOpen(false);
+      setAddedQty(0);
+      console.log("Updating stock quantity in database...", newStock);
     }
   };
 
@@ -91,11 +108,33 @@ const VariantForm = ({
           register={register}
         />
         <NumberInput
-          label="Quantity"
+          label="Initial Quantity"
           name="qte"
           errors={errors}
           register={register}
         />
+
+        {/* Show "Quantity in Stock" only in update mode */}
+        {variant && (
+          <div className="flex flex-col">
+            <label className="font-medium block mb-1 ">Quantity in Stock</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="number"
+                value={stockQty}
+                readOnly
+                className="text-gray-700  p-2  border rounded   w-24 text-center bg-gray-100"
+              />
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+              >
+                Add Stock
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="col-span-2">
           <label>Upload Images</label>
@@ -167,6 +206,37 @@ const VariantForm = ({
           </button>
         )}
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">
+              Enter Quantity to Add
+            </h2>
+            <input
+              type="number"
+              className="border rounded px-2 py-1 w-full mb-4"
+              value={addedQty}
+              onChange={(e) => setAddedQty(e.target.value)}
+              min="1"
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                className="bg-gray-400 text-white px-4 py-2 rounded"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                onClick={handleStockUpdate}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 };

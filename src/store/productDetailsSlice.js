@@ -92,7 +92,20 @@ export const getAccessoires = createAsyncThunk(
     } catch (error) {
       console.log("🚀 ~ error:", error);
 
-      return rejectWithValue("failed to fetch products with this caregory");
+      return rejectWithValue("failed to fetch products with this category");
+    }
+  }
+);
+
+export const getQuantityInStock = createAsyncThunk(
+  "stock/getQty",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/detail-product/stock/${id}`);
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue("failed to fetch qty");
     }
   }
 );

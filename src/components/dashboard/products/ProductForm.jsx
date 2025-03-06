@@ -159,7 +159,7 @@ const ProductForm = ({ onSubmit, product }) => {
           register={register}
         />
         <NumberInput
-          label="Quantity"
+          label="Initial Quantity"
           name="quantity"
           errors={errors}
           register={register}
