@@ -42,7 +42,7 @@ const VariantForm = ({
     if (variant) {
       reset(variant);
       setImages(variant?.images?.map((item) => item.image) || []);
-      setStockQty(variant.stock.quantity || 0);
+      setStockQty(variant?.stock?.quantity || 0);
     } else {
       reset({ size: null, color: null, qte: null });
       setStockQty(0);
