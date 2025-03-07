@@ -29,6 +29,7 @@ const VariantForm = ({
   const [stockQty, setStockQty] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [addedQty, setAddedQty] = useState(0);
+  const [loadingQty, setLoadingQty] = useState(false);
 
   // hooks
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const VariantForm = ({
     }
   };
   const handleStockUpdate = async () => {
+    setLoadingQty(true);
     const qty = Number(addedQty);
     if (qty > 0) {
       const newStock = stockQty + qty;
@@ -78,6 +80,8 @@ const VariantForm = ({
         setAddedQty(0);
         // console.log("Updating stock quantity in database...", newStock);
       }
+
+      setLoadingQty(false);
     }
   };
 
@@ -242,8 +246,9 @@ const VariantForm = ({
                 type="button"
                 className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                 onClick={handleStockUpdate}
+                disabled={loadingQty}
               >
-                Confirm
+                {loadingQty ? "Loading..." : "Confirm"}
               </button>
             </div>
           </div>

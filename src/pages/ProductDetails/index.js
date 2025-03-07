@@ -38,6 +38,7 @@ const ProductDetailsCard = (props) => {
     relatedProducts: categoryProducts,
     accessoires,
   } = useSelector((state) => state.productDetails);
+  console.log("🚀 ~ ProductDetailsCard ~ data:", data);
 
   const {
     id,
@@ -145,7 +146,7 @@ const ProductDetailsCard = (props) => {
 
       if (variant) {
         setSelectedVariant(variant);
-        setVariantQty(variant?.qte || 0); // Update quantity for the selected variant
+        setVariantQty(variant?.stock?.quantity || 0); // Update quantity for the selected variant
         setDisplayImage(variant?.images?.[0]?.image || image); // Set first image or default image
         setShowVariantAlert(false); // Hide alert if variant exists
       } else {
