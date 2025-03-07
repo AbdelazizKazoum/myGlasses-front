@@ -6,7 +6,6 @@ import Loader from "../../../components/Loader";
 
 const CommandsPage = () => {
   const { commands } = useSelector((state) => state.commande);
-  console.log("🚀 ~ CommandsPage ~ commands:", commands);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();

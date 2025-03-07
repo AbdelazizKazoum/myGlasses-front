@@ -62,7 +62,7 @@ const CommandsTable = ({ commands }) => {
   };
 
   return (
-    <div className="overflow-x-auto shadow-md sm:rounded-lg h-full">
+    <div className="overflow-x-auto shadow-md sm:rounded-lg h-full bg-white">
       <div className="p-4 flex gap-4 items-center z-50">
         <div className="relative w-full">
           <DatePicker
