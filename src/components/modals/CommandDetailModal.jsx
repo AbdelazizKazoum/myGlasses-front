@@ -69,6 +69,7 @@ const CommandDetailModal = ({
                 value={statusOptions.find(
                   (option) => option.value === newStatus
                 )}
+                defaultInputValue={selectedCommand?.statut}
                 onChange={(option) => setNewStatus(option ? option.value : "")}
                 className="w-full outline-none"
                 styles={selectStyles}
