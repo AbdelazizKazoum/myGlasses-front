@@ -137,19 +137,27 @@ export const getVariants = createAsyncThunk(
 
 //
 // Create new product
-export const addProduct = createAsyncThunk("products/new", async (formData) => {
-  try {
-    const res = await api.post("/product/add", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    if (res.data) {
-      toast.success("Product created successfully");
-      return res.data;
+export const addProduct = createAsyncThunk(
+  "products/new",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/product/add", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (res.data) {
+        toast.success("Product created successfully");
+        return res.data;
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || " Faild to create this product !  "
+      );
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to create this product !"
+      );
     }
-  } catch (error) {
-    toast.error(" Faild to create this product !  ");
   }
-});
+);
 
 // Add variant for the product
 export const addVariant = createAsyncThunk(
