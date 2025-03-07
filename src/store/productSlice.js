@@ -98,6 +98,21 @@ const productSlice = createSlice({
             return action.payload;
           } else return item;
         });
+      })
+      //Update Stock
+      .addCase(updateStock.pending, (state, action) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(updateStock.rejected, (state, action) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(updateStock.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.variants = state.variants.map((item) => {
+          if (item.id === action.payload.id) {
+            return action.payload;
+          } else return item;
+        });
       });
   },
 });
@@ -159,7 +174,7 @@ export const addVariant = createAsyncThunk(
   }
 );
 
-// Add variant for the product
+// Update variant for the product
 export const updateVariant = createAsyncThunk(
   "product/edit-variant",
   async ({ formData, id }, { rejectWithValue }) => {
@@ -167,15 +182,13 @@ export const updateVariant = createAsyncThunk(
       const res = await api.patch(`/detail-product/update/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      if (res.data) {
-        toast.success("Variant updated successfully");
-        return res.data;
-      }
+      toast.success("Variant updated successfully");
+      return res.data;
     } catch (error) {
       toast.error(
         error.response?.data?.message ?? "Faild to update this Variant ! "
       );
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(false);
     }
   }
 );
@@ -196,6 +209,25 @@ export const updadeProduct = createAsyncThunk(
       }
     } catch (error) {
       toast.error(" Faild to update this product !  ");
+    }
+  }
+);
+
+// add stock for the product variant
+export const updateStock = createAsyncThunk(
+  "product/add-stock",
+  async ({ qty, id }, { rejectWithValue }) => {
+    console.log("🚀 ~ qty:", qty);
+
+    try {
+      const res = await api.patch(`/detail-product/stock/${id}`, { qty });
+      if (res.data) {
+        toast.success("stock updated successfully");
+        return res.data;
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message ?? "Faild to update stock ! ");
+      return rejectWithValue(error.response.data);
     }
   }
 );

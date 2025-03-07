@@ -7,6 +7,8 @@ import NumberInput from "../../ui/NumberInput";
 import ColorPickerField from "./ColorPickerField";
 import { CircleX, Upload } from "lucide-react";
 import { getImageUrl } from "../../../utils/getImageUrl";
+import { useDispatch } from "react-redux";
+import { updateStock } from "../../../store/productSlice";
 
 const variantSchema = z.object({
   color: z.string().min(1, "Color is required"),
@@ -23,6 +25,14 @@ const VariantForm = ({
   setRemovedImages,
   handleEditButton,
 }) => {
+  // State
+  const [stockQty, setStockQty] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addedQty, setAddedQty] = useState(0);
+
+  // hooks
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -33,10 +43,6 @@ const VariantForm = ({
   } = useForm({
     resolver: zodResolver(variantSchema),
   });
-
-  const [stockQty, setStockQty] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [addedQty, setAddedQty] = useState(0);
 
   useEffect(() => {
     if (variant) {
@@ -58,15 +64,20 @@ const VariantForm = ({
       console.error("Error submitting form:", error);
     }
   };
-  const handleStockUpdate = () => {
+  const handleStockUpdate = async () => {
     const qty = Number(addedQty);
     if (qty > 0) {
       const newStock = stockQty + qty;
 
-      setStockQty(newStock);
-      setIsModalOpen(false);
-      setAddedQty(0);
-      console.log("Updating stock quantity in database...", newStock);
+      const res = await dispatch(updateStock({ qty, id: variant.id }));
+
+      console.log("🚀 ~ handleStockUpdate ~ res:", res);
+      if (res.payload) {
+        setStockQty(newStock);
+        setIsModalOpen(false);
+        setAddedQty(0);
+        // console.log("Updating stock quantity in database...", newStock);
+      }
     }
   };
 
@@ -228,6 +239,7 @@ const VariantForm = ({
                 Cancel
               </button>
               <button
+                type="button"
                 className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
                 onClick={handleStockUpdate}
               >
