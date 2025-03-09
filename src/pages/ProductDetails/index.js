@@ -1,4 +1,4 @@
-import { AiFillStar } from "react-icons/ai";
+import { AiFillStar, AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import { useParams } from "react-router-dom";
 import { addCartItem } from "../../store/cartSlice.js";
 import { AlertCircle } from "lucide-react";
@@ -67,6 +67,8 @@ const ProductDetailsCard = (props) => {
   const [selectedVariant, setSelectedVariant] = useState();
   const [showVariantAlert, setShowVariantAlert] = useState(false); // To show the alert message
   const [variantQty, setVariantQty] = useState(null); // To store the quantity of the selected variant
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = selectedVariant?.images || [{ image }];
 
   // Extract unique colors and sizes
   const uniqueColors = useMemo(() => {
@@ -135,7 +137,7 @@ const ProductDetailsCard = (props) => {
 
   // Handle variant selection
   const handleVariantSelection = useCallback(
-    (color, size) => {
+    (color, size, action) => {
       setSelectedColor(color);
       setSelectedSize(size);
 
@@ -150,6 +152,14 @@ const ProductDetailsCard = (props) => {
         setDisplayImage(variant?.images?.[0]?.image || image); // Set first image or default image
         setShowVariantAlert(false); // Hide alert if variant exists
       } else {
+        // if (action === "color") {
+        //   // Find the selected variant
+        //   const variant = detail.find(
+        //     (item) => item.color === color && item.size === size
+        //   );
+
+        // }
+
         setSelectedVariant(null);
         setVariantQty(null);
         setShowVariantAlert(true); // Show alert if variant doesn't exist
@@ -157,6 +167,20 @@ const ProductDetailsCard = (props) => {
     },
     [detail, image]
   );
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    setDisplayImage(images[(currentImageIndex + 1) % images.length].image);
+  };
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex(
+      (prevIndex) => (prevIndex - 1 + images.length) % images.length
+    );
+    setDisplayImage(
+      images[(currentImageIndex - 1 + images.length) % images.length].image
+    );
+  };
 
   useEffect(() => {
     if (detail) {
@@ -181,6 +205,12 @@ const ProductDetailsCard = (props) => {
         <div>
           {/* bg-black/[0.075] */}
           <div className="relative h-[85%] bg-black/[0.075] p-7 flex items-center justify-center rounded-lg">
+            <button
+              className="absolute left-3 p-2 text-gray-500 bg-gray-300 rounded-full shadow-md hover:bg-gray-300"
+              onClick={handlePrevImage}
+            >
+              <AiOutlineLeft size={18} />
+            </button>
             <img
               className="product-details-card-image"
               src={
@@ -188,6 +218,12 @@ const ProductDetailsCard = (props) => {
               }
               alt="productImage"
             />
+            <button
+              className="absolute right-3 p-2 text-gray-500 bg-gray-300 rounded-full shadow-md hover:bg-gray-200"
+              onClick={handleNextImage}
+            >
+              <AiOutlineRight size={18} />
+            </button>
           </div>
 
           {/* Display Images */}
@@ -256,7 +292,9 @@ const ProductDetailsCard = (props) => {
                       ? "outline-none ring-offset-4 ring-1 ring-primary-500"
                       : ""
                   }`}
-                  onClick={() => handleVariantSelection(color, selectedSize)}
+                  onClick={() =>
+                    handleVariantSelection(color, selectedSize, "color")
+                  }
                 ></button>
               ))}
             </div>
