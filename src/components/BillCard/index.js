@@ -12,7 +12,7 @@ const BillCard = () => {
 
   return (
     <div className="bill-card-container !bg-white !shadow-sm">
-      <h2>Price Details</h2>
+      <h1 className=" text-xl  ">Price Details</h1>
       <ul>
         {cartProducts.map((product) => (
           <li key={product.id} className="bill-item">
@@ -20,9 +20,9 @@ const BillCard = () => {
               {product.name} ({product.qty})item
             </p>
             <div className="flex gap-1">
-              <TbCurrencyTaka className="text-xl" />
-              <div className="text-xl font-semibold -ml-1">
-                {product.qty * product.newPrice}
+              {/* <TbCurrencyTaka className="text-xl" /> */}
+              <div className="text-lg  -ml-1">
+                {product.qty * product.newPrice} MAD
               </div>
             </div>
           </li>
@@ -32,14 +32,15 @@ const BillCard = () => {
       <div>
         <p>Total</p>
         <div className="flex gap-1">
-          <TbCurrencyTaka className="text-2xl" />
-          <div className="text-2xl font-semibold -ml-1">
-            {total}
-          </div>
+          {/* <TbCurrencyTaka className="text-2xl" /> */}
+          <div className="text-2xl  -ml-1">{total} MAD</div>
         </div>
       </div>
-      <Link to="/checkout" className="link-item text-center">
-        <button type="button" className="bill-checkout-button">
+      <Link to="/checkout" className=" text-center">
+        <button
+          type="button"
+          className=" rounded-2xl  text-white p-2 px-4 bg-primary-500 hover:bg-primary-800"
+        >
           Proceed to Checkout
         </button>
       </Link>

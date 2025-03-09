@@ -59,7 +59,7 @@ const CartProductCard = (props) => {
   };
 
   return (
-    <li className="cart-product-card w-full bg-white p-[15px] mb-3 rounded flex items-center  shadow-sm">
+    <li className="cart-product-card w-full bg-white p-[15px] mb-3 rounded flex items-center  !shadow-sm">
       <img
         className="cart-product-image"
         src={getImageUrl(image)}
@@ -116,13 +116,13 @@ const CartProductCard = (props) => {
       <div className="cart-product-price-container">
         {/* <p>₹{newPrice}</p> */}
         <div className="flex gap-1">
-          <TbCurrencyDirham className="text-xl" />
-          <div className="text-xl font-semibold -ml-1">{newPrice}</div>
+          {/* <TbCurrencyDirham className="text-xl" /> */}
+          <div className="text-xl font-semibold -ml-1">{newPrice} MAD</div>
         </div>
         <div className="flex gap-1 ml-3">
-          <TbCurrencyDirham className="text-sm text-gray-400" />
+          {/* <TbCurrencyDirham className="text-sm text-gray-400" /> */}
           <div className="text-sm font-semibold -ml-1 text-gray-400">
-            <del>{price}</del>
+            <del>{price} MAD</del>
           </div>
         </div>
       </div>
