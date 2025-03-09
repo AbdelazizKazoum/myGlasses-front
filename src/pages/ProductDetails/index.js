@@ -201,7 +201,7 @@ const ProductDetailsCard = (props) => {
         product={data}
       />
 
-      <div className="product-details-card gap-5 pt-8">
+      <div className="product-details-card gap-5 ">
         <div>
           {/* bg-black/[0.075] */}
           <div className="relative h-[85%] bg-black/[0.075] p-7 flex items-center justify-center rounded-lg">
@@ -251,10 +251,10 @@ const ProductDetailsCard = (props) => {
 
         <div className=" product-details-card-description bg-white rounded">
           <h1 className=" text-3xl font-bold ">{name}</h1>
-          <p className="product-details-card-info font-semibold my-2">
+          <p className="product-details-card-info font-semibold ">
             {description}
           </p>
-          <div className="flex gap-1 py-2 mb-2">
+          <div className="flex gap-1 py-1 mb-1">
             <p className="product-details-card-rating flex">
               <AiFillStar className=" text-primary-500 " />
               <AiFillStar className=" text-primary-500 " />
@@ -267,21 +267,19 @@ const ProductDetailsCard = (props) => {
             </div>
           </div>
 
-          <div>
-            <div className=" bg-primary-500/10 p-1.5 rounded flex ">
-              <p className="text-primary-500 font-bold">
-                Popular frame! 918 people have their eyes on this frame.
-              </p>
-            </div>
+          <div className=" bg-primary-500/10 p-1.5 rounded flex ">
+            <p className="text-primary-500 font-bold">
+              Popular frame! 918 people have their eyes on this frame.
+            </p>
           </div>
 
-          <p className="product-details-card-price">
+          <p className="product-details-card-price my-1 ">
             <span> Price : </span> MAD{newPrice} <del>MAD{price}</del>
           </p>
 
           {/* Show Colors */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Color:</h3>
+          <div className="mb-3">
+            <h3 className=" font-semibold mb-2">Color:</h3>
             <div className="flex space-x-2">
               {uniqueColors.map((color, index) => (
                 <button
@@ -301,8 +299,8 @@ const ProductDetailsCard = (props) => {
           </div>
 
           {/* Show Sizes */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-2">Size:</h3>
+          <div className="mb-3">
+            <h3 className="font-semibold mb-2">Size:</h3>
             <div className="flex space-x-2">
               {uniqueSizes.map((size, index) => (
                 <button
@@ -322,7 +320,7 @@ const ProductDetailsCard = (props) => {
 
           {/* Show alert if variant doesn't exist */}
           {showVariantAlert && (
-            <div className="bg-red-500/10 p-2 rounded flex mb-3 items-center">
+            <div className="bg-red-500/10 p-2 rounded flex mb-2 items-center">
               <AlertCircle className="text-red-500 mr-2" />
               <p className="text-red-500 font-bold">
                 Not available. Select a different size or color.
@@ -332,12 +330,12 @@ const ProductDetailsCard = (props) => {
 
           {/* Show quantity or sold out message */}
           {variantQty !== null && variantQty === 0 ? (
-            <div className="bg-red-500/10 p-2 rounded flex items-center mb-3">
+            <div className="bg-red-500/10 p-2 rounded flex items-center mb-2">
               <AlertCircle className="text-red-500 mr-2" />
               <p className="text-red-500 font-bold">Sold Out</p>
             </div>
           ) : (
-            <p className="text-gray-600 text-lg mb-3">
+            <p className="text-gray-600 text-lg mb-2">
               Available Quantity: {variantQty}
             </p>
           )}
