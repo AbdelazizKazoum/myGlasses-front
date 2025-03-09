@@ -69,10 +69,10 @@ export const RecommandedProducts = ({ products, allowDetails }) => {
             onMouseLeave={handleMouseUp}
             onMouseUp={handleMouseUp}
           >
-            {products.map((product) => (
-              <div key={product.id} className="inline-block">
+            {products.map((variant) => (
+              <div key={variant.id} className="inline-block">
                 <SuggestedProductCard
-                  product={product}
+                  variant={variant}
                   allowDetails={allowDetails}
                   onDragStart={(e) => e.preventDefault()} // Prevents dragging images
                 />

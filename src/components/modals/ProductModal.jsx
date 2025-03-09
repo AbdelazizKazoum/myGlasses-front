@@ -9,6 +9,8 @@ const ProductModal = ({
   accessories = [],
   product,
 }) => {
+  console.log("🚀 ~ accessories:", accessories);
+
   // Hooks
   const navigate = useNavigate();
   return (

@@ -8,8 +8,8 @@ import { addCartItem, removeCartItem } from "../../store/cartSlice";
 import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
 import { getImageUrl } from "../../utils/getImageUrl";
 
-const SuggestedProductCard = ({ product, allowDetails }) => {
-  const { id, name, brand, rating, price, newPrice, image } = product;
+const SuggestedProductCard = ({ variant, allowDetails }) => {
+  const { id, name, brand, rating, price, newPrice, image } = variant.product;
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
 
@@ -18,8 +18,8 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setIsAddedToCart(cartProducts.some((product) => product.id === id));
-  }, [cartProducts, id]);
+    setIsAddedToCart(cartProducts.some((product) => product.id === variant.id));
+  }, [cartProducts, variant.id]);
 
   useEffect(() => {
     setIsAddedToWishlist(wishlistProducts.some((product) => product.id === id));
@@ -28,16 +28,28 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
   const addToCart = (e) => {
     e.stopPropagation(); // Prevent card click behavior when adding/removing cart item
     if (isAddedToCart) {
-      dispatch(removeCartItem(product.id));
+      dispatch(removeCartItem(variant.id));
     } else {
-      dispatch(addCartItem({ ...product, qty: 1 }));
+      dispatch(
+        addCartItem({
+          ...variant,
+          name,
+          price,
+          newPrice,
+          color: variant?.color,
+          size: variant?.size,
+          image: variant?.images[0].image,
+          availableQuantity: variant?.stock?.quantity,
+          qty: 1,
+        })
+      );
       setIsAddedToCart(true);
     }
   };
 
   const addToWishlist = () => {
     setIsAddedToWishlist(true);
-    dispatch(addWishlistItem(product));
+    dispatch(addWishlistItem(variant));
   };
 
   const removeFromWishlist = () => {
@@ -72,9 +84,11 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
         className="flex items-center justify-center overflow-hidden"
       >
         <img
-          src={getImageUrl(image)}
+          src={getImageUrl(
+            variant.images.length > 0 ? variant?.images[0].image : image
+          )}
           alt="productImage"
-          className="object-contain w-full h-32 sm:h-48"
+          className="object-cover  w-full h-32 sm:h-48"
         />
       </Link>
 
@@ -84,6 +98,16 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
             <h2 className="text-black text-sm sm:text-lg font-medium">
               {name}
             </h2>
+            {variant.color && (
+              <div className="flex items-center mt-0 mb-2">
+                color :
+                <span
+                  style={{ backgroundColor: variant.color }}
+                  className=" mx-2 w-4 h-4 rounded-full"
+                ></span>
+                Size : <span className=" ml-2">{variant.size}</span>
+              </div>
+            )}
             <div className="flex items-center gap-1 text-gray-500 text-xs sm:text-sm">
               <span>{rating}</span>
               <AiFillStar className="text-yellow-400" />
@@ -91,7 +115,7 @@ const SuggestedProductCard = ({ product, allowDetails }) => {
             </div>
             <p className="text-gray-600 text-xs sm:text-sm">{brand}</p>
           </div>
-          <div className="flex flex-col flex-nowrap items-end">
+          <div className="flex flex-col flex-nowrap justify-end items-end">
             <p className="text-orange-600 text-sm sm:text-sm font-medium">
               MAD {newPrice}
             </p>
