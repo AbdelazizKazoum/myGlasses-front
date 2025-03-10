@@ -7,7 +7,6 @@ const useApplyFilters = () => {
 
   const { searchInput, gender, priceRange, category, rating, priceSort } =
     filters;
-  console.log("🚀 ~ useApplyFilters ~ category:", category);
 
   return useMemo(() => {
     try {
@@ -47,7 +46,6 @@ const useApplyFilters = () => {
 
       return filteredData;
     } catch (error) {
-      console.error("Error fetching products:", error);
       return [];
     }
   }, [

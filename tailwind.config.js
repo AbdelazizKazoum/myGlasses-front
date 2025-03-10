@@ -17,6 +17,15 @@ module.exports = {
           DEFAULT: "#eab308",
         },
       },
+      keyframes: {
+        "slide-in": {
+          from: { transform: "translateX(100%)" },
+          to: { transform: "translateX(0%)" },
+        },
+      },
+      animation: {
+        "slide-in": "slide-in 0.3s ease-in-out",
+      },
     },
   },
   plugins: [],

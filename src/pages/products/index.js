@@ -1,15 +1,15 @@
 import { BsFilterRight } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../../store/productsSlice";
-import ProductCard from "../ProductCard";
-import FiltersGroup from "../FiltersGroup";
+import ProductCard from "../../components/ProductCard";
+import FiltersGroup from "../../components/FiltersGroup";
 
 import "./index.css";
 import { useEffect, useState } from "react";
 import { statusCode } from "../../utils/statusCode";
-import Loader from "../Loader";
-import ErrorCard from "../ErrorCard";
-import ScrollToTop from "../ScrollToTop";
+import Loader from "../../components/Loader";
+import ErrorCard from "../../components/ErrorCard";
+import ScrollToTop from "../../components/ScrollToTop";
 import { updatePriceSort } from "../../store/filtersSlice";
 import useApplyFilters from "../../utils/useApplyFilters";
 

@@ -6,7 +6,6 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
 import Wishlist from "./components/Wishlist";
-import Products from "./components/Products";
 import ProductDetailsCard from "./pages/ProductDetails";
 import Profile from "./pages/Profile";
 import ErrorCard from "./components/ErrorCard";
@@ -31,6 +30,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import SettingsPage from "./pages/dashboard/settings/Index";
 import AddProduct from "./pages/dashboard/products/add/Index";
 import Cart from "./pages/cart";
+import Products from "./pages/products";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
