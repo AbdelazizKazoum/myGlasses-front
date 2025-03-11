@@ -39,7 +39,7 @@ const Products = () => {
         dispatch(
           getFilterdProducts({
             filters,
-            pagination: { page: currentPage, limit: 10 },
+            pagination: { page: currentPage, limit: 12 },
           })
         )
       );
