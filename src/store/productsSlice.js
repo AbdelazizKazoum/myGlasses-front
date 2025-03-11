@@ -6,6 +6,10 @@ const initialState = {
   data: [],
   filteredProducts: [],
   status: statusCode.idle,
+  pagination: {
+    total: null,
+    totalPages: null,
+  },
 };
 
 const productsSlice = createSlice({
@@ -30,6 +34,19 @@ const productsSlice = createSlice({
         state.status = statusCode.success;
         state.data = action.payload;
       });
+
+    builder
+      .addCase(getFilterdProducts.pending, (state, action) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(getFilterdProducts.rejected, (state, action) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(getFilterdProducts.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.data = action.payload.data;
+        state.pagination = action.payload.pagination;
+      });
   },
 });
 
@@ -39,6 +56,39 @@ export const getProducts = createAsyncThunk("products/get", async () => {
     return res.data;
   }
 });
+
+export const getFilterdProducts = createAsyncThunk(
+  "products/filter",
+  async ({ filters, pagination }, { rejectWithValue }) => {
+    try {
+      const { searchInput, gender, priceRange, category, rating, priceSort } =
+        filters;
+
+      const { page = 1, limit = 10 } = pagination;
+
+      let cat = "category=&";
+
+      if (category && category.length > 0) {
+        category.forEach((item) => {
+          cat = cat + `category=${item}&`;
+        });
+      } else {
+        cat = +cat;
+      }
+
+      const res = await api.get(
+        `/product/filter?searchInput=${searchInput}&gender=${gender}&priceRange=${priceRange}&${cat}rating=${rating}&page=${page}&limit=${limit}&priceSort=${priceSort}`
+      );
+      console.log("🚀 ~ filter products :", res);
+
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to load products !"
+      );
+    }
+  }
+);
 
 export const { filterByCategory } = productsSlice.actions;
 

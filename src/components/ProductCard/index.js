@@ -13,8 +13,6 @@ const ProductCard = (props) => {
   const { id, name, brand, rating, price, newPrice, image, description } =
     product;
 
-  console.log("🚀 ~ ProductCard ~ product:", product);
-
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
