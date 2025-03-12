@@ -3,39 +3,43 @@ import { useSelector, useDispatch } from "react-redux";
 import { getFilterdProducts } from "../../store/productsSlice";
 import ProductCard from "../../components/ProductCard";
 import FiltersGroup from "../../components/FiltersGroup";
-
 import "./index.css";
 import { useEffect, useState } from "react";
 import { statusCode } from "../../utils/statusCode";
 import ErrorCard from "../../components/ErrorCard";
 import ScrollToTop from "../../components/ScrollToTop";
 import { updatePriceSort } from "../../store/filtersSlice";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import { delayLoading } from "../../utils/delayLoading";
 
 const Products = () => {
   const [showArrow, setShowArrow] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loadedProducts, setLoadedProducts] = useState([]);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-  // ✅ Local loading state
-  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(false);
+  const [showMoreLoading, setShowMoreLoading] = useState(false);
 
   const dispatch = useDispatch();
-
   const {
     status,
-    data: filteredData,
+    // data: filteredData,
     pagination,
   } = useSelector((state) => state.products);
-
   const { totalPages } = pagination;
   const filters = useSelector((state) => state.filters);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true); // ✅ Start loading
-      await delayLoading(
+      // Determine if it's initial load or show more
+      if (currentPage === 1) {
+        setInitialLoading(true);
+      } else {
+        setShowMoreLoading(true);
+      }
+
+      const resultAction = await delayLoading(
         dispatch(
           getFilterdProducts({
             filters,
@@ -43,8 +47,19 @@ const Products = () => {
           })
         )
       );
-      setLoading(false);
+
+      const products = resultAction?.payload?.data || [];
+
+      if (currentPage === 1) {
+        setLoadedProducts(products);
+        setIsFirstLoad(false);
+        setInitialLoading(false);
+      } else {
+        setLoadedProducts((prev) => [...prev, ...products]);
+        setShowMoreLoading(false);
+      }
     };
+
     fetchProducts();
   }, [dispatch, filters, currentPage]);
 
@@ -56,58 +71,34 @@ const Products = () => {
     return () => window.removeEventListener("scroll", toggleShowArrow);
   }, []);
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages && page !== currentPage) {
-      setCurrentPage(page);
+  const handlePageChange = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
-  const renderPagination = () => {
-    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const renderShowMoreButton = () => {
+    if (currentPage >= totalPages) return null;
+
     return (
-      <div className="flex justify-center mt-8 space-x-2">
-        <button
-          className={`px-3 py-1 rounded-md border text-sm ${
-            currentPage === 1
-              ? "bg-gray-200 cursor-not-allowed"
-              : "bg-white hover:bg-gray-100"
-          }`}
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-
-        {pages.map((page) => (
+      <div className="flex justify-center mt-6">
+        {showMoreLoading ? (
+          <div className="flex items-center justify-center">
+            <span className="animate-spin inline-block w-6 h-6 border-4 border-primary-500 border-t-transparent rounded-full"></span>
+          </div>
+        ) : (
           <button
-            key={page}
-            className={`px-3 py-1 rounded-md border text-sm ${
-              currentPage === page
-                ? "bg-blue-500 text-white"
-                : "bg-white hover:bg-gray-100"
-            }`}
-            onClick={() => handlePageChange(page)}
+            className="bg-primary-500 text-white px-6 py-2 rounded-md hover:bg-primary-800"
+            onClick={handlePageChange}
+            disabled={showMoreLoading}
           >
-            {page}
+            Show More
           </button>
-        ))}
-
-        <button
-          className={`px-3 py-1 rounded-md border text-sm ${
-            currentPage === totalPages
-              ? "bg-gray-200 cursor-not-allowed"
-              : "bg-white hover:bg-gray-100"
-          }`}
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
+        )}
       </div>
     );
   };
 
-  // ✅ Skeleton Component
   const renderSkeletons = () => {
     return (
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-0 m-0">
@@ -156,7 +147,7 @@ const Products = () => {
             onClick={() => {
               document
                 .getElementById("filtersGroup")
-                .classList.remove("d-none");
+                ?.classList.remove("d-none");
             }}
           >
             <BsFilterRight />
@@ -165,12 +156,11 @@ const Products = () => {
         </div>
       </section>
 
-      {/* ✅ Show skeletons if loading is true */}
-      {loading ? (
+      {initialLoading && isFirstLoad ? (
         renderSkeletons()
       ) : (
         <ul className="row product-list-container d-flex">
-          {filteredData.map((product) => (
+          {loadedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </ul>
@@ -178,15 +168,14 @@ const Products = () => {
 
       <FiltersGroup />
       {showArrow && <ScrollToTop />}
-      {renderPagination()}
+      {renderShowMoreButton()}
     </>
   );
 
   const renderProductView = () => {
     switch (status) {
       case statusCode.pending:
-        // return <Loader />; ❌ remove old loader
-        return renderProductSuccessView(); // ✅ just call success view and let local `loading` state handle it
+        return renderProductSuccessView();
       case statusCode.success:
         return renderProductSuccessView();
       case statusCode.failure:

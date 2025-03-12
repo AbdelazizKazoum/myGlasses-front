@@ -1,95 +1,120 @@
 import { AiFillGithub, AiFillLinkedin, AiFillFacebook } from "react-icons/ai";
 
-const Footer = () => (
-  <footer className="bg-gray-800 text-white py-10">
-    <div className="container mx-auto px-6 md:px-12">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-        {/* Left section - Brand Info */}
-        <div className="text-center md:text-left">
-          <h2 className="text-2xl font-semibold mb-4">Myglass</h2>
-          <p className="text-sm mb-6">
-            Crafted with &#10084; by Shakil Ahmed. A modern eCommerce solution
-            for eyewear shopping.
-          </p>
-          <div className="flex justify-center md:justify-start space-x-4">
-            <a
-              href="https://github.com/beshakil"
-              target="_blank"
-              className="text-gray-400 hover:text-white transition duration-300"
+const Footer = () => {
+  return (
+    <footer className="bg-black/[0.065] text-gray-800 py-12 mt-16 border-t border-gray-300">
+      <div className="container mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {/* Brand Info */}
+          <div className="text-center md:text-left">
+            <h2
+              style={{
+                fontFamily: "monoton",
+                backgroundSize: "300%",
+                fontSize: "1.9rem",
+                fontWeight: "500",
+                backgroundClip: "text",
+              }}
+              className="text-3xl font-bold text-gray-900 mb-4"
             >
-              <AiFillGithub className="text-2xl" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/beshakil/"
-              target="_blank"
-              className="text-gray-400 hover:text-white transition duration-300"
-            >
-              <AiFillLinkedin className="text-2xl" />
-            </a>
-            <a
-              href="https://www.facebook.com/beshakil/"
-              target="_blank"
-              className="text-gray-400 hover:text-white transition duration-300"
-            >
-              <AiFillFacebook className="text-2xl" />
-            </a>
+              myglass
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Crafted with ❤️ by Kazoum. Your destination for stylish eyewear.
+            </p>
+            <div className="flex justify-center md:justify-start space-x-5">
+              <a
+                href="https://github.com/beshakil"
+                target="_blank"
+                className="text-gray-600 hover:text-blue-600 transition"
+                rel="noreferrer"
+              >
+                <AiFillGithub className="text-2xl" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/beshakil/"
+                target="_blank"
+                className="text-gray-600 hover:text-blue-600 transition"
+                rel="noreferrer"
+              >
+                <AiFillLinkedin className="text-2xl" />
+              </a>
+              <a
+                href="https://www.facebook.com/beshakil/"
+                target="_blank"
+                className="text-gray-600 hover:text-blue-600 transition"
+                rel="noreferrer"
+              >
+                <AiFillFacebook className="text-2xl" />
+              </a>
+            </div>
+          </div>
+
+          {/* Useful Links */}
+          <div className="text-center md:text-left">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">
+              Customer Support
+            </h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <a href="/shipping" className="hover:text-blue-600 transition">
+                  Shipping & Returns
+                </a>
+              </li>
+              <li>
+                <a href="/contact" className="hover:text-blue-600 transition">
+                  Contact Us
+                </a>
+              </li>
+              <li>
+                <a href="/faqs" className="hover:text-blue-600 transition">
+                  FAQs
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/privacy-policy"
+                  className="hover:text-blue-600 transition"
+                >
+                  Privacy Policy
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div className="text-center md:text-right">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900">
+              Stay Connected
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Subscribe for updates, offers & more.
+            </p>
+            <form className="flex flex-col sm:flex-wrap lg:flex-nowrap md:flex-row justify-center  items-center gap-2">
+              <input
+                type="email"
+                placeholder="Your email"
+                className="w-full md:w-auto px-4 py-2 rounded-lg border border-gray-300 text-gray-800 outline-none focus:border-blue-500"
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+              >
+                Subscribe
+              </button>
+            </form>
           </div>
         </div>
 
-        {/* Middle section - Useful Links */}
-        <div className="text-center md:text-left">
-          <h3 className="text-xl font-semibold mb-4">Customer Service</h3>
-          <ul className="text-sm space-y-2">
-            <li>
-              <a href="/shipping" className="hover:text-gray-400">
-                Shipping & Returns
-              </a>
-            </li>
-            <li>
-              <a href="/contact" className="hover:text-gray-400">
-                Contact Us
-              </a>
-            </li>
-            <li>
-              <a href="/faqs" className="hover:text-gray-400">
-                FAQs
-              </a>
-            </li>
-            <li>
-              <a href="/privacy-policy" className="hover:text-gray-400">
-                Privacy Policy
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Right section - Social Links / Newsletter */}
-        <div className="text-center md:text-right">
-          <h3 className="text-xl font-semibold mb-4">Stay Connected</h3>
-          <p className="text-sm mb-4">
-            Subscribe to our newsletter for the latest updates and offers!
+        {/* Bottom Footer */}
+        <div className="mt-10 pt-6 border-t border-gray-300 text-center">
+          <p className="text-sm text-gray-500">
+            &copy; {new Date().getFullYear()} Myglass. All rights reserved.
           </p>
-          <form className="flex justify-center md:justify-end">
-            <input
-              type="email"
-              placeholder="Your email"
-              className="p-2 text-black rounded-l-lg"
-            />
-            <button className="bg-primary text-white p-2 rounded-r-lg hover:bg-primary-dark transition duration-300">
-              Subscribe
-            </button>
-          </form>
         </div>
       </div>
-
-      {/* Bottom Section - Copyright */}
-      <div className="text-center mt-10">
-        <p className="text-sm text-gray-400">
-          &copy; 2025 Myglass. All Rights Reserved.
-        </p>
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 export default Footer;
