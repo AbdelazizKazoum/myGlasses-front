@@ -9,11 +9,23 @@ import {
   updateRating,
 } from "../../store/filtersSlice";
 import "./index.css";
+import { useEffect } from "react";
+import { getCategories } from "../../store/categorySlice";
 
 const FiltersGroup = () => {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
   const { gender, priceRange, category, rating } = filters;
+
+  // Hooks
+  const { data } = useSelector((state) => state.categories);
+  console.log("🚀 ~ FiltersGroup ~ data:", data);
+
+  useEffect(() => {
+    (async () => {
+      await dispatch(getCategories());
+    })();
+  }, [dispatch]);
 
   const renderGenderFilter = () => (
     <div className="filter">
@@ -115,48 +127,22 @@ const FiltersGroup = () => {
   const renderCategoriesFilter = () => (
     <div className="filter">
       <h3>Categories</h3>
-      <label htmlFor="vision">
-        <input
-          type="checkbox"
-          value="Vision"
-          id="vision"
-          onChange={(event) => {
-            event.target.checked
-              ? dispatch(addCategory(event.target.value))
-              : dispatch(removeCategory(event.target.value));
-          }}
-          checked={category.includes("Vision")}
-        />
-        Vision
-      </label>
-      <label htmlFor="sunglasses">
-        <input
-          type="checkbox"
-          value="Sunglasses"
-          id="sunglasses"
-          onChange={(event) => {
-            event.target.checked
-              ? dispatch(addCategory(event.target.value))
-              : dispatch(removeCategory(event.target.value));
-          }}
-          checked={category.includes("Sunglasses")}
-        />
-        Sunglasses
-      </label>
-      <label htmlFor="sports">
-        <input
-          type="checkbox"
-          value="Sports"
-          id="sports"
-          onChange={(event) => {
-            event.target.checked
-              ? dispatch(addCategory(event.target.value))
-              : dispatch(removeCategory(event.target.value));
-          }}
-          checked={category.includes("Sports")}
-        />
-        Sports
-      </label>
+      {data?.map((cat) => (
+        <label key={cat.id} htmlFor={cat.id}>
+          <input
+            type="checkbox"
+            value={cat.displayText}
+            id={cat.id}
+            onChange={(event) => {
+              event.target.checked
+                ? dispatch(addCategory(event.target.value))
+                : dispatch(removeCategory(event.target.value));
+            }}
+            checked={category.includes(cat.displayText)}
+          />
+          {cat.displayText}
+        </label>
+      ))}
     </div>
   );
 
