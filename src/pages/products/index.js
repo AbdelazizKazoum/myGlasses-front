@@ -20,6 +20,7 @@ const Products = () => {
 
   const [initialLoading, setInitialLoading] = useState(false);
   const [showMoreLoading, setShowMoreLoading] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const dispatch = useDispatch();
   const {
@@ -31,6 +32,14 @@ const Products = () => {
   const filters = useSelector((state) => state.filters);
 
   useEffect(() => {
+    if (hasMounted) {
+      setCurrentPage(1);
+    } else {
+      setHasMounted(true);
+    }
+  }, [filters, hasMounted]);
+
+  useEffect(() => {
     const fetchProducts = async () => {
       // Determine if it's initial load or show more
       if (currentPage === 1) {
@@ -39,13 +48,11 @@ const Products = () => {
         setShowMoreLoading(true);
       }
 
-      const resultAction = await delayLoading(
-        dispatch(
-          getFilterdProducts({
-            filters,
-            pagination: { page: currentPage, limit: 12 },
-          })
-        )
+      const resultAction = await dispatch(
+        getFilterdProducts({
+          filters,
+          pagination: { page: currentPage, limit: 12 },
+        })
       );
 
       const products = resultAction?.payload?.data || [];
