@@ -143,7 +143,7 @@ const Products = () => {
           </select>
           <button
             type="button"
-            className="filter-buttonn flex gap-2 items-center px-2.5 ml-2 rounded-[5px] bg-[#EFEFEF]"
+            className="filter-buttonn flex justify-center gap-2 items-center px-2.5 ml-2 rounded-[5px] bg-[#EFEFEF]"
             onClick={() => {
               document
                 .getElementById("filtersGroup")
@@ -151,7 +151,7 @@ const Products = () => {
             }}
           >
             <BsFilterRight />
-            <p className="mt-1">Filters</p>
+            <p className="mt-1 m-0 p-1">Filters</p>
           </button>
         </div>
       </section>
