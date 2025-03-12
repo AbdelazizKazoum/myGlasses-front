@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiSolidBookmarkHeart } from "react-icons/bi";
 import { AiFillStar } from "react-icons/ai";
 import { useEffect, useState } from "react";
@@ -19,10 +19,12 @@ const ProductCard = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // Modal state
 
   const cartProducts = useSelector((state) => state.cart);
   const wishlistProducts = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Hook for redirection after adding to cart
 
   useEffect(() => {
     setIsAddedToCart(cartProducts.some((product) => product.id === id));
@@ -47,15 +49,26 @@ const ProductCard = (props) => {
       alert("Please select a size and color.");
       return;
     }
+
+    const variant = product.detail.find(
+      (item) => item.color === selectedColor && item.size === selectedSize
+    );
+
     dispatch(
       addCartItem({
-        ...product,
-        size: selectedSize,
-        color: selectedColor,
+        ...variant,
+        name,
+        price,
+        newPrice,
+        color: variant?.color,
+        size: variant?.size,
+        image: variant?.images[0].image,
+        availableQuantity: variant?.stock?.quantity,
         qty: 1,
       })
     );
     setIsAddedToCart(true);
+    setShowSuccessModal(true); // Show success modal
     closeModal();
   };
 
@@ -149,6 +162,45 @@ const ProductCard = (props) => {
         setSelectedColor={setSelectedColor}
         handleAddToCart={handleAddToCart}
       />
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md text-center animate-fade-in">
+            <h2 className="text-xl font-semibold text-green-600 mb-4">
+              ✅ Product added to cart successfully!
+            </h2>
+
+            {/* Product image and name in the modal */}
+            <div className="flex flex-col items-center mb-4">
+              <img
+                src={getImageUrl(image)}
+                alt={name}
+                className="w-20 h-20 object-cover rounded-md mb-3"
+              />
+              <p className="text-lg font-semibold">{name}</p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 mt-4">
+              <button
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  navigate("/cart"); // Redirect to checkout page
+                }}
+                className="w-full sm:w-1/2 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition"
+              >
+                Proceed to Checkout
+              </button>
+              <button
+                onClick={() => setShowSuccessModal(false)} // Close modal without redirect
+                className="w-full sm:w-1/2 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

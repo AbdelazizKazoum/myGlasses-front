@@ -161,7 +161,7 @@ const Products = () => {
       ) : (
         <ul className="row product-list-container d-flex">
           {loadedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} id={product.id} />
           ))}
         </ul>
       )}
