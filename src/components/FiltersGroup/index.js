@@ -67,19 +67,19 @@ const FiltersGroup = () => {
         </div>
         <div className="col-6">
           <button
-            id="WOMEN"
+            id="FEMAKE"
             type="button"
             className={
-              gender === "Women"
+              gender === "Female"
                 ? "filters-button active-gender"
                 : "filters-button"
             }
-            value="Women"
+            value="Female"
             onClick={(event) => {
               dispatch(updateGender(event.target.value));
             }}
           >
-            Women
+            Female
           </button>
         </div>
         <div className="col-6">

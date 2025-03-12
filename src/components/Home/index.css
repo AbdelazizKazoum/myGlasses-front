@@ -82,3 +82,41 @@
   flex-wrap: wrap;
   padding: 15px 0;
 }
+.home-categories-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.home-categories-list-wrapper {
+  overflow: hidden;
+  flex: 1;
+}
+
+.home-categories-list {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1rem;
+  transition: scroll-left 0.3s ease-in-out;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* hide scrollbar for Firefox */
+}
+
+.home-categories-list::-webkit-scrollbar {
+  display: none; /* hide scrollbar for WebKit */
+}
+
+.scroll-btn {
+  background-color: #e5e7eb;
+  border: none;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.scroll-btn:hover {
+  background-color: #d1d5db;
+}

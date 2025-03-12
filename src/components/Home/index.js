@@ -15,11 +15,14 @@ import ErrorCard from "../ErrorCard";
 import ScrollToTop from "../ScrollToTop";
 import CarouselComponent from "./CarouselComponent";
 import { getCategories } from "../../store/categorySlice";
+import { ChevronLeft, ChevronRight } from "lucide-react"; // or use icons of your choice
 
 const Home = () => {
   const dispatch = useDispatch();
   const ref = useRef();
   const [showArrow, setShowArrow] = useState(false);
+
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const toggleShowArrow = () => {
@@ -55,6 +58,24 @@ const Home = () => {
     ref.current.scrollIntoView({
       behavior: "smooth",
     });
+  };
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: -500, // adjust scroll amount
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: 500,
+        behavior: "smooth",
+      });
+    }
   };
 
   const renderHomeBanner = () => (
@@ -117,9 +138,24 @@ const Home = () => {
           Categories
         </h2>
       </div>
-      {categories.map((category) => (
-        <CategoryCard key={category.id} categoryDetails={category} />
-      ))}
+
+      <div className="home-categories-controls col-12 d-flex align-items-center gap-3">
+        <button className="scroll-btn" onClick={scrollLeft}>
+          <ChevronLeft size={28} />
+        </button>
+
+        <div className="home-categories-list-wrapper">
+          <div className="home-categories-list" ref={scrollRef}>
+            {categories.map((category) => (
+              <CategoryCard key={category.id} categoryDetails={category} />
+            ))}
+          </div>
+        </div>
+
+        <button className="scroll-btn" onClick={scrollRight}>
+          <ChevronRight size={28} />
+        </button>
+      </div>
     </section>
   );
 

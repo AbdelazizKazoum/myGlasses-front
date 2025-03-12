@@ -20,7 +20,7 @@ const productSchema = z.object({
   description: z.string().optional(),
   brand: z.string().min(1, "Brand is required"),
   category: z.string().min(1, "Category is required"),
-  gender: z.enum(["Male", "Female"], {
+  gender: z.enum(["Male", "Female", "Unisex"], {
     errorMap: () => ({ message: "Gender is required" }),
   }),
   weight: z.string().optional(),
@@ -148,7 +148,7 @@ const ProductForm = ({ onSubmit, product }) => {
         <SelectInput
           label="Gender"
           name="gender"
-          options={["Male", "Female"]}
+          options={["Male", "Female", "Unisex"]}
           errors={errors}
           register={register}
         />

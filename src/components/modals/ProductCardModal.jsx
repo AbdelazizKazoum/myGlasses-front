@@ -4,6 +4,7 @@ import { getImageUrl } from "../../utils/getImageUrl";
 import { AlertCircle } from "lucide-react";
 import { getProductsByCategory } from "../../store/productDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { RxCross2 } from "react-icons/rx";
 
 const ProductCardModal = ({
   product,
@@ -93,15 +94,10 @@ const ProductCardModal = ({
         />
         <div className="absolute right-0 top-0 h-full w-full sm:w-[400px] bg-white shadow-xl p-6 animate-slide-in overflow-y-auto">
           <div className="flex justify-between items-center border-b pb-3 mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-xl m-0 font-semibold text-gray-800">
               Customize Product
             </h2>
-            <button
-              onClick={closeModal}
-              className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-            >
-              &times;
-            </button>
+            <RxCross2 className="filters-cross" onClick={closeModal} />
           </div>
 
           <div className="mb-4 w-full flex justify-center">
