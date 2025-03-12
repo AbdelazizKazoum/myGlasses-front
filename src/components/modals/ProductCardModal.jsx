@@ -204,7 +204,7 @@ const ProductCardModal = ({
           <div className="flex justify-between">
             <button
               onClick={handleClickWithValidation}
-              className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition"
+              className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-800 transition"
             >
               Add to Cart
             </button>

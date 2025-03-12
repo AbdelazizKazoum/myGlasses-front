@@ -13,7 +13,7 @@ const CategoryCard = (props) => {
     <div className="col-12 col-md-4 mb-4">
       <Link
         to="products"
-        className="link-item"
+        className="link-item relative"
         onClick={() => {
           dispatch(initializeCategory());
 
@@ -24,7 +24,7 @@ const CategoryCard = (props) => {
           className="category-card"
           style={{ backgroundImage: `url(${getImageUrl(imageUrl)})` }}
         >
-          <p className="text-xl md:text-2xl lg:text-3xl font-semibold text-white text-center px-2 break-words truncate">
+          <p className=" text-xl md:text-2xl lg:text-3xl font-semibold text-white text-center px-2 break-words truncate">
             {displayText}
           </p>{" "}
         </div>
