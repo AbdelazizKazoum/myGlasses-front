@@ -48,8 +48,8 @@ const FeaturedProducts = ({ products, allowDetails }) => {
   return (
     <div>
       <div className="mx-auto  py-20 ">
-        <h2 className="text-3xl text-center font-bold tracking-tight text-gray-900">
-          Similar Products
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+          You may also like
         </h2>
 
         <div className="mt-10 relative">

@@ -279,8 +279,8 @@ const ProductDetailsCard = (props) => {
 
           {/* Show Colors */}
           <div className="mb-3">
-            <h3 className=" font-semibold mb-2">Color:</h3>
-            <div className="flex space-x-2">
+            <span className=" font-semibold ">Color:</span>
+            <div className="flex space-x-2 mt-2">
               {uniqueColors.map((color, index) => (
                 <button
                   key={index}
@@ -300,8 +300,8 @@ const ProductDetailsCard = (props) => {
 
           {/* Show Sizes */}
           <div className="mb-3">
-            <h3 className="font-semibold mb-2">Size:</h3>
-            <div className="flex space-x-2">
+            <span className="font-semibold mb-2">Size:</span>
+            <div className="flex space-x-2 mt-2">
               {uniqueSizes.map((size, index) => (
                 <button
                   key={index}

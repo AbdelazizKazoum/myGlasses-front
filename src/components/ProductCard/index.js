@@ -176,9 +176,12 @@ const ProductCard = (props) => {
               <img
                 src={getImageUrl(image)}
                 alt={name}
-                className="w-20 h-20 object-cover rounded-md mb-3"
+                className="w-30 h-20 object-contain rounded-md mb-3"
               />
               <p className="text-lg font-semibold">{name}</p>
+              <p className="text-lg font-semibold text-primary-500">
+                {newPrice} MAD
+              </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-4">
@@ -189,7 +192,7 @@ const ProductCard = (props) => {
                 }}
                 className="w-full sm:w-1/2 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition"
               >
-                Proceed to Checkout
+                Proceed to Cart
               </button>
               <button
                 onClick={() => setShowSuccessModal(false)} // Close modal without redirect
