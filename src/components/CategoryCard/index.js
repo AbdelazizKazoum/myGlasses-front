@@ -6,11 +6,12 @@ import { getImageUrl } from "../../utils/getImageUrl";
 
 const CategoryCard = (props) => {
   const { displayText, imageUrl } = props.categoryDetails;
-  console.log("🚀 ~ CategoryCard ~ imageUrl:", imageUrl);
+  console.log("🚀 ~ CategoryCard ~ imageUrl:", getImageUrl(imageUrl));
+
   const dispatch = useDispatch();
 
   return (
-    <div className="col-12 col-md-4 mb-4">
+    <div className="col-12 col-md-4 mb-4 w-full h-full">
       <Link
         to="products"
         className="link-item relative"

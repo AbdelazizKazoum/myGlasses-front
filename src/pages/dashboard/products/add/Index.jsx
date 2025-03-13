@@ -90,7 +90,7 @@ const ProductCreation = () => {
   }, [dispatch, product]);
 
   return (
-    <div className="container mx-auto p-6">
+    <div className=" mx-auto p-6">
       {/* Product Form */}
       <ProductForm onSubmit={submitProduct} product={product} />
 
