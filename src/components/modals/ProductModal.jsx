@@ -85,7 +85,7 @@ const ProductModal = ({
         <div className="flex justify-end p-4 border-t border-gray-200">
           <button
             type="button"
-            className="text-white bg-black/90 hover:bg-black/80 rounded-lg px-4 py-2"
+            className="text-white bg-primary-500 hover:bg-black/80 rounded-lg px-4 py-2"
             onClick={() => {
               setIsOpen(false);
               navigate("/cart");

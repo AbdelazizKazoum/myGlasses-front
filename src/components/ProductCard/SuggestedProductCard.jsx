@@ -88,7 +88,7 @@ const SuggestedProductCard = ({ variant, allowDetails }) => {
             variant.images.length > 0 ? variant?.images[0].image : image
           )}
           alt="productImage"
-          className="object-cover  w-full h-32 sm:h-48"
+          className="object-contain  w-full h-32 sm:h-30"
         />
       </Link>
 
@@ -123,7 +123,7 @@ const SuggestedProductCard = ({ variant, allowDetails }) => {
           </div>
         </section>
         <hr className="my-1 sm:my-2" />
-        <section className="flex justify-between items-center">
+        <section className="flex py-1 justify-between items-center">
           <button
             type="button"
             className={`px-2 sm:px-4 py-1 border border-black rounded-full text-xs sm:text-sm transition ${
