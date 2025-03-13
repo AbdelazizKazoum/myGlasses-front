@@ -100,11 +100,14 @@ const ProductTable = ({ data }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 flex items-center gap-2 text-gray-900 whitespace-nowrap">
-                  <img
-                    className="w-10 h-10 rounded-full"
-                    src={getImageUrl(product.image)}
-                    alt="Product image"
-                  />
+                  <div className="flex">
+                    {" "}
+                    <img
+                      className="w-10 h-10 object-contain rounded-full"
+                      src={getImageUrl(product.image)}
+                      alt="Preview"
+                    />
+                  </div>
                   {product.name}
                 </td>
                 <td className="px-6 py-4">{product.brand}</td>

@@ -111,7 +111,7 @@ const CommandDetailModal = ({
                         : ""
                     )}
                     alt={detail.detailProduct.product.name}
-                    className="w-16 h-16 object-cover rounded-lg shadow"
+                    className="w-16 h-16 object-contain rounded-lg shadow"
                   />
                   <div>
                     <p className="font-medium text-gray-800">

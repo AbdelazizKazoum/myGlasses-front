@@ -27,15 +27,17 @@ const ImageUpload = ({ label, name, setValue, errors, defaultImage }) => {
         onClick={() => document.getElementById(name).click()}
       >
         {preview ? (
-          <img
-            src={
-              preview instanceof File
-                ? URL.createObjectURL(preview)
-                : getImageUrl(preview)
-            }
-            alt="Preview"
-            className="w-full h-full object-cover rounded-md"
-          />
+          <div className="flex h-full w-full">
+            <img
+              src={
+                preview instanceof File
+                  ? URL.createObjectURL(preview)
+                  : getImageUrl(preview)
+              }
+              alt="Preview"
+              className=" w-full h-full object-contain rounded-md"
+            />
+          </div>
         ) : (
           <span className="text-gray-500">Click to upload</span>
         )}
