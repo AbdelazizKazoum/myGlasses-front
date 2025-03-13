@@ -41,11 +41,16 @@ const ProductCardModal = ({
     const fetchRelatedProducts = async () => {
       setLoadingRelated(true);
       const res = await dispatch(getProductsByCategory(category));
-      setRelatedProducts(res.payload || []);
+      setRelatedProducts(
+        (res.payload &&
+          res.payload.length > 0 &&
+          res.payload.filter((item) => item.id !== product.id)) ||
+          []
+      );
       setLoadingRelated(false);
     };
     fetchRelatedProducts();
-  }, [category, dispatch]);
+  }, [category, dispatch, product.id]);
 
   useEffect(() => {
     if (!selectedSize || !selectedColor) return;

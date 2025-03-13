@@ -71,6 +71,8 @@ export const getProductDetails = createAsyncThunk(
 export const getProductsByCategory = createAsyncThunk(
   "productByCategory/get",
   async (category, { rejectWithValue }) => {
+    console.log("🚀 ~ category:", category);
+
     try {
       const response = await api.get(`/product/category/${category}`);
 
@@ -86,9 +88,7 @@ export const getAccessoires = createAsyncThunk(
   "productByCategory/accessoires",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/detail-product/category`, {
-        category: "ACCESSOIRES",
-      });
+      const response = await api.get(`/detail-product/category/Accessoires`);
 
       return response.data;
     } catch (error) {
