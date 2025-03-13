@@ -12,7 +12,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #FBFAF7 !important;
+  background-color: #fbfaf7 !important;
 }
 
 code {
@@ -27,4 +27,18 @@ code {
 
 .mr {
   margin: 0 10px;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+/* Hide scrollbars but allow scroll functionality */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* WebKit */
 }
