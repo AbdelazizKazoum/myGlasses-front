@@ -41,12 +41,12 @@ const FeaturedProducts = ({ products, allowDetails }) => {
   }, []);
 
   return (
-    <div className="mx-auto py-16 px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <h2 className="text-3xl font-bold tracking-tight text-gray-900">
         You may also like
       </h2>
 
-      <div className="relative mt-10">
+      <div className="relative mt-3">
         {/* Scroll buttons */}
         <button
           onClick={() => handleScroll("left")}
