@@ -67,7 +67,7 @@ const FeaturedProducts = ({ products, allowDetails }) => {
                 className="min-w-[220px] max-w-[250px] flex-shrink-0 cursor-pointer"
                 onClick={() => navigate(`/product/${item.id}`)}
               >
-                <div className="bg-gray-100 rounded-md aspect-square flex items-center justify-center overflow-hidden">
+                <div className="bg-black/[0.075]  rounded-md aspect-square flex items-center justify-center overflow-hidden">
                   <img
                     src={getImageUrl(item.image)}
                     alt={item.name}
