@@ -39,7 +39,6 @@ const ProductDetailsCard = (props) => {
     relatedProducts: categoryProducts,
     accessoires,
   } = useSelector((state) => state.productDetails);
-  console.log("🚀 ~ ProductDetailsCard ~ data:", data);
 
   const {
     id,
@@ -52,6 +51,7 @@ const ProductDetailsCard = (props) => {
     newPrice,
     price,
     rating,
+    reviewCount,
     weight,
     detail,
   } = data;
@@ -410,7 +410,11 @@ const ProductDetailsCard = (props) => {
         <RelatedProducts products={categoryProducts} allowDetails={true} />
       </div>
       <div>
-        <RatingSection />
+        <RatingSection
+          productId={id}
+          reviewCount={reviewCount}
+          rating={rating}
+        />
       </div>
     </div>
   );
