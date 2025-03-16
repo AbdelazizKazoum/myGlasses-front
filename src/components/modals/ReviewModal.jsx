@@ -6,7 +6,7 @@ import { writeReview } from "../../store/productDetailsSlice";
 
 const ratingLabels = ["Terrible", "Poor", "Average", "Good", "Excellent"];
 
-const ReviewModal = ({ productId, onClose, user }) => {
+const ReviewModal = ({ productId, onClose, user, refreshReviews }) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -25,9 +25,11 @@ const ReviewModal = ({ productId, onClose, user }) => {
     const response = await dispatch(
       writeReview({ productId, rating, comment, title })
     );
-    if (response.status === 201) {
+    console.log("🚀 ~ handleSubmit ~ response:", response);
+    if (response.payload?.comment) {
       toast.success("Review submitted successfully!");
       onClose();
+      refreshReviews();
     }
     setLoading(false);
   };
@@ -106,7 +108,7 @@ const ReviewModal = ({ productId, onClose, user }) => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-4 py-2 bg-primary-800 text-white rounded-lg hover:bg-primary-900 disabled:bg-gray-400 transition"
+            className="px-4 py-2 bg-primary-800 text-white rounded-lg hover:bg-primary-500 disabled:bg-gray-400 transition"
           >
             {loading ? "Submitting..." : "Submit"}
           </button>

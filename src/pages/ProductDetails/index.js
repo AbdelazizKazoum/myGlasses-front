@@ -323,7 +323,7 @@ const ProductDetailsCard = (props) => {
           {showVariantAlert && (
             <div className="bg-red-500/10 p-2 rounded flex mb-2 items-center">
               <AlertCircle className="text-red-500 mr-2" />
-              <p className="text-red-500 font-bold">
+              <p className="text-red-500 m-0 p-1 font-bold">
                 Not available. Select a different size or color.
               </p>
             </div>
@@ -333,7 +333,7 @@ const ProductDetailsCard = (props) => {
           {variantQty !== null && variantQty === 0 ? (
             <div className="bg-red-500/10 p-2 rounded flex items-center mb-2">
               <AlertCircle className="text-red-500 mr-2" />
-              <p className="text-red-500 font-bold">Sold Out</p>
+              <p className="text-red-500 m-0 p-1 font-bold">Sold Out</p>
             </div>
           ) : (
             <p className="text-gray-600 text-lg mb-2">

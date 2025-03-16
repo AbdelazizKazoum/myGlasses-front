@@ -37,25 +37,26 @@ export const RatingSection = ({ productId, rating, reviewCount }) => {
   //   const reviewCount = 126;
   //   const rating = 4.8;
   const [reviews, setReviews] = useState([]);
+  console.log("🚀 ~ RatingSection ~ reviews:", reviews);
   const [ratingDistribution, setRatingDistribution] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const res = await api.get(`review/product/${productId}`);
+  const fetchReviews = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get(`review/product/${productId}`);
+      setReviews(res.data.reviews || []);
+      setRatingDistribution(res.data.ratingDistribution || {});
+    } catch (error) {
+      toast.error("Failed to fetch reviews");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        console.log("🚀 ~ res:", res);
-        setReviews(res.data.reviews || []);
-        setRatingDistribution(res.data.ratingDistribution || {});
-      } catch (error) {
-        toast.error("Failed to fetch reviews");
-      } finally {
-        setLoading(false);
-      }
-    })();
+  useEffect(() => {
+    fetchReviews();
   }, [productId]);
 
   const handleWriteReview = () => setIsModalOpen(true);
@@ -128,7 +129,7 @@ export const RatingSection = ({ productId, rating, reviewCount }) => {
       {/* Review List */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-semibold">User Reviews</h3>
-        <span className="text-blue-600 hover:underline text-sm cursor-pointer">
+        <span className="text-primary-500 hover:text-primary-800 underline text-base cursor-pointer">
           Read all reviews &gt;
         </span>
       </div>
@@ -166,14 +167,18 @@ export const RatingSection = ({ productId, rating, reviewCount }) => {
                     ))}
                   </div>
                 </div>
-
+                <span className=" font-bold text-lg ">{review.title}</span>
                 <p className="text-base text-gray-800">{review.comment}</p>
               </div>
             ))}
       </div>
 
       {isModalOpen && (
-        <ReviewModal productId={productId} onClose={handleCloseModal} />
+        <ReviewModal
+          productId={productId}
+          onClose={handleCloseModal}
+          refreshReviews={fetchReviews}
+        />
       )}
     </div>
   );
