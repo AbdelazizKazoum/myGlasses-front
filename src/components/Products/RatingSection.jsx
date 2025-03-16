@@ -167,7 +167,9 @@ export const RatingSection = ({ productId, rating, reviewCount }) => {
                     ))}
                   </div>
                 </div>
-                <span className=" font-bold text-lg ">{review.title}</span>
+                <span className=" font-bold text-lg text-primary-800 ">
+                  {review.title}
+                </span>
                 <p className="text-base text-gray-800">{review.comment}</p>
               </div>
             ))}
