@@ -25,9 +25,8 @@ const ReviewModal = ({ productId, onClose, user, refreshReviews }) => {
     const response = await dispatch(
       writeReview({ productId, rating, comment, title })
     );
-    console.log("🚀 ~ handleSubmit ~ response:", response);
     if (response.payload?.comment) {
-      toast.success("Review submitted successfully!");
+      //   toast.success("Review submitted successfully!");
       onClose();
       refreshReviews();
     }
