@@ -147,11 +147,11 @@ export const RatingSection = ({ productId, rating, reviewCount }) => {
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex  gap-3">
                     <h3 className="text-lg font-semibold">
-                      {review.user.prenom} {review.user.nom}
+                      {review?.user?.prenom} {review?.user?.nom}
                     </h3>
                     <p className=" m-0 text-gray-600  mb-1">
                       Reviewed on:{" "}
-                      {new Date(review.reviewDate).toLocaleDateString()}
+                      {new Date(review?.reviewDate).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="flex">
@@ -168,9 +168,9 @@ export const RatingSection = ({ productId, rating, reviewCount }) => {
                   </div>
                 </div>
                 <span className=" font-bold text-lg text-primary-800 ">
-                  {review.title}
+                  {review?.title}
                 </span>
-                <p className="text-base text-gray-800">{review.comment}</p>
+                <p className="text-base text-gray-800">{review?.comment}</p>
               </div>
             ))}
       </div>
