@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const TableHeader = ({ searchQuery, setSearchQuery, handleAddProduct }) => {
+const HistoryHeader = ({ searchQuery, setSearchQuery, handleAddProduct }) => {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -63,7 +63,7 @@ const TableHeader = ({ searchQuery, setSearchQuery, handleAddProduct }) => {
                     d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
                   />
                 </svg>
-                Add product
+                Add Stock
               </button>
             </div>
           </div>
@@ -73,4 +73,4 @@ const TableHeader = ({ searchQuery, setSearchQuery, handleAddProduct }) => {
   );
 };
 
-export default TableHeader;
+export default HistoryHeader;
