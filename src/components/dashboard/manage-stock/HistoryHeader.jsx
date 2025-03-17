@@ -13,8 +13,8 @@ const HistoryHeader = ({ filters, setFilters, handleAddStock }) => {
             <label className="text-sm font-medium mb-1">Search</label>
             <input
               type="text"
-              name="search"
-              value={filters.search}
+              name="searchInput"
+              value={filters.searchInput}
               onChange={handleInputChange}
               className="p-2 border rounded-lg w-full"
               placeholder="Search all fields"
@@ -33,6 +33,7 @@ const HistoryHeader = ({ filters, setFilters, handleAddStock }) => {
               <option value="">All</option>
               <option value="add">Add</option>
               <option value="remove">Remove</option>
+              <option value="correction">Correction</option>
             </select>
           </div>
 
@@ -42,7 +43,7 @@ const HistoryHeader = ({ filters, setFilters, handleAddStock }) => {
             <input
               type="text"
               name="supplier"
-              value={filters.supplier}
+              value={filters.supplierId}
               onChange={handleInputChange}
               className="p-2 border rounded-lg w-full"
               placeholder="Supplier name"
@@ -50,16 +51,20 @@ const HistoryHeader = ({ filters, setFilters, handleAddStock }) => {
           </div>
 
           {/* Reason */}
-          <div className="flex text-gray-700 flex-col">
+          <div className=" text-gray-700 flex flex-col">
             <label className="text-sm font-medium mb-1">Reason</label>
-            <input
-              type="text"
+            <select
               name="reason"
               value={filters.reason}
               onChange={handleInputChange}
-              className="p-2 border rounded-lg w-full"
-              placeholder="Reason"
-            />
+              className="p-2 border bg-white rounded-lg w-full"
+            >
+              <option value="">All</option>
+              <option value="supplier_delivery">Supplier delivery</option>
+              <option value="inventory_correction">Inventory correction</option>
+              <option value="customer_return">Customer return</option>
+              <option value="manual_adjustment">Manual adjustment</option>
+            </select>
           </div>
 
           {/* Date */}
