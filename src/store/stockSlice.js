@@ -42,6 +42,23 @@ export const filterHistory = createAsyncThunk(
   }
 );
 
+export const addStock = createAsyncThunk(
+  "stock/add",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`/stock-movement`, formData);
+      toast.success("Stock movement added successfully");
+
+      return res.data;
+    } catch (error) {
+      console.log("🚀 ~ error:", error);
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to add  stock !"
+      );
+    }
+  }
+);
+
 const stockSlice = createSlice({
   name: "stock",
   initialState,
