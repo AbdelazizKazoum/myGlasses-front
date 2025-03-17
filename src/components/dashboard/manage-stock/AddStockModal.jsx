@@ -48,7 +48,7 @@ const AddStockModal = ({ isOpen, onClose }) => {
   const onSubmit = async (data) => {
     const res = await dispatch(addStock(data));
 
-    if (res.payload.data) {
+    if (res.payload) {
       onClose(); // Close the modal after successful submission
       await dispatch(filterHistory());
     }
