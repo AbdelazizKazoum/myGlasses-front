@@ -14,7 +14,6 @@ import SignUpPage from "./components/SignUpPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import "./App.css";
 import AdminLayout from "./pages/dashboard/AdminLayout";
 import ProductsPage from "./pages/dashboard/products/Index";
@@ -31,7 +30,6 @@ import SettingsPage from "./pages/dashboard/settings/Index";
 import AddProduct from "./pages/dashboard/products/add/Index";
 import Cart from "./pages/cart";
 import Products from "./pages/products";
-import { AddStock } from "./pages/dashboard/manage-stock/add/Index";
 import StockHistory from "./pages/dashboard/manage-stock/history/Index";
 import Stock from "./pages/dashboard/manage-stock/stock/Index";
 
@@ -105,15 +103,6 @@ function App() {
             />
 
             {/* ------------------- Manage Stock ------------------------------ */}
-            <Route
-              exact
-              path="/admin/stock/add"
-              element={
-                <AdminLayout>
-                  <AddStock />
-                </AdminLayout>
-              }
-            />
 
             <Route
               exact

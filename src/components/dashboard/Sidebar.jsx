@@ -118,11 +118,6 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
             onClick={() => dispatch(setProduct(null))}
           >
             <NavItem
-              to="/admin/stock/add"
-              label="Add"
-              icon={<Circle size={6} />}
-            />
-            <NavItem
               to="/admin/stock/history"
               label="Stock History"
               icon={<Circle size={6} />}

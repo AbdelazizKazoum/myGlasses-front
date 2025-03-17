@@ -1,51 +1,72 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddStockModal from "../../../../components/dashboard/manage-stock/AddStockModal";
 import HistoryHeader from "../../../../components/dashboard/manage-stock/HistoryHeader";
+import { useDispatch, useSelector } from "react-redux";
+import { filterHistory } from "../../../../store/stockSlice";
 
 const StockHistory = () => {
   // State for stock history and search query
-  const [stockHistory, setStockHistory] = useState([
-    {
-      id: "1",
-      type: "add",
-      quantity: 10,
-      productDetail: "Product A",
-      supplier: "Supplier A",
-      order: "Order A",
-      reason: "New Stock",
-      date: "2025-03-16",
-    },
-    {
-      id: "2",
-      type: "remove",
-      quantity: 5,
-      productDetail: "Product B",
-      supplier: "Supplier B",
-      order: "Order B",
-      reason: "Product Sale",
-      date: "2025-03-17",
-    },
-    // Add more data as needed
-  ]);
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [stockHistory, setStockHistory] = useState([
+  //   {
+  //     id: "1",
+  //     type: "add",
+  //     quantity: 10,
+  //     productDetail: "Product A",
+  //     supplier: "Supplier A",
+  //     order: "Order A",
+  //     reason: "New Stock",
+  //     date: "2025-03-16",
+  //   },
+  //   {
+  //     id: "2",
+  //     type: "remove",
+  //     quantity: 5,
+  //     productDetail: "Product B",
+  //     supplier: "Supplier B",
+  //     order: "Order B",
+  //     reason: "Product Sale",
+  //     date: "2025-03-17",
+  //   },
+  //   // Add more data as needed
+  // ]);
+
+  // State
+  const [filters, setFilters] = useState({
+    search: "",
+    type: "",
+    supplier: "",
+    reason: "",
+    date: "",
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  // Hooks
+  const { stockHistory } = useSelector((state) => state.stock);
+  console.log("🚀 ~ StockHistory ~ stockHistory:", stockHistory);
+  const dispatch = useDispatch();
 
   // Modal toggle functions
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Filter stock history based on search query
-  const filteredHistory = stockHistory.filter((movement) =>
-    movement.productDetail.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    dispatch(
+      filterHistory({
+        filters,
+        pagination: { page: currentPage, limit },
+      })
+    );
+  }, [filters, currentPage, limit, dispatch]);
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg  bg-white h-full rounded-2xl">
       {/* Table Header with Search */}
       <HistoryHeader
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        handleAddProduct={openModal} // Reusing the modal opening function
+        filters={filters}
+        setFilters={setFilters}
+        handleAddStock={openModal} // Reusing the modal opening function
       />
 
       {/* Stock History Table */}
@@ -94,7 +115,7 @@ const StockHistory = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredHistory.map((movement) => (
+          {stockHistory.map((movement, key) => (
             <tr
               key={movement.id}
               className="bg-white border-b border-gray-200 hover:bg-gray-50"
@@ -117,8 +138,10 @@ const StockHistory = () => {
               <td className="px-6 py-4">{movement.id}</td>
               <td className="px-6 py-4">{movement.type}</td>
               <td className="px-6 py-4">{movement.quantity}</td>
-              <td className="px-6 py-4">{movement.productDetail}</td>
-              <td className="px-6 py-4">{movement.supplier}</td>
+              <td className="px-6 py-4">
+                {movement?.productDetail?.product?.name}
+              </td>
+              <td className="px-6 py-4">{movement.supplier?.name}</td>
               <td className="px-6 py-4">{movement.order}</td>
               <td className="px-6 py-4">{movement.reason}</td>
               <td className="px-6 py-4">{movement.date}</td>
