@@ -49,7 +49,11 @@ const FournisseurTab = () => {
   const { suppliers } = useSelector((state) => state.suppliers);
   const dispatch = useDispatch();
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = () => {
+    setSelectedSupplier(null); // Clear previously selected supplier
+    setIsModalOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedSupplier(null); // Reset selected supplier

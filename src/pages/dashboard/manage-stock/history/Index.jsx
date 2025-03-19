@@ -3,8 +3,10 @@ import AddStockModal from "../../../../components/dashboard/manage-stock/AddStoc
 import HistoryHeader from "../../../../components/dashboard/manage-stock/HistoryHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { filterHistory } from "../../../../store/stockSlice";
+import MovementDetailModal from "../../../../components/modals/MovementDetailModal";
 
 const StockHistory = () => {
+  // State
   const [filters, setFilters] = useState({
     search: "",
     type: "",
@@ -16,9 +18,24 @@ const StockHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
+  const [selectedMovement, setSelectedMovement] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+  // Hooks
   const { stockHistory, totalItems } = useSelector((state) => state.stock);
   console.log("🚀 ~ StockHistory ~ stockHistory:", stockHistory);
   const dispatch = useDispatch();
+
+  // Methods
+  const openDetailModal = (movement) => {
+    setSelectedMovement(movement);
+    setIsDetailModalOpen(true);
+  };
+
+  const closeDetailModal = () => {
+    setSelectedMovement(null);
+    setIsDetailModalOpen(false);
+  };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -128,10 +145,10 @@ const StockHistory = () => {
                 <td className="px-6 py-4">{movement.date}</td>
                 <td className="px-6 py-4">
                   <button
-                    onClick={openModal}
-                    className="font-medium text-blue-600 hover:underline"
+                    onClick={() => openDetailModal(movement)}
+                    className="font-medium text-primary-500 hover:underline"
                   >
-                    Add Movement
+                    Show Details
                   </button>
                 </td>
               </tr>
@@ -197,6 +214,12 @@ const StockHistory = () => {
         </button>
       </div>
 
+      {/* Modal for Detail Movement */}
+      <MovementDetailModal
+        isOpen={isDetailModalOpen}
+        movement={selectedMovement}
+        onClose={closeDetailModal}
+      />
       {/* Modal for Adding Movement */}
       <AddStockModal isOpen={isModalOpen} onClose={closeModal} />
     </div>

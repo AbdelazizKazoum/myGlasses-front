@@ -200,42 +200,71 @@ const CategoriesTab = () => {
 
       {/* Modal for adding or updating a category */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg w-96 shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">
+        <div className="fixed inset-0 z-50 m-0 flex items-center justify-center bg-black/50 ">
+          <div className="relative bg-white w-full max-w-md rounded-2xl shadow-xl p-6">
+            {/* Close Icon */}
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition"
+              aria-label="Fermer"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 011.414 
+              1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 
+              11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 
+              10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">
               {editingCategory
                 ? "Modifier la catégorie"
                 : "Ajouter une catégorie"}
             </h3>
-            <input
-              type="text"
-              value={categoryName}
-              onChange={(e) => setCategoryName(e.target.value)}
-              className="w-full p-2 border rounded-lg mb-4"
-              placeholder="Nom de la catégorie"
-            />
-            <input
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full p-2 border rounded-lg mb-4"
-              placeholder="Nom d'affichage"
-            />
-            <input
-              type="file"
-              onChange={handleImageUpload}
-              className="w-full p-2 border rounded-lg mb-4"
-            />
-            <div className="flex justify-end gap-2">
+
+            <div className="space-y-4">
+              <input
+                type="text"
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
+                className="w-full border border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-lg px-3 py-2 text-sm outline-none transition"
+                placeholder="Nom de la catégorie"
+              />
+
+              <input
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className="w-full border border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-lg px-3 py-2 text-sm outline-none transition"
+                placeholder="Nom d'affichage"
+              />
+
+              <input
+                type="file"
+                onChange={handleImageUpload}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm file:mr-3 file:py-2 file:px-4 file:border-0 file:bg-primary-100 file:text-primary-600 file:rounded-lg hover:file:bg-primary-200 transition"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-300 rounded-lg"
+                className="px-4 py-2 text-sm rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
               >
                 Annuler
               </button>
               <button
                 onClick={handleAddCategory}
-                className="px-4 py-2 bg-primary-500 text-white rounded-lg"
+                className="px-4 py-2 text-sm rounded-lg bg-primary-500 text-white hover:bg-primary-800 transition"
               >
                 {editingCategory ? "Mettre à jour" : "Ajouter"}
               </button>
