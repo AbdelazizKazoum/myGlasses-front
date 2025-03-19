@@ -131,6 +131,8 @@ const Stock = () => {
       </div>
 
       {/* Pagination */}
+
+      {/* Pagination */}
       <div className="flex items-center justify-end gap-3 py-4 px-6">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
@@ -139,8 +141,45 @@ const Stock = () => {
         >
           Previous
         </button>
-        {/* Page Numbers */}
-        {/* Similar Pagination Code */}
+
+        <div className="flex items-center space-x-2">
+          {/* Page Numbers */}
+          <button
+            onClick={() => handlePageChange(1)}
+            className={`px-4 py-2 ${
+              currentPage === 1
+                ? "bg-primary-500 text-white"
+                : "bg-gray-200 text-gray-700"
+            } rounded-md`}
+          >
+            1
+          </button>
+          {currentPage > 2 && <span className="text-gray-500">...</span>}
+          {currentPage > 1 && currentPage < totalPages && (
+            <button
+              onClick={() => handlePageChange(currentPage)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              {currentPage}
+            </button>
+          )}
+          {currentPage < totalPages - 1 && (
+            <span className="text-gray-500">...</span>
+          )}
+          {totalPages > 1 && (
+            <button
+              onClick={() => handlePageChange(totalPages)}
+              className={`px-4 py-2 ${
+                currentPage === totalPages
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700"
+              } rounded-md`}
+            >
+              {totalPages}
+            </button>
+          )}
+        </div>
+
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
