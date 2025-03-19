@@ -32,6 +32,8 @@ import Cart from "./pages/cart";
 import Products from "./pages/products";
 import StockHistory from "./pages/dashboard/manage-stock/history/Index";
 import Stock from "./pages/dashboard/manage-stock/stock/Index";
+import AddOrder from "./pages/dashboard/manage-orders/add/Index";
+import { Orders } from "./pages/dashboard/manage-orders/orders/Index";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
@@ -126,6 +128,29 @@ function App() {
 
             {/* --------------------------------------------------------------------- */}
 
+            {/* ------------------------- Manage Orders ------------------------------ */}
+
+            <Route
+              exact
+              path="/admin/orders/add"
+              element={
+                <AdminLayout>
+                  <AddOrder />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/orders"
+              element={
+                <AdminLayout>
+                  <Orders />
+                </AdminLayout>
+              }
+            />
+
+            {/* -------------------------------------------------------------- */}
             <Route
               exact
               path="/admin/users"

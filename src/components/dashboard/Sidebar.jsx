@@ -20,17 +20,26 @@ import { setProduct } from "../../store/productSlice";
 function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isStockOpen, setIsStockOpen] = useState(false);
+  const [isOrdersOpen, setIsOrdersOpen] = useState(false); // New state for orders
 
   const dispatch = useDispatch();
 
   const handleProductsToggle = () => {
     setIsProductsOpen((prev) => !prev);
     setIsStockOpen(false);
+    setIsOrdersOpen(false); // Close orders if products are toggled
   };
 
   const handleStockToggle = () => {
     setIsStockOpen((prev) => !prev);
     setIsProductsOpen(false);
+    setIsOrdersOpen(false); // Close orders if stock is toggled
+  };
+
+  const handleOrdersToggle = () => {
+    setIsOrdersOpen((prev) => !prev);
+    setIsProductsOpen(false);
+    setIsStockOpen(false); // Close products and stock if orders are toggled
   };
 
   return (
@@ -129,6 +138,41 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
             />
           </div>
         </div>
+
+        {/* Manage Orders Dropdown */}
+        <div className="w-full flex flex-col justify-start">
+          <button
+            onClick={handleOrdersToggle} // Toggle for orders
+            className="flex items-center justify-between w-full p-2 text-gray-700 rounded-lg hover:bg-gray-100"
+          >
+            <div className="flex items-center">
+              <ShoppingCart className="mr-2" />{" "}
+              {/* Keep ShoppingCart icon for orders */}
+              <span>Manage Orders</span>
+            </div>
+            {isOrdersOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
+          <div
+            className={`ml-6 space-y-1 w-full transform transition-all duration-300 ease-in-out origin-top ${
+              isOrdersOpen
+                ? "opacity-100 translate-y-0 max-h-[500px] visible"
+                : "opacity-0 -translate-y-2 max-h-0 invisible"
+            }`}
+            onClick={() => dispatch(setProduct(null))}
+          >
+            <NavItem
+              to="/admin/orders/add"
+              label="Add"
+              icon={<Circle size={6} />}
+            />
+            <NavItem
+              to="/admin/orders"
+              label="Orders"
+              icon={<Circle size={6} />}
+            />
+          </div>
+        </div>
+
         <NavItem to="/admin/users" icon={<Users />} label="Users" />
         <NavItem to="/admin/settings" icon={<Settings />} label="Settings" />
       </nav>
