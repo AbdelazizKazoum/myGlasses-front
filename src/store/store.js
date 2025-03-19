@@ -12,6 +12,7 @@ import userSlice from "./userSlice";
 import commandeSlice from "./commandeSlice";
 import productSlice from "./productSlice";
 import stockSlice from "./stockSlice";
+import supplierSlice from "./supplierSlice";
 
 const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ const store = configureStore({
     users: usersSlice,
     commande: commandeSlice,
     stock: stockSlice,
+    suppliers: supplierSlice,
   },
 });
 

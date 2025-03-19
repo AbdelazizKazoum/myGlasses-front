@@ -32,6 +32,8 @@ export const filterHistory = createAsyncThunk(
         `/stock-movement/filter?searchInput=${searchInput}&type=${type}&reason=${reason}&supplierId=${supplierId}&productDetailId=${productDetailId}&page=${page}&limit=${limit}&sortByDate=${sortByDate}`
       );
 
+      console.log("🚀 ~ res ttttttttttttt :", res);
+
       return res.data;
     } catch (error) {
       console.log("🚀 ~ error:", error);

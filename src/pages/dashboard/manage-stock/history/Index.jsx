@@ -17,6 +17,7 @@ const StockHistory = () => {
   const [limit, setLimit] = useState(10);
 
   const { stockHistory, totalItems } = useSelector((state) => state.stock);
+  console.log("🚀 ~ StockHistory ~ stockHistory:", stockHistory);
   const dispatch = useDispatch();
 
   const openModal = () => setIsModalOpen(true);
