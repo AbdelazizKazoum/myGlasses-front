@@ -1,118 +1,99 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { getImageUrl } from "../../utils/getImageUrl";
 import { useNavigate } from "react-router-dom";
 
 const FeaturedProducts = ({ products, allowDetails }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const itemsToShow = 4; // Number of items to show at once
-  const scrollContainerRef = useRef(null); // Reference for the scroll container
-
-  // Hooks
+  const scrollContainerRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
   const navigate = useNavigate();
 
-  // Handle scrolling left and right
-  const handleLeftClick = () => {
-    setCurrentIndex((prevIndex) => {
-      const newIndex = Math.max(prevIndex - itemsToShow, 0);
-      // Scroll smoothly to the new position
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTo({
-          left:
-            (newIndex / itemsToShow) * scrollContainerRef.current.scrollWidth,
-          behavior: "smooth",
-        });
-      }
-      return newIndex;
-    });
+  const scrollAmount = 300; // How many pixels to scroll on each click
+
+  const handleScroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const scroll = direction === "left" ? -scrollAmount : scrollAmount;
+      scrollContainerRef.current.scrollBy({ left: scroll, behavior: "smooth" });
+    }
   };
 
-  const handleRightClick = () => {
-    setCurrentIndex((prevIndex) => {
-      const newIndex = Math.min(
-        prevIndex + itemsToShow,
-        products.length - itemsToShow
+  // Check if scroll buttons should be disabled
+  const checkScrollButtons = () => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0);
+      setCanScrollRight(
+        container.scrollLeft + container.offsetWidth < container.scrollWidth
       );
-      // Scroll smoothly to the new position
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollTo({
-          left:
-            (newIndex / itemsToShow) * scrollContainerRef.current.scrollWidth,
-          behavior: "smooth",
-        });
-      }
-      return newIndex;
-    });
+    }
   };
+
+  // Listen to scroll changes
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    checkScrollButtons();
+
+    const handleScrollEvent = () => checkScrollButtons();
+    container.addEventListener("scroll", handleScrollEvent);
+    return () => container.removeEventListener("scroll", handleScrollEvent);
+  }, []);
 
   return (
-    <div>
-      <div className="mx-auto  py-20 ">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900">
-          You may also like
-        </h2>
+    <div className="mx-auto py-10 px-4 sm:px-6 lg:px-8">
+      <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+        You may also like
+      </h2>
 
-        <div className="mt-10 relative">
-          <div className="flex justify-between items-center">
-            <button
-              onClick={handleLeftClick}
-              className="p-2 w-8 h-8 flex justify-center items-center text-lg bg-black text-white rounded-full  hover:bg-gray-400"
-              disabled={currentIndex === 0}
-            >
-              &lt;
-            </button>
+      <div className="relative mt-3">
+        {/* Scroll buttons */}
+        <button
+          onClick={() => handleScroll("left")}
+          className="absolute -left-10 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-8 h-8 rounded-full flex justify-center items-center hover:bg-gray-600 disabled:opacity-30"
+          disabled={!canScrollLeft}
+        >
+          &lt;
+        </button>
 
-            <div className="overflow-x-auto w-full mx-3">
+        <div className="overflow-hidden">
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-6 overflow-x-auto scroll-smooth hide-scrollbar scroll-px-4"
+          >
+            {products.map((item) => (
               <div
-                ref={scrollContainerRef} // Assign the ref to the scroll container
-                className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8"
+                key={item.id}
+                className="min-w-[220px] max-w-[250px] flex-shrink-0 cursor-pointer"
+                onClick={() => navigate(`/product/${item.id}`)}
               >
-                {products
-                  .slice(currentIndex, currentIndex + itemsToShow)
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className="group relative cursor-pointer"
-                      onClick={() => navigate(`/product/${item.id}`)}
-                    >
-                      <div className="lg:aspect-auto lg:h-40 bg-black/[0.075]">
-                        <img
-                          src={getImageUrl(item.image)}
-                          alt={item.name}
-                          className="aspect-square w-full h-full cursor-pointer rounded-md object-contain group-hover:opacity-75"
-                        />
-                      </div>
-                      <div className="mt-4 flex justify-between">
-                        <div>
-                          <h3 className="text-sm text-gray-700">
-                            <span
-                              aria-hidden="true"
-                              className="absolute inset-0"
-                            ></span>
-                            {item.name}
-                          </h3>
-                          <p className="mt-1 text-sm text-gray-500">
-                            {item.brand}
-                          </p>
-                        </div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {item.price}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="bg-black/[0.075]  rounded-md aspect-square flex items-center justify-center overflow-hidden">
+                  <img
+                    src={getImageUrl(item.image)}
+                    alt={item.name}
+                    className="w-full h-full object-contain transition group-hover:opacity-75"
+                  />
+                </div>
+                <div className="mt-3 text-center">
+                  <h3 className="text-sm text-gray-700 font-semibold">
+                    {item.name}
+                  </h3>
+                  <p className="text-primary-500 font-medium">
+                    {item.price} MAD
+                  </p>
+                </div>
               </div>
-            </div>
-
-            <button
-              onClick={handleRightClick}
-              className="p-2 w-8 h-8 flex justify-center items-center text-lg bg-black text-white rounded-full  hover:bg-gray-400"
-              disabled={currentIndex + itemsToShow >= products.length}
-            >
-              &gt;
-            </button>
+            ))}
           </div>
         </div>
+
+        <button
+          onClick={() => handleScroll("right")}
+          className="absolute -right-10 top-1/2 -translate-y-1/2 z-10 bg-black text-white w-8 h-8 rounded-full flex justify-center items-center hover:bg-gray-600 disabled:opacity-30"
+          disabled={!canScrollRight}
+        >
+          &gt;
+        </button>
       </div>
     </div>
   );

@@ -56,3 +56,16 @@
 .trending-product-image:hover {
   transform: scale(1.8);
 }
+
+.link-item {
+  text-decoration: none;
+  color: inherit;
+}
+
+.trending-product-image {
+  transition: transform 0.3s ease;
+}
+
+.link-item:hover .trending-product-image {
+  transform: scale(1.05);
+}

@@ -57,6 +57,14 @@ export const getProducts = createAsyncThunk("products/get", async () => {
   }
 });
 
+export const searchDetailProductByName = createAsyncThunk(
+  "products/searchDetail",
+  async (searchInput, { rejectWithValue }) => {
+    const res = await api.get(`/detail-product/search/${searchInput}`);
+    return res.data;
+  }
+);
+
 export const getFilterdProducts = createAsyncThunk(
   "products/filter",
   async ({ filters, pagination }, { rejectWithValue }) => {

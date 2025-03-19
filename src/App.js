@@ -14,7 +14,6 @@ import SignUpPage from "./components/SignUpPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import "./App.css";
 import AdminLayout from "./pages/dashboard/AdminLayout";
 import ProductsPage from "./pages/dashboard/products/Index";
@@ -31,6 +30,8 @@ import SettingsPage from "./pages/dashboard/settings/Index";
 import AddProduct from "./pages/dashboard/products/add/Index";
 import Cart from "./pages/cart";
 import Products from "./pages/products";
+import StockHistory from "./pages/dashboard/manage-stock/history/Index";
+import Stock from "./pages/dashboard/manage-stock/stock/Index";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
@@ -100,6 +101,30 @@ function App() {
                 </AdminLayout>
               }
             />
+
+            {/* ------------------- Manage Stock ------------------------------ */}
+
+            <Route
+              exact
+              path="/admin/stock/history"
+              element={
+                <AdminLayout>
+                  <StockHistory />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/stock"
+              element={
+                <AdminLayout>
+                  <Stock />
+                </AdminLayout>
+              }
+            />
+
+            {/* --------------------------------------------------------------------- */}
 
             <Route
               exact

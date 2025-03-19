@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   Circle,
+  Package,
 } from "lucide-react";
 import NavItem from "./NavItem";
 import { IoGlasses } from "react-icons/io5";
@@ -18,9 +19,19 @@ import { setProduct } from "../../store/productSlice";
 
 function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [isStockOpen, setIsStockOpen] = useState(false);
 
-  // Hooks
   const dispatch = useDispatch();
+
+  const handleProductsToggle = () => {
+    setIsProductsOpen((prev) => !prev);
+    setIsStockOpen(false);
+  };
+
+  const handleStockToggle = () => {
+    setIsStockOpen((prev) => !prev);
+    setIsProductsOpen(false);
+  };
 
   return (
     <aside
@@ -38,6 +49,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
           <X />
         </button>
       </div>
+
       <nav className="mt-4 space-y-2 w-full">
         <NavItem to="/admin" icon={<Home />} label="Home" />
         <NavItem to="/admin/analytics" icon={<BarChart />} label="Analytics" />
@@ -45,7 +57,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
         {/* Products Dropdown */}
         <div className="w-full flex flex-col justify-start">
           <button
-            onClick={() => setIsProductsOpen(!isProductsOpen)}
+            onClick={handleProductsToggle}
             className="flex items-center justify-between w-full p-2 text-gray-700 rounded-lg hover:bg-gray-100"
           >
             <div className="flex items-center">
@@ -58,23 +70,25 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
               <ChevronDown size={18} />
             )}
           </button>
-          {isProductsOpen && (
-            <div
-              className="ml-6 mt-1 space-y-1 w-full"
-              onClick={() => dispatch(setProduct(null))}
-            >
-              <NavItem
-                to="/admin/products"
-                label="List"
-                icon={<Circle size={6} />}
-              />
-              <NavItem
-                to="/admin/products/add"
-                label="Add"
-                icon={<Circle size={6} />}
-              />
-            </div>
-          )}
+          <div
+            className={`ml-6 space-y-1 w-full transform transition-all duration-300 ease-in-out origin-top ${
+              isProductsOpen
+                ? "opacity-100 translate-y-0 max-h-[500px] visible"
+                : "opacity-0 -translate-y-2 max-h-0 invisible"
+            }`}
+            onClick={() => dispatch(setProduct(null))}
+          >
+            <NavItem
+              to="/admin/products"
+              label="List"
+              icon={<Circle size={6} />}
+            />
+            <NavItem
+              to="/admin/products/add"
+              label="Add"
+              icon={<Circle size={6} />}
+            />
+          </div>
         </div>
 
         <NavItem
@@ -82,6 +96,39 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
           icon={<ShoppingCart />}
           label="Commands"
         />
+
+        {/* Manage Stock Dropdown */}
+        <div className="w-full flex flex-col justify-start">
+          <button
+            onClick={handleStockToggle}
+            className="flex items-center justify-between w-full p-2 text-gray-700 rounded-lg hover:bg-gray-100"
+          >
+            <div className="flex items-center">
+              <Package className="mr-2" />
+              <span>Manage Stock</span>
+            </div>
+            {isStockOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
+          <div
+            className={`ml-6 space-y-1 w-full transform transition-all duration-300 ease-in-out origin-top ${
+              isStockOpen
+                ? "opacity-100 translate-y-0 max-h-[500px] visible"
+                : "opacity-0 -translate-y-2 max-h-0 invisible"
+            }`}
+            onClick={() => dispatch(setProduct(null))}
+          >
+            <NavItem
+              to="/admin/stock/history"
+              label="Stock History"
+              icon={<Circle size={6} />}
+            />
+            <NavItem
+              to="/admin/stock"
+              label="Stock"
+              icon={<Circle size={6} />}
+            />
+          </div>
+        </div>
         <NavItem to="/admin/users" icon={<Users />} label="Users" />
         <NavItem to="/admin/settings" icon={<Settings />} label="Settings" />
       </nav>

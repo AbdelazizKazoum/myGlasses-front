@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { statusCode } from "../utils/statusCode";
 import api from "../lib/api";
+import { toast } from "react-toastify";
 
 const initialState = {
   data: {},
@@ -108,6 +109,24 @@ export const getQuantityInStock = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue("failed to fetch qty");
+    }
+  }
+);
+
+// Write a review on the product
+export const writeReview = createAsyncThunk(
+  "review/write",
+  async (review, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/review", review);
+      toast.success("Review submitted successfully!");
+
+      return res.data;
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to write a review !"
+      );
+      return rejectWithValue("Failed to write a review ");
     }
   }
 );
