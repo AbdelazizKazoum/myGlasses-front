@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsArrowDownRightCircle } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,13 +16,18 @@ import ScrollToTop from "../ScrollToTop";
 import CarouselComponent from "./CarouselComponent";
 import { getCategories } from "../../store/categorySlice";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // or use icons of your choice
+import { clearFilters } from "../../store/filtersSlice";
 
 const Home = () => {
+  // State
   const dispatch = useDispatch();
   const ref = useRef();
   const [showArrow, setShowArrow] = useState(false);
 
   const scrollRef = useRef(null);
+
+  // Hooks
+  const navigate = useNavigate();
 
   useEffect(() => {
     const toggleShowArrow = () => {
@@ -78,6 +83,11 @@ const Home = () => {
     }
   };
 
+  const redirectToProducts = () => {
+    dispatch(clearFilters());
+    navigate("/products");
+  };
+
   const renderHomeBanner = () => (
     <section className="home-banner">
       <div className="w-[40%]">
@@ -89,14 +99,13 @@ const Home = () => {
           <br />
           More than 100 types of assortment.
         </p>
-        <Link to="/products" className="link-item">
-          <button
-            type="button"
-            className="text-white bg-black font-medium rounded-lg text-base px-3 pt-2.5 pb-2 me-2 mb-2"
-          >
-            Start Shopping
-          </button>
-        </Link>
+        <button
+          type="button"
+          onClick={() => redirectToProducts()}
+          className="text-white bg-black font-medium rounded-lg text-base px-3 pt-2.5 pb-2 me-2 mb-2"
+        >
+          Start Shopping
+        </button>
         <a href="#categoriesSection" onClick={scrollToCategories}>
           <button
             type="button"
