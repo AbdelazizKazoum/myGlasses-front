@@ -25,6 +25,7 @@ const ProductCardModal = ({
   const [outOfStock, setOutOfStock] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
+  const [displayImage, setDisplayImage] = useState(null);
   const relatedProductsRef = useRef(null);
 
   const dispatch = useDispatch();
@@ -111,12 +112,35 @@ const ProductCardModal = ({
         </div>
 
         {/* Product Image */}
-        <div className="mb-4 w-full flex justify-center">
-          <img
-            src={getImageUrl(variantImages[0]?.image || image)}
-            alt={name}
-            className="w-48 h-32 object-contain rounded-md"
-          />
+        <div>
+          <div className="mb-4 w-full flex flex-col items-center justify-center">
+            <img
+              src={getImageUrl(variantImages[0]?.image || image)}
+              alt={name}
+              className="w-48 h-32 object-contain rounded-md"
+            />
+            {/* Display Images */}
+            <div className="flex gap-3 py-4 justify-center overflow-x-auto">
+              {variantImages?.map((item, index) => (
+                <div
+                  className={`  border ${
+                    displayImage === item && "border-image"
+                  }  bg-black/[0.075] border-primary-500 p-2 size-10  sm:size-10`}
+                >
+                  {" "}
+                  <img
+                    key={index}
+                    src={getImageUrl(item?.image)}
+                    alt="Thumbnail 1"
+                    className=" h-full w-full object-contain  rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
+                    onClick={() => {
+                      setDisplayImage(item.image);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Product Info */}
