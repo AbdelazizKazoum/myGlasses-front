@@ -21,17 +21,28 @@ const ProductCardModal = ({
 
   const [quantity, setQuantity] = useState(0);
   const [variantImages, setVariantImages] = useState([]);
+  console.log("🚀 ~ variantImages:", variantImages);
+
   const [showWarning, setShowWarning] = useState(false);
   const [outOfStock, setOutOfStock] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loadingRelated, setLoadingRelated] = useState(true);
   const [displayImage, setDisplayImage] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const relatedProductsRef = useRef(null);
 
   const dispatch = useDispatch();
 
   const sizes = [...new Set(detail.map((v) => v.size))];
   const colors = [...new Set(detail.map((v) => v.color))];
+
+  // Update displayImage whenever currentImageIndex or variantImages changes
+  useEffect(() => {
+    if (variantImages.length > 0) {
+      setDisplayImage(variantImages[currentImageIndex]?.image);
+    }
+  }, [currentImageIndex, variantImages]);
 
   useEffect(() => {
     document.documentElement.style.overflow = isModalOpen ? "hidden" : "";
@@ -48,10 +59,12 @@ const ProductCardModal = ({
           res.payload.filter((item) => item.id !== product.id)) ||
           []
       );
+
+      setVariantImages(detail.length > 0 ? detail[0].images : []);
       setLoadingRelated(false);
     };
     fetchRelatedProducts();
-  }, [category, dispatch, product.id]);
+  }, [category, detail, dispatch, product.id]);
 
   useEffect(() => {
     if (!selectedSize || !selectedColor) return;
@@ -64,13 +77,16 @@ const ProductCardModal = ({
       setQuantity(selectedVariant?.stock?.quantity || 0);
       setVariantImages(selectedVariant.images || []);
       setOutOfStock((selectedVariant?.stock?.quantity || 0) === 0);
+      setDisplayImage(variantImages[0]?.image);
+      setCurrentImageIndex(0);
     } else {
       setQuantity(0);
       setVariantImages([]);
       setOutOfStock(true);
     }
-  }, [selectedSize, selectedColor, detail]);
+  }, [selectedSize, selectedColor, detail, variantImages]);
 
+  // Methods
   const showValidationWarning = () => {
     setShowWarning(true);
     setTimeout(() => setShowWarning(false), 2000);
@@ -85,6 +101,20 @@ const ProductCardModal = ({
   const handleProceedClick = () => {
     if (!selectedSize || !selectedColor) return showValidationWarning();
     closeModal();
+  };
+
+  const handleNextImage = () => {
+    if (variantImages.length === 0) return;
+    const newIndex = (currentImageIndex + 1) % variantImages.length;
+    setCurrentImageIndex(newIndex);
+    setDisplayImage(variantImages[newIndex]?.image);
+  };
+  const handlePrevImage = () => {
+    if (variantImages.length === 0) return;
+    const newIndex =
+      (currentImageIndex - 1 + variantImages.length) % variantImages.length;
+    setCurrentImageIndex(newIndex);
+    setDisplayImage(variantImages[newIndex]?.image);
   };
 
   const scrollRelated = (dir) => {
@@ -112,34 +142,56 @@ const ProductCardModal = ({
         </div>
 
         {/* Product Image */}
-        <div>
-          <div className="mb-4 w-full flex flex-col items-center justify-center">
-            <img
-              src={getImageUrl(variantImages[0]?.image || image)}
-              alt={name}
-              className="w-48 h-32 object-contain rounded-md"
-            />
-            {/* Display Images */}
-            <div className="flex gap-3 py-4 justify-center overflow-x-auto">
-              {variantImages?.map((item, index) => (
-                <div
-                  className={`  border ${
-                    displayImage === item && "border-image"
-                  }  bg-black/[0.075] border-primary-500 p-2 size-10  sm:size-10`}
-                >
-                  {" "}
-                  <img
-                    key={index}
-                    src={getImageUrl(item?.image)}
-                    alt="Thumbnail 1"
-                    className=" h-full w-full object-contain  rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300"
-                    onClick={() => {
-                      setDisplayImage(item.image);
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
+        <div className="mb-4 w-full flex flex-col items-center justify-center relative">
+          <img
+            src={getImageUrl(displayImage || image)}
+            alt={name}
+            className="w-48 h-32 object-contain rounded-md"
+          />
+
+          {/* Prev Button */}
+          {variantImages.length > 1 && (
+            <button
+              onClick={handlePrevImage}
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full hover:bg-gray-300"
+            >
+              &lt;
+            </button>
+          )}
+
+          {/* Next Button */}
+          {variantImages.length > 1 && (
+            <button
+              onClick={handleNextImage}
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full hover:bg-gray-300"
+            >
+              &gt;
+            </button>
+          )}
+
+          {/* Thumbnails */}
+          <div className="flex gap-3 w-full overflow-auto py-4 justify-center">
+            {variantImages?.map((item, index) => (
+              <div
+                key={index}
+                className={`border ${
+                  displayImage === item.image &&
+                  "border-image ring-1 ring-primary-500"
+                } bg-black/[0.075] border-primary-500 p-2 size-10`}
+              >
+                <img
+                  src={getImageUrl(item?.image)}
+                  alt={`Thumbnail ${index + 1}`}
+                  className={`h-full w-full object-contain rounded-md cursor-pointer ${
+                    displayImage === item.image ? "opacity-100" : "opacity-60"
+                  } hover:opacity-100 transition duration-300`}
+                  onClick={() => {
+                    setDisplayImage(item.image);
+                    setCurrentImageIndex(index);
+                  }}
+                />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -258,7 +310,7 @@ const ProductCardModal = ({
           <div className="relative">
             <button
               onClick={() => scrollRelated("left")}
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-1 rounded-full z-10"
+              className="absolute -left-3 top-1/2 transform -translate-y-1/2 bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full hover:bg-gray-300"
             >
               &lt;
             </button>
@@ -300,9 +352,10 @@ const ProductCardModal = ({
                     </Link>
                   ))}
             </div>
+
             <button
               onClick={() => scrollRelated("right")}
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-200 p-1 rounded-full z-10"
+              className="absolute -right-3 top-1/2 transform -translate-y-1/2 bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full hover:bg-gray-300"
             >
               &gt;
             </button>
