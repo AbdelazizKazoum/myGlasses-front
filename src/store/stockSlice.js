@@ -35,8 +35,7 @@ export const filterHistory = createAsyncThunk(
       const res = await api.get(
         `/stock-movement/filter?searchInput=${searchInput}&type=${type}&reason=${reason}&supplierId=${supplierId}&productDetailId=${productDetailId}&page=${page}&limit=${limit}&sortByDate=${sortByDate}`
       );
-
-      console.log("🚀 ~ res ttttttttttttt :", res);
+      console.log("🚀 ~ res:", res);
 
       return res.data;
     } catch (error) {
@@ -65,8 +64,6 @@ export const filterStock = createAsyncThunk(
       const res = await api.get(
         `/stock-movement/stock/filter?searchInput=${searchInput}&quantity=${quantity}&productDetailId=${productDetailId}&createdAt=${createdAt}&updatedAt=${updatedAt}&page=${page}&limit=${limit}`
       );
-
-      console.log("🚀 ~ res:", res);
 
       return res.data;
     } catch (error) {

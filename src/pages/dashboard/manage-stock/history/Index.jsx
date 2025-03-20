@@ -1,12 +1,45 @@
 import React, { useEffect, useState } from "react";
-import AddStockModal from "../../../../components/dashboard/manage-stock/AddStockModal";
 import HistoryHeader from "../../../../components/dashboard/manage-stock/HistoryHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { filterHistory } from "../../../../store/stockSlice";
 import MovementDetailModal from "../../../../components/modals/MovementDetailModal";
+import AddStockModal from "../../../../components/modals/AddStockModal";
+
+// Badge component for Type column
+const MovementTypeBadge = ({ type }) => {
+  const typeMap = {
+    add: { color: "bg-green-100 text-green-800", label: "Add" },
+    remove: { color: "bg-red-100 text-red-800", label: "Remove" },
+    correction: { color: "bg-yellow-100 text-yellow-800", label: "Correction" },
+  };
+
+  const badge = typeMap[type] || {
+    color: "bg-gray-100 text-gray-800",
+    label: type,
+  };
+
+  return (
+    <span
+      className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${badge.color}`}
+    >
+      {badge.label}
+    </span>
+  );
+};
+
+// Circle component for Color column
+const ColorCircle = ({ color }) => {
+  return (
+    <div className="flex items-center gap-2">
+      <span
+        className="w-4 h-4 rounded-full border border-gray-300"
+        style={{ backgroundColor: color }}
+      ></span>
+    </div>
+  );
+};
 
 const StockHistory = () => {
-  // State
   const [filters, setFilters] = useState({
     search: "",
     type: "",
@@ -21,12 +54,9 @@ const StockHistory = () => {
   const [selectedMovement, setSelectedMovement] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
-  // Hooks
   const { stockHistory, totalItems } = useSelector((state) => state.stock);
-  console.log("🚀 ~ StockHistory ~ stockHistory:", stockHistory);
   const dispatch = useDispatch();
 
-  // Methods
   const openDetailModal = (movement) => {
     setSelectedMovement(movement);
     setIsDetailModalOpen(true);
@@ -41,12 +71,14 @@ const StockHistory = () => {
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
-    dispatch(
-      filterHistory({
-        filters,
-        pagination: { page: currentPage, limit },
-      })
-    );
+    (async () => {
+      await dispatch(
+        filterHistory({
+          filters,
+          pagination: { page: currentPage, limit },
+        })
+      );
+    })();
   }, [filters, currentPage, limit, dispatch]);
 
   const totalPages = Math.ceil(totalItems / limit);
@@ -59,61 +91,39 @@ const StockHistory = () => {
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg bg-white h-full rounded-2xl">
-      {/* Table Header with Search */}
       <HistoryHeader
         filters={filters}
         setFilters={setFilters}
         handleAddStock={openModal}
       />
 
-      {/* Stock History Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full border text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs border text-gray-700 uppercase bg-gray-50">
             <tr>
-              <th scope="col" className="p-4">
+              <th className="p-4">
                 <div className="flex items-center">
                   <input
-                    id="checkbox-all-search"
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2"
                   />
-                  <label htmlFor="checkbox-all-search" className="sr-only">
-                    checkbox
-                  </label>
                 </div>
               </th>
-              <th scope="col" className="px-6 py-3">
-                ID
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Type
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Quantity
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Product Detail
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Supplier
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Order
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Reason
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Date
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Action
-              </th>
+              <th className="px-6 py-3">ID</th>
+              <th className="px-6 py-3">Type</th>
+              <th className="px-6 py-3">Quantity</th>
+              <th className="px-6 py-3">Product Name</th>
+              <th className="px-6 py-3">Color</th>
+              <th className="px-6 py-3">Size</th>
+              <th className="px-6 py-3">Supplier</th>
+              <th className="px-6 py-3">Order</th>
+              <th className="px-6 py-3">Reason</th>
+              <th className="px-6 py-3">Date</th>
+              <th className="px-6 py-3">Action</th>
             </tr>
           </thead>
           <tbody>
-            {stockHistory.map((movement) => (
+            {stockHistory.map((movement, index) => (
               <tr
                 key={movement.id}
                 className="bg-white border-b border-gray-200 hover:bg-gray-50"
@@ -121,28 +131,30 @@ const StockHistory = () => {
                 <td className="w-4 p-4">
                   <div className="flex items-center">
                     <input
-                      id={`checkbox-table-search-${movement.id}`}
                       type="checkbox"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2"
                     />
-                    <label
-                      htmlFor={`checkbox-table-search-${movement.id}`}
-                      className="sr-only"
-                    >
-                      checkbox
-                    </label>
                   </div>
                 </td>
-                <td className="px-6 py-4">{movement.id}</td>
-                <td className="px-6 py-4">{movement.type}</td>
+                <td className="px-6 py-4">{index + 1}</td>
+                <td className="px-6 py-4">
+                  <MovementTypeBadge type={movement.type} />
+                </td>
                 <td className="px-6 py-4">{movement.quantity}</td>
                 <td className="px-6 py-4">
                   {movement?.productDetail?.product?.name}
                 </td>
+                <td className="px-6 py-4">
+                  <ColorCircle color={movement?.productDetail?.color} />
+                </td>
+                <td className="px-6 py-4">{movement?.productDetail?.size}</td>
                 <td className="px-6 py-4">{movement.supplier?.name}</td>
-                <td className="px-6 py-4">{movement.order}</td>
                 <td className="px-6 py-4">{movement.reason}</td>
-                <td className="px-6 py-4">{movement.date}</td>
+                <td className="px-6 py-4">{movement.order}</td>
+                <td className="px-6 py-4">
+                  {movement.createdAt &&
+                    new Date(movement.createdAt).toLocaleDateString()}
+                </td>
                 <td className="px-6 py-4">
                   <button
                     onClick={() => openDetailModal(movement)}
@@ -168,7 +180,6 @@ const StockHistory = () => {
         </button>
 
         <div className="flex items-center space-x-2">
-          {/* Page Numbers */}
           <button
             onClick={() => handlePageChange(1)}
             className={`px-4 py-2 ${
@@ -214,14 +225,16 @@ const StockHistory = () => {
         </button>
       </div>
 
-      {/* Modal for Detail Movement */}
       <MovementDetailModal
         isOpen={isDetailModalOpen}
         movement={selectedMovement}
         onClose={closeDetailModal}
       />
-      {/* Modal for Adding Movement */}
-      <AddStockModal isOpen={isModalOpen} onClose={closeModal} />
+      <AddStockModal
+        filters={filters}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
     </div>
   );
 };

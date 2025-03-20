@@ -5,9 +5,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RxCross2 } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
-import { addStock, filterHistory } from "../../../store/stockSlice";
-import { searchDetailProductByName } from "../../../store/productsSlice";
-import { fetchSuppliers } from "../../../store/supplierSlice";
+import { addStock, filterHistory } from "../../store/stockSlice";
+import { searchDetailProductByName } from "../../store/productsSlice";
+import { fetchSuppliers } from "../../store/supplierSlice";
 
 // Enums
 const StockMovementReason = {
@@ -29,7 +29,7 @@ const stockMovementSchema = z.object({
   note: z.string().optional(),
 });
 
-const AddStockModal = ({ isOpen, onClose }) => {
+const AddStockModal = ({ isOpen, onClose, filters }) => {
   const [detailProducts, setDetailProducts] = useState([]);
   const [searchDetailProduct, setSearchDetailProduct] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -49,9 +49,16 @@ const AddStockModal = ({ isOpen, onClose }) => {
 
   const onSubmit = async (data) => {
     const res = await dispatch(addStock(data));
+    console.log("🚀 ~ onSubmit ~ res:", res);
+
     if (res.payload) {
       onClose();
-      await dispatch(filterHistory());
+      await dispatch(
+        filterHistory({
+          filters,
+          pagination: { page: 1 },
+        })
+      );
     }
   };
 
@@ -314,7 +321,7 @@ const AddStockModal = ({ isOpen, onClose }) => {
           <div className="pt-4">
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+              className="w-full bg-primary-500 text-white py-2 rounded-md hover:bg-primary-800"
             >
               Submit
             </button>

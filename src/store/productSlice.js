@@ -216,7 +216,9 @@ export const updadeProduct = createAsyncThunk(
         return res.data;
       }
     } catch (error) {
-      toast.error(" Faild to update this product !  ");
+      toast.error(
+        error.response?.data?.message ?? "Faild to update this Variant ! "
+      );
     }
   }
 );
