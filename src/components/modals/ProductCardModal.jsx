@@ -332,13 +332,13 @@ const ProductCardModal = ({
                     <Link
                       to={`/product/${item.id}`}
                       key={item.id}
-                      className="w-40 flex-shrink-0"
+                      className="w-40 flex-shrink-0 group" // Add the 'group' class to enable hover styles
                     >
                       <div className="flex">
                         <img
                           src={getImageUrl(item.image)}
                           alt={item.name}
-                          className="w-full h-32 object-contain rounded"
+                          className="w-full h-32 object-contain rounded group-hover:scale-105 transition-transform duration-300" // Scale effect on hover
                         />
                       </div>
                       <div className="flex flex-col items-center">
