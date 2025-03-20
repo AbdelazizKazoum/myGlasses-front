@@ -90,7 +90,7 @@ const StockHistory = () => {
   };
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg bg-white h-full rounded-2xl">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <HistoryHeader
         filters={filters}
         setFilters={setFilters}

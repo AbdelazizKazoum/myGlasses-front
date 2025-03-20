@@ -44,10 +44,16 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-20 w-64 bg-white p-4 shadow-md transform ${
+      className={`fixed inset-y-0 left-0 z-20 w-64 bg-white p-4 shadow-md transform transition-transform duration-300 ${
         isSidebarOpen ? "translate-x-0" : "-translate-x-64"
-      } transition-transform md:relative md:translate-x-0`}
+      } md:relative md:translate-x-0 md:${isSidebarOpen ? "block" : "hidden"}`}
     >
+      {/* <aside
+        className={`fixed inset-y-0 left-0 z-20 w-64 bg-white p-4 shadow-md transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-64"
+        } transition-transform md:relative md:translate-x-0`}
+      > */}
+
       <div className="flex items-center">
         <IoGlasses className="navbar-user-profile text-4xl" />
         <h2 className="navbar-logo text-2xl ml-2">MyGlass</h2>

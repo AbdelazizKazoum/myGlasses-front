@@ -52,7 +52,7 @@ const Stock = () => {
   };
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg bg-white h-full rounded-2xl">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div className="flex justify-between items-center ">
         <StockHeader filters={filters} setFilters={setFilters} />
       </div>

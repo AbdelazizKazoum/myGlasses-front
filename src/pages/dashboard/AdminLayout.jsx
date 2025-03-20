@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
 
 function AdminLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Hooks
   const dispatch = useDispatch();
@@ -35,14 +35,13 @@ function AdminLayout({ children }) {
         <div className="flex flex-col flex-1">
           <header className="bg-white p-2 shadow-sm flex items-center justify-between">
             <button
-              className="md:hidden p-2"
-              onClick={() => setIsSidebarOpen(true)}
+              className="p-2"
+              onClick={() => setIsSidebarOpen((prev) => !prev)}
             >
               <Menu />
             </button>
             <h1 className="text-lg font-semibold">Admin Dashboard</h1>
-            <UserDropdownProfile user={user} onLogout={handleLogout} />{" "}
-            {/* Use UserDropdown */}
+            <UserDropdownProfile user={user} onLogout={handleLogout} />
           </header>
           <main className="p-6 h-full overflow-auto">{children}</main>
         </div>
