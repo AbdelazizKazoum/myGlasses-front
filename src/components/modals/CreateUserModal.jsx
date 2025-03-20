@@ -2,12 +2,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { registerUser, removeUser, updateUser } from "../../store/usersSlice";
 import { useEffect, useState } from "react";
+import { XIcon } from "lucide-react";
 
 const UserModal = ({ isOpen, setIsOpen, user }) => {
-  // State
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-
-  // Hooks
   const dispatch = useDispatch();
 
   const {
@@ -35,14 +33,13 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
       status: data.status || "",
     };
 
-    console.log("Form submitted", userData);
-
     if (user) {
       await dispatch(updateUser({ id: user.id, data: userData }));
     } else {
       await dispatch(registerUser(data));
     }
-    // setIsOpen(false);
+
+    setIsOpen(false);
   };
 
   const handleDelete = () => {
@@ -50,186 +47,181 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
   };
 
   const confirmDelete = () => {
-    dispatch(removeUser(user.id)); // Dispatch removeUser action
-    setIsOpen(false); // Close modal after deletion
-    setShowDeleteConfirmation(false); // Hide confirmation modal
+    dispatch(removeUser(user.id));
+    setIsOpen(false);
+    setShowDeleteConfirmation(false);
   };
 
   const cancelDelete = () => {
-    setShowDeleteConfirmation(false); // Close confirmation modal
+    setShowDeleteConfirmation(false);
   };
 
   useEffect(() => {
     reset(user);
   }, [reset, user]);
 
+  if (!isOpen) return null;
+
   return (
-    <div
-      className={`fixed inset-0 z-50 flex sm:items-center justify-center ${
-        !isOpen && "hidden"
-      }`}
-    >
-      <div
-        className="fixed inset-0 bg-black opacity-50"
-        onClick={() => setIsOpen(false)}
-      ></div>
-
-      <div className=" h-full max-h-fit   relative bg-white overflow-auto rounded-lg shadow-lg w-full p-6 flex flex-col max-w-2xl lg:max-w-4xl">
-        <div className="flex items-center justify-between pb-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold">Create User</h3>
-          <button
-            type="button"
-            className="text-gray-400 hover:bg-gray-200 rounded-full p-1"
-            onClick={() => setIsOpen(false)}
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-4 p-2"
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white w-full max-w-3xl rounded-lg p-6 relative shadow-lg overflow-auto max-h-[90vh]">
+        {/* Close Button */}
+        <button
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+          onClick={() => setIsOpen(false)}
+          aria-label="Fermer"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Username</label>
+          <XIcon className="w-5 h-5" />
+        </button>
+
+        {/* Title */}
+        <h2 className="text-xl font-semibold mb-4">
+          {user ? "Modifier l'utilisateur" : "Ajouter un utilisateur"}
+        </h2>
+
+        {/* Form */}
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          {/* Username & Email */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Username
+              </label>
               <input
                 type="text"
                 {...register("username", { required: "Username is required" })}
-                className="border rounded-lg p-2"
+                className="w-full border border-gray-300 rounded-md p-2"
               />
               {errors.username && (
-                <p className="text-red-500">{errors.username.message}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.username.message}
+                </p>
               )}
             </div>
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Email</label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
               <input
                 type="email"
                 {...register("email", { required: "Email is required" })}
-                className="border rounded-lg p-2"
+                className="w-full border border-gray-300 rounded-md p-2"
               />
               {errors.email && (
-                <p className="text-red-500">{errors.email.message}</p>
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">First name</label>
+          {/* First name & Last name */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Prénom
+              </label>
               <input
                 type="text"
-                {...register("nom", { required: "First name is required" })}
-                className="border rounded-lg p-2"
-              />
-              {errors.nom && (
-                <p className="text-red-500">{errors.nom.message}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Last name</label>
-              <input
-                type="text"
-                {...register("prenom", { required: "last name is required" })}
-                className="border rounded-lg p-2"
+                {...register("prenom", { required: "First name is required" })}
+                className="w-full border border-gray-300 rounded-md p-2"
               />
               {errors.prenom && (
-                <p className="text-red-500">{errors.prenom.message}</p>
+                <p className="text-red-500 text-sm">{errors.prenom.message}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Nom
+              </label>
+              <input
+                type="text"
+                {...register("nom", { required: "Last name is required" })}
+                className="w-full border border-gray-300 rounded-md p-2"
+              />
+              {errors.nom && (
+                <p className="text-red-500 text-sm">{errors.nom.message}</p>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">CIN</label>
+          {/* CIN & Phone */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                CIN
+              </label>
               <input
                 type="text"
                 {...register("cin")}
-                className="border rounded-lg p-2"
+                className="w-full border border-gray-300 rounded-md p-2"
               />
-              {errors.cin && (
-                <p className="text-red-500">{errors.cin.message}</p>
-              )}
             </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Phone</label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Téléphone
+              </label>
               <input
                 type="text"
                 {...register("tel")}
-                className="border rounded-lg p-2"
+                className="w-full border border-gray-300 rounded-md p-2"
               />
-              {errors.tel && (
-                <p className="text-red-500">{errors.tel.message}</p>
-              )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Password</label>
+          {/* Role & Status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Rôle
+              </label>
+              <input
+                type="text"
+                {...register("role")}
+                className="w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Statut
+              </label>
+              <input
+                type="text"
+                {...register("status")}
+                className="w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+          </div>
+
+          {/* Passwords */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Mot de passe
+              </label>
               <input
                 type="password"
-                {...register("password", {
-                  required: user ? false : "Password is required",
-                })}
-                className="border rounded-lg p-2"
+                {...register("password")}
+                className="w-full border border-gray-300 rounded-md p-2"
               />
-              {errors.password && (
-                <p className="text-red-500">{errors.password.message}</p>
-              )}
             </div>
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Confirm Password</label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Confirmer mot de passe
+              </label>
               <input
                 type="password"
-                {...register("confirmPassword", {
-                  required: user ? false : "Confirm Password is required",
-                })}
-                className="border rounded-lg p-2"
+                {...register("confirmPassword")}
+                className="w-full border border-gray-300 rounded-md p-2"
               />
-              {errors.confirmPassword && (
-                <p className="text-red-500">{errors.confirmPassword.message}</p>
-              )}
             </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Role</label>
-              <select
-                {...register("role", { required: "Role is required" })}
-                className="border rounded-lg p-2"
-              >
-                <option value="">Select Role</option>
-                <option value="client">Client</option>
-                <option value="admin">Admin</option>
-              </select>
-              {errors.role && (
-                <p className="text-red-500">{errors.role.message}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="font-medium">Upload Avatar</label>
+            <div className="">
+              <label className="block text-sm font-medium text-gray-700">
+                Upload Avatar{" "}
+              </label>
               <input
                 type="file"
                 accept="image/*"
                 {...register("avatar")}
-                className="border rounded-lg p-2"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm file:mr-3 file:py-2 file:px-4 file:border-0 file:bg-primary-100 file:text-primary-600 file:rounded-lg hover:file:bg-primary-200 transition"
               />
               {errors.avatar && (
                 <p className="text-red-500">{errors.avatar.message}</p>
@@ -237,46 +229,52 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
             </div>
           </div>
 
-          <div className="flex gap-2 justify-end ">
-            <button
-              type="submit"
-              className=" w-44 h-12  bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-800"
-            >
-              {user ? "Update User" : "Create User"}
-            </button>
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-2 pt-2">
             {user && (
               <button
                 type="button"
-                className="w-44 h-12 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-800"
                 onClick={handleDelete}
+                className="px-4 py-2 text-sm rounded-md border border-red-300 text-red-600 hover:bg-red-100"
               >
-                Delete User
+                Supprimer
               </button>
             )}
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="px-4 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-100"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 text-sm rounded-md bg-primary-500 text-white hover:bg-primary-700"
+            >
+              {user ? "Mettre à jour" : "Enregistrer"}
+            </button>
           </div>
         </form>
 
-        {/* Confirmation Modal */}
+        {/* Delete Confirmation */}
         {showDeleteConfirmation && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-lg font-semibold mb-4">
-                Are you sure you want to delete this user?
-              </h3>
-              <div className="flex justify-end space-x-4">
-                <button
-                  className="bg-gray-500 text-white px-4 py-2 rounded-lg"
-                  onClick={cancelDelete}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg"
-                  onClick={confirmDelete}
-                >
-                  Yes, Delete
-                </button>
-              </div>
+          <div className="mt-4 p-4 border border-red-300 bg-red-50 rounded-md">
+            <p className="text-sm mb-2 text-red-600">
+              Êtes-vous sûr de vouloir supprimer cet utilisateur ?
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={cancelDelete}
+                className="px-4 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-100"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 text-sm rounded-md bg-red-600 text-white hover:bg-red-700"
+              >
+                Confirmer
+              </button>
             </div>
           </div>
         )}
