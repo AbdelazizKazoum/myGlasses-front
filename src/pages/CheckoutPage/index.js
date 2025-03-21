@@ -116,7 +116,7 @@ const CheckoutPage = () => {
                 className="accent-blue-500"
               />
               <div>
-                <h3 className="font-medium">{address.address}</h3>
+                <h4 className="font-semibold  text-base">{address.address}</h4>
                 <p className="text-sm text-gray-600">
                   {address.city}, {address.pincode}
                 </p>
@@ -207,7 +207,7 @@ const CheckoutPage = () => {
   );
 
   const renderConfirmOrderCard = () => (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-lg w-96 p-6 relative">
         {/* Header */}
         <header className="flex justify-between items-center border-b pb-3">
@@ -224,7 +224,7 @@ const CheckoutPage = () => {
         <div className="mt-4">
           <h3 className="text-sm font-semibold text-gray-700">Address</h3>
           <div className="bg-gray-100 p-3 rounded-md mt-2">
-            <h3 className="font-medium">{primaryAddress.address}</h3>
+            <h3 className="font-medium text-base">{primaryAddress.address}</h3>
             <p className="text-sm text-gray-600">
               {primaryAddress.city}, {primaryAddress.pincode}
             </p>
