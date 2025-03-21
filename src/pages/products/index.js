@@ -17,6 +17,7 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedProducts, setLoadedProducts] = useState([]);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [priceSort, setPriceSort] = useState(null);
 
   const [initialLoading, setInitialLoading] = useState(false);
   const [showMoreLoading, setShowMoreLoading] = useState(false);
@@ -30,6 +31,12 @@ const Products = () => {
   } = useSelector((state) => state.products);
   const { totalPages } = pagination;
   const filters = useSelector((state) => state.filters);
+
+  useEffect(() => {
+    // Reset loadedProducts and set currentPage to 1 when priceSort changes
+    setLoadedProducts([]);
+    setCurrentPage(1);
+  }, [priceSort]);
 
   useEffect(() => {
     if (hasMounted) {
@@ -50,7 +57,7 @@ const Products = () => {
 
       const resultAction = await dispatch(
         getFilterdProducts({
-          filters,
+          filters: { ...filters, priceSort },
           pagination: { page: currentPage, limit: 12 },
         })
       );
@@ -68,7 +75,7 @@ const Products = () => {
     };
 
     fetchProducts();
-  }, [dispatch, filters, currentPage]);
+  }, [dispatch, filters, currentPage, priceSort]);
 
   useEffect(() => {
     const toggleShowArrow = () => {
@@ -141,7 +148,7 @@ const Products = () => {
           <select
             className="select-filter px-[8px] py-1.5"
             onChange={(event) => {
-              dispatch(updatePriceSort(event.target.value));
+              setPriceSort(event.target.value);
             }}
           >
             <option value="">Sort By Price</option>
