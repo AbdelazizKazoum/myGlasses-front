@@ -13,6 +13,8 @@ const CommandDetailModal = ({
   setNewStatus,
   handleUpdateCommand,
 }) => {
+  if (!selectedCommand) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-3xl relative">
@@ -26,7 +28,7 @@ const CommandDetailModal = ({
 
         {/* Modal Title */}
         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-          Détails de la commande
+          Order Details
         </h2>
 
         {/* Grid Layout - Two Columns */}
@@ -43,7 +45,7 @@ const CommandDetailModal = ({
                 htmlFor="new-total"
                 className="block text-sm font-medium text-gray-700"
               >
-                Modifier le total
+                Edit Total
               </label>
               <input
                 type="number"
@@ -51,7 +53,7 @@ const CommandDetailModal = ({
                 value={newTotal}
                 onChange={(e) => setNewTotal(e.target.value)}
                 className="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-                placeholder="Nouveau total"
+                placeholder="New total"
               />
             </div>
 
@@ -61,7 +63,7 @@ const CommandDetailModal = ({
                 htmlFor="new-status"
                 className="block text-sm font-medium text-gray-700"
               >
-                Modifier le statut
+                Edit Status
               </label>
               <Select
                 id="new-status"
@@ -69,7 +71,6 @@ const CommandDetailModal = ({
                 value={statusOptions.find(
                   (option) => option.value === newStatus
                 )}
-                defaultInputValue={selectedCommand?.statut}
                 onChange={(option) => setNewStatus(option ? option.value : "")}
                 className="w-full outline-none"
                 styles={selectStyles}
@@ -82,23 +83,52 @@ const CommandDetailModal = ({
                 className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition w-full"
                 onClick={() => setSelectedCommand(null)}
               >
-                Annuler
+                Cancel
               </button>
               <button
                 className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-800 transition w-full"
                 onClick={handleUpdateCommand}
               >
-                Mettre à jour
+                Update
               </button>
             </div>
+
+            {/* Address Section */}
+            {selectedCommand.address && (
+              <div className="mt-6 border-t pt-4 text-sm text-gray-700 space-y-2">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Delivery Address
+                </h3>
+                <p>
+                  <span className="font-medium">Full Name:</span>{" "}
+                  {selectedCommand.address.fullName}
+                </p>
+                <p>
+                  <span className="font-medium">Address:</span>{" "}
+                  {selectedCommand.address.address}
+                </p>
+                <p>
+                  <span className="font-medium">City:</span>{" "}
+                  {selectedCommand.address.city}
+                </p>
+                <p>
+                  <span className="font-medium">Phone:</span>{" "}
+                  {selectedCommand.address.mobile}
+                </p>
+                <p>
+                  <span className="font-medium">Postal Code:</span>{" "}
+                  {selectedCommand.address.pincode}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Right Section - Product List */}
           <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-gray-800">
-              Produits achetés
+              Purchased Products
             </h3>
-            <ul className="space-y-4 max-h-[300px] overflow-y-auto">
+            <ul className="space-y-4 max-h-[250px] overflow-y-auto">
               {selectedCommand.details.map((detail, index) => (
                 <li
                   key={index}
@@ -117,10 +147,9 @@ const CommandDetailModal = ({
                     <p className="font-medium text-gray-800">
                       {detail?.detailProduct?.product?.name}
                     </p>
-                    {/* Color and Size */}
                     {detail?.detailProduct?.color && (
                       <div className="flex items-center text-sm text-gray-600 mt-1">
-                        <span className="mr-2">Couleur:</span>
+                        <span className="mr-2">Color:</span>
                         <span
                           style={{
                             backgroundColor: detail?.detailProduct?.color,
@@ -128,11 +157,10 @@ const CommandDetailModal = ({
                           className="w-5 h-5 rounded-full border shadow"
                         ></span>
                         <span className="ml-4">
-                          Taille: {detail?.detailProduct?.size}
+                          Size: {detail?.detailProduct?.size}
                         </span>
                       </div>
                     )}
-                    {/* Quantity and Price */}
                     <p className="text-sm text-gray-700 mt-1">
                       {detail?.quantite} x {detail?.prix_vente} DH
                     </p>

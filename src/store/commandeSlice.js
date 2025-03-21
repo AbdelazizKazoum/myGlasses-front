@@ -54,8 +54,10 @@ export const deleteCommande = createAsyncThunk(
       toast.success("Commande deleted successfully");
       return id;
     } catch (error) {
-      toast.error("Failed to delete commande");
-      return rejectWithValue(error.response?.data || error.message);
+      toast.error(error.response?.data.message || "Failed to delete commande");
+      return rejectWithValue(
+        error.response?.data || "Failed to delete commande"
+      );
     }
   }
 );
@@ -69,8 +71,14 @@ export const updateCommande = createAsyncThunk(
       toast.success("Commande updated successfully");
       return res.data;
     } catch (error) {
-      toast.error("Failed to updated commande");
-      return rejectWithValue(error.response?.data || error.message);
+      console.log("🚀 ~ error:", error);
+
+      toast.error(
+        error.response?.data?.message ?? "Failed to updated commande"
+      );
+      return rejectWithValue(
+        error.response?.data || "Failed to updated commande"
+      );
     }
   }
 );

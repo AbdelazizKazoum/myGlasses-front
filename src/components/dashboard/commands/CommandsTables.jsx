@@ -9,6 +9,7 @@ import { selectStyles, statusOptions } from "../../../utils/utils";
 import { useDispatch } from "react-redux";
 import { getCommandes, updateCommande } from "../../../store/commandeSlice";
 import "./index.css";
+import { getCommandStatusColor } from "../../../utils/getStatusColor";
 
 const CommandsTable = ({ commands }) => {
   const [selectedCommand, setSelectedCommand] = useState(null);
@@ -42,13 +43,13 @@ const CommandsTable = ({ commands }) => {
       const updatedCommand = {
         ...selectedCommand,
         total: newTotal || selectedCommand.total,
-        statut: newStatus || selectedCommand.statut,
+        status: newStatus || selectedCommand.status,
       };
 
       await dispatch(
         updateCommande({
           id: selectedCommand.id,
-          data: { newTotal, statut: newStatus },
+          data: { newTotal, status: newStatus },
         })
       );
 
@@ -126,20 +127,22 @@ const CommandsTable = ({ commands }) => {
                 </td>
                 <td className="px-6 py-4">
                   <span
-                    className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      command.statut === "en attente"
-                        ? "bg-yellow-200 text-yellow-800"
-                        : "bg-green-200 text-green-800"
-                    }`}
+                    className={`px-2 py-1 text-xs font-semibold rounded-full ${getCommandStatusColor(
+                      command.status
+                    )}`}
                   >
-                    {command.statut}
+                    {command.status}
                   </span>
                 </td>
                 <td className="px-6 py-4">{command.total} DH</td>
                 <td className="px-6 py-4">
                   <button
                     className="font-medium text-blue-600 hover:underline"
-                    onClick={() => setSelectedCommand(command)}
+                    onClick={() => {
+                      setSelectedCommand(command);
+                      setNewStatus(command.status); // Initialize newStatus correctly
+                      setNewTotal(command.total); // Initialize newTotal as well
+                    }}
                   >
                     Voir détails
                   </button>
