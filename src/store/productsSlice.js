@@ -81,7 +81,7 @@ export const getFilterdProducts = createAsyncThunk(
           cat = cat + `category=${item}&`;
         });
       } else {
-        cat = +cat;
+        cat = "&";
       }
 
       const res = await api.get(
