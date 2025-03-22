@@ -19,6 +19,20 @@ export const getCommandes = createAsyncThunk("commandes/getAll", async () => {
   }
 });
 
+// Fetch all commandes
+export const getLatestCommands = createAsyncThunk(
+  "commandes/latest",
+  async () => {
+    try {
+      const res = await api.get("/commande/latest");
+      return res.data;
+    } catch (error) {
+      toast.error("Failed to fetch commandes");
+      return null;
+    }
+  }
+);
+
 // Fetch a single commande by ID
 export const getCommande = createAsyncThunk("commandes/getOne", async (id) => {
   try {
