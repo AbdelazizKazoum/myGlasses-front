@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { filterHistory } from "../../../../store/stockSlice";
 import MovementDetailModal from "../../../../components/modals/MovementDetailModal";
 import AddStockModal from "../../../../components/modals/AddStockModal";
+import { PencilIcon } from "lucide-react";
 
 // Badge component for Type column
 const MovementTypeBadge = ({ type }) => {
@@ -158,9 +159,9 @@ const StockHistory = () => {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => openDetailModal(movement)}
-                    className="font-medium text-primary-500 hover:underline"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
                   >
-                    Show Details
+                    <PencilIcon className="h-4 w-4" />
                   </button>
                 </td>
               </tr>

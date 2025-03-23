@@ -22,7 +22,7 @@ const CommandsPage = () => {
     searchInput: "",
     status: "",
     paymentStatus: "",
-    userId: "",
+    user: "",
     sortByDate: "DESC",
     startDate: "",
     endDate: "",

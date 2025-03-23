@@ -14,13 +14,13 @@ const CommandsHeader = ({ filters, setFilters, handleAddProduct }) => {
     <div className="bg-gray-50 w-full px-4 py-4">
       <div className="mx-auto bg-white sm:rounded-lg p-4 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {/* Search */}
+          {/* Search by user name */}
           <div className="flex flex-col text-gray-700">
-            <label className="text-sm font-medium mb-1">Search</label>
+            <label className="text-sm font-medium mb-1">Client Name</label>
             <input
               type="text"
-              name="searchInput"
-              value={filters.searchInput}
+              name="user"
+              value={filters.user}
               onChange={handleInputChange}
               className="p-2 border rounded-lg w-full"
               placeholder="Search commands"

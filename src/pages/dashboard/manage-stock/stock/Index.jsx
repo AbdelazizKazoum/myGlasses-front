@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { filterStock } from "../../../../store/stockSlice";
 import StockHeader from "../../../../components/dashboard/manage-stock/StockHeader";
 import StockDetailModal from "../../../../components/modals/StockDetailModal";
+import { PencilIcon } from "lucide-react";
 
 const Stock = () => {
   const [filters, setFilters] = useState({
@@ -118,9 +119,9 @@ const Stock = () => {
                   <td className="px-6 py-4">
                     <button
                       onClick={() => openModal(item)} // Open the modal and pass the item
-                      className="font-medium text-primary-500 hover:underline"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
                     >
-                      View Details
+                      <PencilIcon className="h-4 w-4" />
                     </button>
                   </td>
                 </tr>
