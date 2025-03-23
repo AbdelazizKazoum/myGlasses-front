@@ -69,8 +69,15 @@ export const getFilterdProducts = createAsyncThunk(
   "products/filter",
   async ({ filters, pagination }, { rejectWithValue }) => {
     try {
-      const { searchInput, gender, priceRange, category, rating, priceSort } =
-        filters;
+      const {
+        searchInput,
+        brand,
+        gender,
+        priceRange,
+        category,
+        rating,
+        priceSort,
+      } = filters;
 
       const { page = 1, limit = 10 } = pagination;
 
@@ -85,7 +92,7 @@ export const getFilterdProducts = createAsyncThunk(
       }
 
       const res = await api.get(
-        `/product/filter?searchInput=${searchInput}&gender=${gender}&priceRange=${priceRange}&${cat}rating=${rating}&page=${page}&limit=${limit}&priceSort=${priceSort}`
+        `/product/filter?searchInput=${searchInput}&gender=${gender}&priceRange=${priceRange}&${cat}&brand=${brand}&rating=${rating}&page=${page}&limit=${limit}&priceSort=${priceSort}`
       );
       console.log("🚀 ~ filter products :", res);
 
