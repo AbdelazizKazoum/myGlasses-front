@@ -27,9 +27,9 @@ const CommandsHeader = ({ filters, setFilters, handleAddProduct }) => {
             />
           </div>
 
-          {/* Status */}
+          {/* Order Status */}
           <div className="flex flex-col text-gray-700">
-            <label className="text-sm font-medium mb-1">Status</label>
+            <label className="text-sm font-medium mb-1">Order Status</label>
             <select
               name="status"
               value={filters.status}
@@ -38,8 +38,9 @@ const CommandsHeader = ({ filters, setFilters, handleAddProduct }) => {
             >
               <option value="">All</option>
               <option value="pending">Pending</option>
-              <option value="completed">Completed</option>
-              <option value="canceled">Canceled</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
             </select>
           </div>
 
@@ -130,9 +131,9 @@ const CommandsHeader = ({ filters, setFilters, handleAddProduct }) => {
               name="sortBy"
               value={filters.sortBy}
               onChange={handleInputChange}
+              defaultValue="date_commande"
               className="p-2 border bg-white rounded-lg w-full"
             >
-              <option value="">None</option>
               <option value="date_commande">Date</option>
               <option value="total">Total</option>
             </select>

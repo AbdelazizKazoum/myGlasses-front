@@ -12,3 +12,15 @@ export const getCommandStatusColor = (status) => {
       return "bg-gray-200 text-gray-800";
   }
 };
+
+// utils/getStatusColor.js
+export const getPaymentStatusColor = (paymentStatus) => {
+  switch (paymentStatus) {
+    case "paid":
+      return "bg-green-400 text-white"; // Green for paid
+    case "unpaid":
+      return "bg-red-400 text-white"; // Red for unpaid
+    default:
+      return "bg-gray-300 text-gray-800"; // Default color
+  }
+};

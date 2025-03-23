@@ -8,7 +8,10 @@ import Loader from "../../../components/Loader";
 import CommandDetailModal from "../../../components/modals/CommandDetailModal";
 import TableHeader from "../../../components/dashboard/products/TableHeader";
 import dayjs from "dayjs";
-import { getCommandStatusColor } from "../../../utils/getStatusColor";
+import {
+  getCommandStatusColor,
+  getPaymentStatusColor,
+} from "../../../utils/getStatusColor";
 import { PencilIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CommandsHeader from "../../../components/dashboard/commands/CommandsHeader";
@@ -111,6 +114,9 @@ const CommandsPage = () => {
                   Statut
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  Payment Statut
+                </th>
+                <th scope="col" className="px-6 py-3">
                   Total
                 </th>
                 <th scope="col" className="px-6 py-3">
@@ -137,6 +143,15 @@ const CommandsPage = () => {
                       )}`}
                     >
                       {command.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${getPaymentStatusColor(
+                        command.paymentStatus
+                      )}`}
+                    >
+                      {command.paymentStatus}
                     </span>
                   </td>
                   <td className="px-6 py-4">{command.total} DH</td>
