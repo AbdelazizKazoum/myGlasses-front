@@ -6,6 +6,10 @@ import { toast } from "react-toastify";
 const initialState = {
   commands: [],
   status: statusCode.idle,
+  pagination: {
+    total: null,
+    totalPages: null,
+  },
 };
 
 // Fetch all commandes
@@ -19,7 +23,52 @@ export const getCommandes = createAsyncThunk("commandes/getAll", async () => {
   }
 });
 
-// Fetch all commandes
+// Get filtered commands
+export const getFilterdCommands = createAsyncThunk(
+  "commandes/filter",
+  async ({ filters, pagination }, { rejectWithValue }) => {
+    try {
+      const {
+        searchInput = "",
+        status = "",
+        paymentStatus = "",
+        userId = "",
+        sortByDate = "DESC",
+        startDate = "",
+        endDate = "",
+        totalMin = "",
+        totalMax = "",
+      } = filters;
+
+      const { page = 1, limit = 10 } = pagination;
+
+      const queryParams = new URLSearchParams({
+        searchInput,
+        status,
+        paymentStatus,
+        userId,
+        sortByDate,
+        startDate,
+        endDate,
+        totalMin,
+        totalMax,
+        page,
+        limit,
+      });
+
+      const res = await api.get(`/commande/filter?${queryParams.toString()}`);
+      return res.data;
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to load filtered commandes"
+      );
+      return rejectWithValue(
+        error?.response?.data?.message || "Failed to load filtered commandes"
+      );
+    }
+  }
+);
+
 export const getLatestCommands = createAsyncThunk(
   "commandes/latest",
   async () => {
@@ -33,7 +82,6 @@ export const getLatestCommands = createAsyncThunk(
   }
 );
 
-// Fetch a single commande by ID
 export const getCommande = createAsyncThunk("commandes/getOne", async (id) => {
   try {
     const res = await api.get(`/commande/${id}`);
@@ -44,7 +92,6 @@ export const getCommande = createAsyncThunk("commandes/getOne", async (id) => {
   }
 });
 
-// Create a new commande
 export const createCommande = createAsyncThunk(
   "commandes/create",
   async (formData, { rejectWithValue }) => {
@@ -59,7 +106,6 @@ export const createCommande = createAsyncThunk(
   }
 );
 
-// Delete a commande by ID
 export const deleteCommande = createAsyncThunk(
   "commandes/delete",
   async (id, { rejectWithValue }) => {
@@ -76,7 +122,6 @@ export const deleteCommande = createAsyncThunk(
   }
 );
 
-// Delete a commande by ID
 export const updateCommande = createAsyncThunk(
   "commandes/update",
   async ({ id, data }, { rejectWithValue }) => {
@@ -85,13 +130,9 @@ export const updateCommande = createAsyncThunk(
       toast.success("Commande updated successfully");
       return res.data;
     } catch (error) {
-      console.log("🚀 ~ error:", error);
-
-      toast.error(
-        error.response?.data?.message ?? "Failed to updated commande"
-      );
+      toast.error(error.response?.data?.message ?? "Failed to update commande");
       return rejectWithValue(
-        error.response?.data || "Failed to updated commande"
+        error.response?.data || "Failed to update commande"
       );
     }
   }
@@ -129,6 +170,17 @@ const commandeSlice = createSlice({
         state.commands = state.commands.filter(
           (cmd) => cmd.id !== action.payload
         );
+      })
+      .addCase(getFilterdCommands.pending, (state) => {
+        state.status = statusCode.pending;
+      })
+      .addCase(getFilterdCommands.rejected, (state) => {
+        state.status = statusCode.failure;
+      })
+      .addCase(getFilterdCommands.fulfilled, (state, action) => {
+        state.status = statusCode.success;
+        state.commands = action.payload.data;
+        state.pagination = action.payload.pagination;
       });
   },
 });

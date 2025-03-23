@@ -1,42 +1,31 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import Select from "react-select";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FaCalendarAlt } from "react-icons/fa";
 import CommandDetailModal from "../../modals/CommandDetailModal";
-import { selectStyles, statusOptions } from "../../../utils/utils";
 import { useDispatch } from "react-redux";
 import { getCommandes, updateCommande } from "../../../store/commandeSlice";
 import "./index.css";
 import { getCommandStatusColor } from "../../../utils/getStatusColor";
+import TableHeader from "../products/TableHeader";
 
 const CommandsTable = ({ commands }) => {
+  // States
+  const [filters, setFilters] = useState({
+    searchInput: "",
+    gender: "",
+    priceRange: "",
+    rating: "",
+    priceSort: "",
+    brand: "",
+    minPrice: "",
+    maxPrice: "",
+  });
   const [selectedCommand, setSelectedCommand] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedUsername, setSelectedUsername] = useState("");
   const [newTotal, setNewTotal] = useState(selectedCommand?.total); // State to manage total price
   const [newStatus, setNewStatus] = useState(""); // State to manage status
 
   // Hooks
   const dispatch = useDispatch();
-
-  const filteredCommands = commands.filter((command) => {
-    const matchesDate = selectedDate
-      ? dayjs(command.date_commande).isSame(selectedDate, "day")
-      : true;
-    const matchesStatus = selectedStatus
-      ? command.statut === selectedStatus.value
-      : true;
-    const matchesUsername = selectedUsername
-      ? command?.utilisateur?.username
-          .toLowerCase()
-          .includes(selectedUsername.toLowerCase())
-      : true;
-
-    return matchesDate && matchesStatus && matchesUsername;
-  });
 
   const handleUpdateCommand = async () => {
     if (selectedCommand) {
@@ -64,35 +53,9 @@ const CommandsTable = ({ commands }) => {
 
   return (
     <div className="overflow-x-auto shadow-md sm:rounded-lg h-full bg-white">
-      <div className="p-4 flex gap-4 items-center z-50">
-        <div className="relative w-full">
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            dateFormat="dd/MM/yyyy"
-            className="p-2 border rounded w-full flex outline-primary-500"
-            placeholderText="Filtrer par date"
-            styles={{ display: "flex" }}
-          />
-          <FaCalendarAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-        </div>
-        <Select
-          options={statusOptions}
-          value={selectedStatus}
-          onChange={setSelectedStatus}
-          className="w-full outline-none border-select"
-          styles={selectStyles}
-        />
-        <input
-          type="text"
-          placeholder="Filtrer par utilisateur"
-          className="p-2 rounded w-full border"
-          value={selectedUsername}
-          onChange={(e) => setSelectedUsername(e.target.value)}
-        />
-      </div>
+      <TableHeader filters={filters} setFilters={setFilters} />
 
-      {filteredCommands.length > 0 ? (
+      {commands.length > 0 ? (
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
@@ -114,7 +77,7 @@ const CommandsTable = ({ commands }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredCommands.map((command) => (
+            {commands.map((command) => (
               <tr
                 key={command.id}
                 className="bg-white border-b hover:bg-gray-50"

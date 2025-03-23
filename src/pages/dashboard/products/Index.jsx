@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { setProduct } from "../../../store/productSlice";
 import TableHeader from "../../../components/dashboard/products/TableHeader";
 import { getImageUrl } from "../../../utils/getImageUrl";
+import { PencilIcon } from "lucide-react";
 
 const ProductsPage = () => {
   // States
@@ -18,6 +19,7 @@ const ProductsPage = () => {
     minPrice: "",
     maxPrice: "",
   });
+
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10); // You can make this dynamic if needed
 
@@ -102,9 +104,9 @@ const ProductsPage = () => {
                 <td className="px-6 py-4">
                   <button
                     onClick={() => handleEditProduct(product)}
-                    className="text-blue-600 hover:underline"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
                   >
-                    Edit
+                    <PencilIcon className="h-4 w-4" />
                   </button>
                 </td>
               </tr>
