@@ -13,6 +13,7 @@ import commandeSlice from "./commandeSlice";
 import productSlice from "./productSlice";
 import stockSlice from "./stockSlice";
 import supplierSlice from "./supplierSlice";
+import supplierOrderSlice from "./supplierOrderSlice";
 
 const store = configureStore({
   reducer: {
@@ -30,6 +31,7 @@ const store = configureStore({
     commande: commandeSlice,
     stock: stockSlice,
     suppliers: supplierSlice,
+    supplierOrders: supplierOrderSlice,
   },
 });
 

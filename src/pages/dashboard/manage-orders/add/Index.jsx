@@ -3,12 +3,18 @@ import axios from "axios";
 import SupplierSelect from "../../../../components/dashboard/supplier-orders/SupplierSelect";
 import OrderItemsTable from "../../../../components/dashboard/supplier-orders/OrderItemsTable";
 import OrderSummary from "../../../../components/dashboard/supplier-orders/OrderSummary";
+import { useDispatch } from "react-redux";
+import { createSupplierOrder } from "../../../../store/supplierOrderSlice";
 
 export default function AddOrder() {
+  // State
   const [supplierId, setSupplierId] = useState("");
   const [note, setNote] = useState("");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // Hooks
+  const dispatch = useDispatch();
 
   const handleAddItem = (item) => {
     setItems([...items, item]);
@@ -21,25 +27,22 @@ export default function AddOrder() {
   const handleSubmit = async () => {
     if (!supplierId || items.length === 0) return alert("Complete the form");
     setLoading(true);
-    try {
-      const supplierOrder = {
-        supplierId,
-        note,
-        items,
-      };
-      console.log("🚀 ~ handleSubmit ~ supplierOrder:", supplierOrder);
 
-      await axios.post("/api/supplier-orders", supplierOrder);
-      alert("Order created successfully");
-      setSupplierId("");
+    const supplierOrder = {
+      supplierId,
+      note,
+      items,
+    };
+    console.log("🚀 ~ handleSubmit ~ supplierOrder:", supplierOrder);
+
+    const res = await dispatch(createSupplierOrder(supplierOrder));
+    console.log("🚀 ~ handleSubmit ~ res:", res);
+
+    if (!res.error) {
       setNote("");
       setItems([]);
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
