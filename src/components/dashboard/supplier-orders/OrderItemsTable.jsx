@@ -3,10 +3,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import ProductDetailSearchInput from "../../ui/ProductDetailSearchInput";
 
 // Zod validation schema
 const itemSchema = z.object({
-  productId: z.string().min(1, "Select a product"),
+  productDetailId: z.string().min(1, "Select a product"),
   quantity: z
     .number({ invalid_type_error: "Quantity is required" })
     .positive("Quantity must be greater than 0"),
@@ -17,9 +18,11 @@ const itemSchema = z.object({
 
 export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
   const [products, setProducts] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  console.log("🚀 ~ OrderItemsTable ~ selectedProduct:", selectedProduct);
 
   useEffect(() => {
-    // axios.get("/api/products").then((res) => setProducts(res.data));
+    // In real app: axios.get("/api/products").then((res) => setProducts(res.data));
     setProducts([
       { id: "1", name: "Product A" },
       { id: "2", name: "Product B" },
@@ -30,59 +33,59 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(itemSchema),
     defaultValues: {
-      productId: "",
+      productDetailId: "",
       quantity: "",
       unitPrice: "",
     },
   });
 
   const onSubmit = (data) => {
-    const product = products.find((p) => p.id === data.productId);
+    console.log("🚀 ~ onSubmit ~ data:", data);
+
     onAddItem({
-      productId: data.productId,
-      name: product?.name || "",
+      productId: data.productDetailId,
+      name: selectedProduct?.product?.name || "",
+      size: selectedProduct?.size || "",
+      color: selectedProduct?.color || "",
       quantity: data.quantity,
       unitPrice: data.unitPrice,
     });
     reset();
+    setValue("productDetailId", "");
+
+    setSelectedProduct(null);
   };
 
   return (
     <div className="">
-      <h2 className="text-lg font-semibold text-gray-700 mb-4">Order Items</h2>
+      <h2 className="text-lg text-gray-700 mb-4">Order Items</h2>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6"
       >
-        <div>
-          <label className="block mb-1  font-medium text-gray-600">
-            Product
-          </label>
-          <select
-            {...register("productId")}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2  text-gray-700"
-          >
-            <option value="">Select Product</option>
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-          {errors.productId && (
-            <p className="text-sm text-red-500 mt-1">
-              {errors.productId.message}
-            </p>
-          )}
+        {/* Product Select */}
+        <div className="flex text-sm flex-col">
+          <ProductDetailSearchInput
+            selectedProduct={selectedProduct}
+            setSelectedProduct={(product) => {
+              setSelectedProduct(product);
+              setValue("productDetailId", product?.id || "");
+            }}
+            onChange={(value) => setValue("productDetailId", value)} // ✅ this is the missing onChange
+            error={errors.productDetailId}
+          />
+          <input type="hidden" {...register("productDetailId")} />
         </div>
 
-        <div>
-          <label className="block mb-1  font-medium text-gray-600">
+        {/* Quantity */}
+        <div className="flex text-sm flex-col justify-end">
+          <label className="block mb-1 font-medium text-gray-600">
             Quantity
           </label>
           <input
@@ -92,14 +95,13 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
             placeholder="Quantity"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700"
           />
-          {errors.quantity && (
-            <p className="text-sm text-red-500 mt-1">
-              {errors.quantity.message}
-            </p>
-          )}
+          <p className="text-sm text-red-500 min-h-[1.25rem] mt-1">
+            {errors.quantity?.message}
+          </p>
         </div>
 
-        <div>
+        {/* Unit Price */}
+        <div className="flex flex-col justify-end">
           <label className="block mb-1 text-sm font-medium text-gray-600">
             Unit Price
           </label>
@@ -110,14 +112,13 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
             placeholder="Unit Price"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700"
           />
-          {errors.unitPrice && (
-            <p className="text-sm text-red-500 mt-1">
-              {errors.unitPrice.message}
-            </p>
-          )}
+          <p className="text-sm text-red-500 min-h-[1.25rem] mt-1">
+            {errors.unitPrice?.message}
+          </p>
         </div>
 
-        <div className="flex items-end">
+        {/* Submit Button */}
+        <div className="flex items-start mt-1 pt-6">
           <button
             type="submit"
             className="w-full bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700"
@@ -127,12 +128,15 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
         </div>
       </form>
 
+      {/* Table of items */}
       <div className="overflow-x-auto">
         <table className="min-w-full border text-sm text-left text-gray-600">
           <thead className="text-xs uppercase bg-gray-100 border-b border-gray-200">
             <tr>
               <th className="px-4 py-3">#</th>
               <th className="px-4 py-3">Product</th>
+              <th className="px-4 py-3">Size</th>
+              <th className="px-4 py-3">Color</th>
               <th className="px-4 py-3">Quantity</th>
               <th className="px-4 py-3">Unit Price (DH)</th>
               <th className="px-4 py-3">Subtotal (DH)</th>
@@ -143,7 +147,7 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
             {items.length === 0 ? (
               <tr>
                 <td
-                  colSpan="6"
+                  colSpan="8"
                   className="text-center text-gray-400 py-4 border-b"
                 >
                   No items added.
@@ -157,6 +161,16 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
                 >
                   <td className="px-4 py-3 font-medium">{index + 1}</td>
                   <td className="px-4 py-3">{item.name}</td>
+                  <td className="px-4 py-3">{item.size}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-4 h-4 rounded-full border"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="capitalize">{item.color}</span>
+                    </div>
+                  </td>
                   <td className="px-4 py-3">{item.quantity}</td>
                   <td className="px-4 py-3">{item.unitPrice.toFixed(2)}</td>
                   <td className="px-4 py-3">

@@ -22,11 +22,14 @@ export default function AddOrder() {
     if (!supplierId || items.length === 0) return alert("Complete the form");
     setLoading(true);
     try {
-      await axios.post("/api/supplier-orders", {
+      const supplierOrder = {
         supplierId,
         note,
         items,
-      });
+      };
+      console.log("🚀 ~ handleSubmit ~ supplierOrder:", supplierOrder);
+
+      await axios.post("/api/supplier-orders", supplierOrder);
       alert("Order created successfully");
       setSupplierId("");
       setNote("");
@@ -48,7 +51,7 @@ export default function AddOrder() {
           {" "}
           <label className="block mb-1 font-medium">Notes</label>
           <textarea
-            className="w-full border p-2 rounded"
+            className="w-full border text-sm p-2 rounded"
             placeholder="Order Notes"
             rows={3}
             value={note}
@@ -61,19 +64,11 @@ export default function AddOrder() {
           onAddItem={handleAddItem}
           onRemoveItem={handleRemoveItem}
         />
-        <OrderSummary items={items} />
-      </div>
-
-      <div className="flex justify-end">
-        <button
-          className={`px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 ${
-            loading ? "opacity-50" : ""
-          }`}
-          disabled={loading}
-          onClick={handleSubmit}
-        >
-          {loading ? "Creating..." : "Create Order"}
-        </button>
+        <OrderSummary
+          items={items}
+          handleSubmit={handleSubmit}
+          loading={loading}
+        />
       </div>
     </div>
   );
