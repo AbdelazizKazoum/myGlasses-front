@@ -4,9 +4,7 @@ import {
   getFilterdCommands,
   updateCommande,
 } from "../../../store/commandeSlice";
-import Loader from "../../../components/Loader";
 import CommandDetailModal from "../../../components/modals/CommandDetailModal";
-import TableHeader from "../../../components/dashboard/products/TableHeader";
 import dayjs from "dayjs";
 import {
   getCommandStatusColor,
@@ -17,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import CommandsHeader from "../../../components/dashboard/commands/CommandsHeader";
 
 const CommandsPage = () => {
-  // States
   const [filters, setFilters] = useState({
     searchInput: "",
     status: "",
@@ -30,13 +27,12 @@ const CommandsPage = () => {
     totalMax: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(10); // You can make this dynamic if needed
+  const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const [selectedCommand, setSelectedCommand] = useState(null);
-  const [newTotal, setNewTotal] = useState(""); // State to manage total price
-  const [newStatus, setNewStatus] = useState(""); // State to manage status
+  const [newTotal, setNewTotal] = useState("");
+  const [newStatus, setNewStatus] = useState("");
 
-  // Hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -89,43 +85,43 @@ const CommandsPage = () => {
       );
 
       setSelectedCommand(updatedCommand);
-      setNewTotal(""); // Clear the new total input
-      setNewStatus(""); // Clear the new status input
+      setNewTotal("");
+      setNewStatus("");
       setSelectedCommand(null);
     }
   };
 
   return (
-    <div className=" h-full ">
+    <div className="h-full">
       <div className="overflow-x-auto shadow-md sm:rounded-lg h-full bg-white">
         <CommandsHeader filters={filters} setFilters={setFilters} />
 
-        {commands.length > 0 ? (
-          <table className="min-w-full border text-sm text-left text-gray-500">
-            <thead className="text-xs border text-gray-700 uppercase bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Client
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Date
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Statut
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Payment Statut
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Total
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {commands.map((command) => (
+        <table className="min-w-full border text-sm text-left text-gray-500">
+          <thead className="text-xs border text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Client
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Date
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Statut
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Payment Statut
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Total
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {commands.length > 0 ? (
+              commands.map((command) => (
                 <tr
                   key={command.id}
                   className="bg-white border-b hover:bg-gray-50"
@@ -159,8 +155,8 @@ const CommandsPage = () => {
                     <button
                       onClick={() => {
                         setSelectedCommand(command);
-                        setNewStatus(command.status); // Initialize newStatus
-                        setNewTotal(command.total); // Initialize newTotal
+                        setNewStatus(command.status);
+                        setNewTotal(command.total);
                       }}
                       className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
                     >
@@ -168,12 +164,16 @@ const CommandsPage = () => {
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="p-4 text-gray-500">Aucune commande trouvée.</p>
-        )}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="px-6 py-6 text-center text-gray-500">
+                  Aucune commande trouvée.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
         {/* Pagination */}
         <div className="flex items-center justify-end gap-3 py-4 px-6">
@@ -231,7 +231,7 @@ const CommandsPage = () => {
           </button>
         </div>
       </div>
-      ){/* Command Detail Modal */}
+
       {selectedCommand && (
         <CommandDetailModal
           selectedCommand={selectedCommand}

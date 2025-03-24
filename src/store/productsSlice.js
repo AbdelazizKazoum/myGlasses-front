@@ -92,7 +92,9 @@ export const getFilterdProducts = createAsyncThunk(
       }
 
       const res = await api.get(
-        `/product/filter?searchInput=${searchInput}&gender=${gender}&priceRange=${priceRange}&${cat}&brand=${brand}&rating=${rating}&page=${page}&limit=${limit}&priceSort=${priceSort}`
+        `/product/filter?searchInput=${searchInput}&gender=${gender}&priceRange=${priceRange}&${cat}&brand=${
+          brand || ""
+        }&rating=${rating}&page=${page}&limit=${limit}&priceSort=${priceSort}`
       );
       console.log("🚀 ~ filter products :", res);
 
