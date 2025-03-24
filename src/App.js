@@ -18,7 +18,6 @@ import "./App.css";
 import AdminLayout from "./pages/dashboard/AdminLayout";
 import ProductsPage from "./pages/dashboard/products/Index";
 import UsersPage from "./pages/dashboard/users";
-import AnalyticsPage from "./pages/dashboard/analytics/Index";
 import HomePage from "./pages/dashboard/home/Index";
 import CommandsPage from "./pages/dashboard/commands/Index";
 import { useEffect, useState } from "react";
@@ -157,26 +156,6 @@ function App() {
               element={
                 <AdminLayout>
                   <UsersPage />
-                </AdminLayout>
-              }
-            />
-
-            <Route
-              exact
-              path="/admin/analytics"
-              element={
-                <AdminLayout>
-                  <AnalyticsPage />
-                </AdminLayout>
-              }
-            />
-
-            <Route
-              exact
-              path="/admin/analytics"
-              element={
-                <AdminLayout>
-                  <AnalyticsPage />
                 </AdminLayout>
               }
             />

@@ -67,7 +67,6 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
 
       <nav className="mt-4 space-y-2 w-full">
         <NavItem to="/admin" icon={<Home />} label="Home" />
-        <NavItem to="/admin/analytics" icon={<BarChart />} label="Analytics" />
 
         {/* Products Dropdown */}
         <div className="w-full flex flex-col justify-start">
