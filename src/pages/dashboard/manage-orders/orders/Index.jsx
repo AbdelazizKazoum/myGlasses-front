@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import dayjs from "dayjs";
-import { PencilIcon } from "lucide-react";
-
+import { PencilIcon, EyeIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import OrderHeader from "../../../../components/dashboard/supplier-orders/list/OrderHeader";
-import {
-  getFilteredSupplierOrders,
-  updateSupplierOrder,
-} from "../../../../store/supplierOrderSlice";
+import { getFilteredSupplierOrders } from "../../../../store/supplierOrderSlice";
+import OrderDetailsModal from "../../../../components/modals/OrderDetailsModal";
 
 const Orders = () => {
   const [filters, setFilters] = useState({
@@ -25,10 +22,11 @@ const Orders = () => {
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [newTotal, setNewTotal] = useState("");
-  const [newStatus, setNewStatus] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  console.log("🚀 ~ Orders ~ showModal:", showModal);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { supplierOrders, pagination } = useSelector(
     (state) => state.supplierOrders
   );
@@ -49,15 +47,27 @@ const Orders = () => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
-  const handleUpdateOrder = async () => {
-    if (selectedOrder) {
-    }
+  const handleEditOrder = (order) => {
+    localStorage.setItem("selectedOrder", JSON.stringify(order));
+    navigate("/admin/orders/add");
+  };
+
+  const handleCreateOrder = () => {
+    navigate("/admin/orders/add");
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
     <div className="h-full">
       <div className="overflow-x-auto shadow-md sm:rounded-lg h-full bg-white">
-        <OrderHeader filters={filters} setFilters={setFilters} />
+        <OrderHeader
+          filters={filters}
+          setFilters={setFilters}
+          handleCreateOrder={handleCreateOrder}
+        />
         <table className="min-w-full border text-sm text-left text-gray-500">
           <thead className="text-xs border text-gray-700 uppercase bg-gray-50">
             <tr>
@@ -75,19 +85,27 @@ const Orders = () => {
                   key={order.id}
                   className="bg-white border-b hover:bg-gray-50"
                 >
-                  <td className="px-6 py-4 ">{order.supplier.name}</td>
+                  <td className="px-6 py-4">{order.supplier.name}</td>
                   <td className="px-6 py-4">
-                    {dayjs(order.date).format("DD/MM/YYYY")}
+                    {dayjs(order.createdAt).format("DD/MM/YYYY")}
                   </td>
                   <td className="px-6 py-4">{order.status}</td>
                   <td className="px-6 py-4">{order.total} DH</td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 flex gap-2">
+                    {/* View Order Button */}
                     <button
                       onClick={() => {
                         setSelectedOrder(order);
-                        setNewStatus(order.status);
-                        setNewTotal(order.total);
+                        setShowModal(true);
                       }}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
+                    >
+                      <EyeIcon className="h-4 w-4" />
+                    </button>
+
+                    {/* Edit Order Button */}
+                    <button
+                      onClick={() => handleEditOrder()}
                       className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
                     >
                       <PencilIcon className="h-4 w-4" />
@@ -104,37 +122,12 @@ const Orders = () => {
             )}
           </tbody>
         </table>
-        {/* Pagination */}
-        <div className="flex items-center justify-end gap-3 py-4 px-6">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50"
-          >
-            Previous
-          </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => handlePageChange(page)}
-              className={`px-4 py-2 ${
-                currentPage === page
-                  ? "bg-primary-500 text-white"
-                  : "bg-gray-200 text-gray-700"
-              } rounded-md`}
-            >
-              {page}
-            </button>
-          ))}
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
       </div>
+      <OrderDetailsModal
+        show={showModal}
+        onClose={closeModal}
+        order={selectedOrder}
+      />
     </div>
   );
 };
