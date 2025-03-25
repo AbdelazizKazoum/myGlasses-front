@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import SupplierSelect from "../../../../components/dashboard/supplier-orders/SupplierSelect";
 import OrderItemsTable from "../../../../components/dashboard/supplier-orders/OrderItemsTable";
 import OrderSummary from "../../../../components/dashboard/supplier-orders/OrderSummary";
@@ -33,10 +32,8 @@ export default function AddOrder() {
       note,
       items,
     };
-    console.log("🚀 ~ handleSubmit ~ supplierOrder:", supplierOrder);
 
     const res = await dispatch(createSupplierOrder(supplierOrder));
-    console.log("🚀 ~ handleSubmit ~ res:", res);
 
     if (!res.error) {
       setNote("");

@@ -32,7 +32,7 @@ import Products from "./pages/products";
 import StockHistory from "./pages/dashboard/manage-stock/history/Index";
 import Stock from "./pages/dashboard/manage-stock/stock/Index";
 import AddOrder from "./pages/dashboard/manage-orders/add/Index";
-import { Orders } from "./pages/dashboard/manage-orders/orders/Index";
+import Orders from "./pages/dashboard/manage-orders/orders/Index";
 
 function App() {
   // Determine if Navbar should be displayed based on current path

@@ -39,9 +39,9 @@ export default function OrderSummary({ items, handleSubmit, loading }) {
         </div>
       </div>
 
-      <div className="border-t border-gray-200 pt-4">
+      <div className="border-t w-full flex justify-end border-gray-200 pt-4">
         <button
-          className={`w-full bg-primary-500 text-white py-2 rounded-md hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-opacity-50 ${
+          className={` bg-primary-500 text-white sm:px-10 py-2  rounded-md hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-opacity-50 ${
             loading ? "opacity-50" : ""
           }`}
           disabled={loading}

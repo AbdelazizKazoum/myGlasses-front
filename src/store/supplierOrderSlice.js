@@ -33,19 +33,19 @@ export const getFilteredSupplierOrders = createAsyncThunk(
   async ({ filters, pagination }, { rejectWithValue }) => {
     try {
       const {
-        searchInput = "",
         status = "",
         supplier = "",
-        sortBy = "createdAt",
-        sortOrder = "DESC",
         startDate = "",
         endDate = "",
+        totalMin = "",
+        totalMax = "",
+        sortBy = "createdAt",
+        sortOrder = "DESC",
       } = filters;
 
       const { page = 1, limit = 10 } = pagination;
 
       const queryParams = new URLSearchParams({
-        searchInput,
         status,
         supplier,
         sortBy,
@@ -54,6 +54,8 @@ export const getFilteredSupplierOrders = createAsyncThunk(
         endDate,
         page,
         limit,
+        totalMin,
+        totalMax,
       });
 
       const res = await api.get(
