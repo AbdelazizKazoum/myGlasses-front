@@ -6,6 +6,8 @@ import OrderSummary from "../../../../components/dashboard/supplier-orders/Order
 import { useDispatch, useSelector } from "react-redux";
 import {
   createSupplierOrder,
+  deleteSupplierOrder,
+  setSeletedSupplierOrder,
   updateSupplierOrder,
 } from "../../../../store/supplierOrderSlice";
 
@@ -14,7 +16,6 @@ export default function AddOrder() {
   const [supplierId, setSupplierId] = useState("");
   const [note, setNote] = useState("");
   const [items, setItems] = useState([]);
-  console.log("🚀 ~ AddOrder ~ items:", items);
   const [loading, setLoading] = useState(false);
 
   // Hooks
@@ -33,6 +34,17 @@ export default function AddOrder() {
 
   const handleUpdateItem = (index, updatedItem) => {
     setItems(items.map((item, i) => (i === index ? updatedItem : item)));
+  };
+
+  const deleteOrder = async () => {
+    setLoading(true);
+    const res = await dispatch(deleteSupplierOrder(selectedSupplierOrder.id));
+    if (!res.error) {
+      setNote("");
+      setItems([]);
+      dispatch(setSeletedSupplierOrder(null));
+    }
+    setLoading(false);
   };
 
   const handleSubmit = async () => {
@@ -60,16 +72,13 @@ export default function AddOrder() {
     if (!res.error) {
       setNote("");
       setItems([]);
+      dispatch(setSeletedSupplierOrder(null));
     }
     setLoading(false);
   };
 
   useEffect(() => {
     if (selectedSupplierOrder) {
-      console.log(
-        "🚀 ~ useEffect ~ selectedSupplierOrder:",
-        selectedSupplierOrder
-      );
       setSupplierId(selectedSupplierOrder.supplier.id);
       setNote(selectedSupplierOrder.note);
       setItems(
@@ -116,6 +125,7 @@ export default function AddOrder() {
           handleSubmit={handleSubmit}
           loading={loading}
           selectedSupplierOrder={selectedSupplierOrder}
+          deleteSupplierOrder={deleteOrder}
         />
       </div>
     </div>

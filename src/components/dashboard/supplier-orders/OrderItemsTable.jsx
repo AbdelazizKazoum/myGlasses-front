@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ProductDetailSearchInput from "../../ui/ProductDetailSearchInput";
+import { PencilIcon, Trash2Icon } from "lucide-react";
 
 const itemSchema = z.object({
   productDetailId: z.string().min(1, "Select a product"),
@@ -180,15 +181,16 @@ export default function OrderItemsTable({
                   <td className="px-4 py-3 flex gap-2">
                     <button
                       onClick={() => setEditingIndex(index)}
-                      className="text-blue-600 hover:underline"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
                     >
-                      Edit
+                      <PencilIcon className="h-4 w-4" />
                     </button>
+
                     <button
                       onClick={() => onRemoveItem(index)}
-                      className="text-red-500 hover:underline"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm border-primary rounded-md hover:bg-red-500  text-red-500 border  hover:text-white transition ml-2"
                     >
-                      Remove
+                      <Trash2Icon className="h-4 w-4" />
                     </button>
                   </td>
                 </tr>

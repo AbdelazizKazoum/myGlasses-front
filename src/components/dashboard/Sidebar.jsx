@@ -16,6 +16,7 @@ import NavItem from "./NavItem";
 import { IoGlasses } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { setProduct } from "../../store/productSlice";
+import { setSeletedSupplierOrder } from "../../store/supplierOrderSlice";
 
 function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
   const [isProductsOpen, setIsProductsOpen] = useState(false);
@@ -163,7 +164,7 @@ function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
                 ? "opacity-100 translate-y-0 max-h-[500px] visible"
                 : "opacity-0 -translate-y-2 max-h-0 invisible"
             }`}
-            onClick={() => dispatch(setProduct(null))}
+            onClick={() => dispatch(setSeletedSupplierOrder(null))}
           >
             <NavItem
               to="/admin/orders/add"
