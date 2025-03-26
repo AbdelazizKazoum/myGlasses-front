@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 // Initial state
 const initialState = {
   supplierOrders: [],
+  selectedSupplierOrder: null,
   status: statusCode.idle,
   pagination: {
     total: null,
@@ -148,7 +149,11 @@ export const updateSupplierOrder = createAsyncThunk(
 const supplierOrderSlice = createSlice({
   name: "supplierOrder",
   initialState,
-  reducers: {},
+  reducers: {
+    setSeletedSupplierOrder(state, action) {
+      state.selectedSupplierOrder = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getSupplierOrders.pending, (state) => {
@@ -191,5 +196,7 @@ const supplierOrderSlice = createSlice({
       });
   },
 });
+
+export const { setSeletedSupplierOrder } = supplierOrderSlice.actions;
 
 export default supplierOrderSlice.reducer;

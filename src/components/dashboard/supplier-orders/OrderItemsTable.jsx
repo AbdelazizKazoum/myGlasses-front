@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import ProductDetailSearchInput from "../../ui/ProductDetailSearchInput";
 
-// Zod validation schema
 const itemSchema = z.object({
   productDetailId: z.string().min(1, "Select a product"),
   quantity: z
@@ -16,18 +14,14 @@ const itemSchema = z.object({
     .nonnegative("Price must be 0 or more"),
 });
 
-export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
-  const [products, setProducts] = useState([]);
+export default function OrderItemsTable({
+  items,
+  onAddItem,
+  onRemoveItem,
+  onUpdateItem,
+}) {
   const [selectedProduct, setSelectedProduct] = useState(null);
-  console.log("🚀 ~ OrderItemsTable ~ selectedProduct:", selectedProduct);
-
-  useEffect(() => {
-    // In real app: axios.get("/api/products").then((res) => setProducts(res.data));
-    setProducts([
-      { id: "1", name: "Product A" },
-      { id: "2", name: "Product B" },
-    ]);
-  }, []);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   const {
     register,
@@ -44,20 +38,40 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log("🚀 ~ onSubmit ~ data:", data);
+  useEffect(() => {
+    if (editingIndex !== null) {
+      const item = items[editingIndex];
+      setSelectedProduct({
+        id: item.productId,
+        product: { name: item.name },
+        size: item.size,
+        color: item.color,
+      });
+      setValue("productDetailId", item.productId);
+      setValue("quantity", item.quantity);
+      setValue("unitPrice", item.unitPrice);
+    }
+  }, [editingIndex, items, setValue]);
 
-    onAddItem({
+  const onSubmit = (data) => {
+    const newItem = {
       productId: data.productDetailId,
       name: selectedProduct?.product?.name || "",
       size: selectedProduct?.size || "",
       color: selectedProduct?.color || "",
       quantity: data.quantity,
       unitPrice: data.unitPrice,
-    });
+    };
+
+    if (editingIndex !== null) {
+      onUpdateItem(editingIndex, newItem);
+      setEditingIndex(null);
+    } else {
+      onAddItem(newItem);
+    }
+
     reset();
     setValue("productDetailId", "");
-
     setSelectedProduct(null);
   };
 
@@ -69,7 +83,6 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6"
       >
-        {/* Product Select */}
         <div className="flex text-sm flex-col">
           <ProductDetailSearchInput
             selectedProduct={selectedProduct}
@@ -77,13 +90,12 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
               setSelectedProduct(product);
               setValue("productDetailId", product?.id || "");
             }}
-            onChange={(value) => setValue("productDetailId", value)} // ✅ this is the missing onChange
+            onChange={(value) => setValue("productDetailId", value)}
             error={errors.productDetailId}
           />
           <input type="hidden" {...register("productDetailId")} />
         </div>
 
-        {/* Quantity */}
         <div className="flex text-sm flex-col justify-end">
           <label className="block mb-1 font-medium text-gray-600">
             Quantity
@@ -100,7 +112,6 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
           </p>
         </div>
 
-        {/* Unit Price */}
         <div className="flex flex-col justify-end">
           <label className="block mb-1 text-sm font-medium text-gray-600">
             Unit Price
@@ -117,18 +128,16 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
           </p>
         </div>
 
-        {/* Submit Button */}
         <div className="flex items-start mt-1 pt-6">
           <button
             type="submit"
             className="w-full bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700"
           >
-            Add Item
+            {editingIndex !== null ? "Update Item" : "Add Item"}
           </button>
         </div>
       </form>
 
-      {/* Table of items */}
       <div className="overflow-x-auto">
         <table className="min-w-full border text-sm text-left text-gray-600">
           <thead className="text-xs uppercase bg-gray-100 border-b border-gray-200">
@@ -162,25 +171,22 @@ export default function OrderItemsTable({ items, onAddItem, onRemoveItem }) {
                   <td className="px-4 py-3 font-medium">{index + 1}</td>
                   <td className="px-4 py-3">{item.name}</td>
                   <td className="px-4 py-3">{item.size}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-4 h-4 rounded-full border"
-                        style={{ backgroundColor: item.color }}
-                      />
-                      <span className="capitalize">{item.color}</span>
-                    </div>
-                  </td>
+                  <td className="px-4 py-3">{item.color}</td>
                   <td className="px-4 py-3">{item.quantity}</td>
                   <td className="px-4 py-3">{item.unitPrice.toFixed(2)}</td>
                   <td className="px-4 py-3">
                     {(item.quantity * item.unitPrice).toFixed(2)}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 flex gap-2">
                     <button
-                      type="button"
+                      onClick={() => setEditingIndex(index)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
                       onClick={() => onRemoveItem(index)}
-                      className="text-sm text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-md"
+                      className="text-red-500 hover:underline"
                     >
                       Remove
                     </button>

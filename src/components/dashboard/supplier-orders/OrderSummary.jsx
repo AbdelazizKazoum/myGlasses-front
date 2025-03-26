@@ -1,4 +1,9 @@
-export default function OrderSummary({ items, handleSubmit, loading }) {
+export default function OrderSummary({
+  items,
+  handleSubmit,
+  loading,
+  selectedSupplierOrder,
+}) {
   const totalCost = items.reduce(
     (sum, item) => sum + item.quantity * item.unitPrice,
     0
@@ -41,13 +46,17 @@ export default function OrderSummary({ items, handleSubmit, loading }) {
 
       <div className="border-t w-full flex justify-end border-gray-200 pt-4">
         <button
-          className={` bg-primary-500 text-white sm:px-10 py-2  rounded-md hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-opacity-50 ${
+          className={`bg-primary-500 text-white sm:px-10 py-2 rounded-md hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-opacity-50 ${
             loading ? "opacity-50" : ""
           }`}
           disabled={loading}
           onClick={handleSubmit}
         >
-          {loading ? "Creating..." : "Create Order"}
+          {loading
+            ? "Processing..."
+            : selectedSupplierOrder
+            ? "Update Order"
+            : "Create Order"}
         </button>
       </div>
     </div>

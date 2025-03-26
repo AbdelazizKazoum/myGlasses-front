@@ -4,7 +4,10 @@ import dayjs from "dayjs";
 import { PencilIcon, EyeIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import OrderHeader from "../../../../components/dashboard/supplier-orders/list/OrderHeader";
-import { getFilteredSupplierOrders } from "../../../../store/supplierOrderSlice";
+import {
+  getFilteredSupplierOrders,
+  setSeletedSupplierOrder,
+} from "../../../../store/supplierOrderSlice";
 import OrderDetailsModal from "../../../../components/modals/OrderDetailsModal";
 
 const Orders = () => {
@@ -23,14 +26,12 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  console.log("🚀 ~ Orders ~ showModal:", showModal);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { supplierOrders, pagination } = useSelector(
     (state) => state.supplierOrders
   );
-  console.log("🚀 ~ Orders ~ supplierOrders:", supplierOrders);
   const totalPages = Math.ceil(pagination.total / limit);
 
   useEffect(() => {
@@ -48,7 +49,8 @@ const Orders = () => {
   };
 
   const handleEditOrder = (order) => {
-    localStorage.setItem("selectedOrder", JSON.stringify(order));
+    // localStorage.setItem("selectedOrder", JSON.stringify(order));
+    dispatch(setSeletedSupplierOrder(order));
     navigate("/admin/orders/add");
   };
 
@@ -105,7 +107,7 @@ const Orders = () => {
 
                     {/* Edit Order Button */}
                     <button
-                      onClick={() => handleEditOrder()}
+                      onClick={() => handleEditOrder(order)}
                       className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
                     >
                       <PencilIcon className="h-4 w-4" />
