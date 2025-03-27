@@ -62,63 +62,43 @@ const LatestCommandsTable = () => {
 
   return (
     <div className="space-y-4">
-      <div className="overflow-x-auto border border-gray-200 shadow-sm rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Customer
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Total Price
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                Payment
-              </th>
-              <th className="px-6 py-3 text-sm font-medium text-gray-700">
-                Actions
-              </th>
+      {/* Latest Orders Section */}
+      <div className="bg-white rounded-lg">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="p-2 text-left">Order ID</th>
+              <th className="p-2 text-left">Customer</th>
+              <th className="p-2 text-left">Date</th>
+              <th className="p-2 text-left">Total</th>
+              <th className="p-2 text-left">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {latestCommands?.length > 0 ? (
-              latestCommands.map((command) => (
-                <tr key={command.id}>
-                  <td className="px-6 py-4 text-sm text-gray-800">
-                    {command.utilisateur?.username || "N/A"}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-800">
-                    {command.total} MAD
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    {getStatusBadge(command.status)}
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    {getPaymentBadge(command.paymentStatus)}
-                  </td>
-                  <td className="px-6 py-4 ">
-                    <button
-                      onClick={() => handleViewDetails(command.id)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
-                    >
-                      <EyeIcon className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
+          <tbody>
+            {latestCommands.map((order, index) => (
+              <tr key={index} className="border-b">
+                <td className="p-2">{index + 1}</td>
+                <td className="p-2">{order.utilisateur.username}</td>
+                <td className="p-2">
+                  {order.date_commande &&
+                    new Date(order.date_commande).toLocaleDateString()}
+                </td>
+                <td className="p-2">{order.total}</td>
                 <td
-                  colSpan="5"
-                  className="text-center text-sm text-gray-500 py-4"
+                  className={`p-2 ${
+                    order.status === "delivered"
+                      ? "text-green-500"
+                      : order.status === "pending"
+                      ? "text-yellow-500"
+                      : order.status === "shipped"
+                      ? "text-blue-800"
+                      : "text-red-500"
+                  }`}
                 >
-                  No orders available.
+                  {order.status}
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
