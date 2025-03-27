@@ -92,8 +92,8 @@ const CommandsPage = () => {
   };
 
   return (
-    <div className="h-full">
-      <div className="overflow-x-auto shadow-md sm:rounded-lg h-full bg-white">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div className="overflow-x-auto">
         <CommandsHeader filters={filters} setFilters={setFilters} />
 
         <table className="min-w-full border text-sm text-left text-gray-500">
@@ -174,62 +174,62 @@ const CommandsPage = () => {
             )}
           </tbody>
         </table>
+      </div>
 
-        {/* Pagination */}
-        <div className="flex items-center justify-end gap-3 py-4 px-6">
+      {/* Pagination */}
+      <div className="flex items-center justify-end gap-3 py-4 px-6">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        <div className="flex items-center space-x-2">
           <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50"
+            onClick={() => handlePageChange(1)}
+            className={`px-4 py-2 ${
+              currentPage === 1
+                ? "bg-primary-500 text-white"
+                : "bg-gray-200 text-gray-700"
+            } rounded-md`}
           >
-            Previous
+            1
           </button>
-
-          <div className="flex items-center space-x-2">
+          {currentPage > 2 && <span className="text-gray-500">...</span>}
+          {currentPage > 1 && currentPage < totalPages && (
             <button
-              onClick={() => handlePageChange(1)}
+              onClick={() => handlePageChange(currentPage)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              {currentPage}
+            </button>
+          )}
+          {currentPage < totalPages - 1 && (
+            <span className="text-gray-500">...</span>
+          )}
+          {totalPages > 1 && (
+            <button
+              onClick={() => handlePageChange(totalPages)}
               className={`px-4 py-2 ${
-                currentPage === 1
-                  ? "bg-primary-500 text-white"
+                currentPage === totalPages
+                  ? "bg-blue-600 text-white"
                   : "bg-gray-200 text-gray-700"
               } rounded-md`}
             >
-              1
+              {totalPages}
             </button>
-            {currentPage > 2 && <span className="text-gray-500">...</span>}
-            {currentPage > 1 && currentPage < totalPages && (
-              <button
-                onClick={() => handlePageChange(currentPage)}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md"
-              >
-                {currentPage}
-              </button>
-            )}
-            {currentPage < totalPages - 1 && (
-              <span className="text-gray-500">...</span>
-            )}
-            {totalPages > 1 && (
-              <button
-                onClick={() => handlePageChange(totalPages)}
-                className={`px-4 py-2 ${
-                  currentPage === totalPages
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-gray-700"
-                } rounded-md`}
-              >
-                {totalPages}
-              </button>
-            )}
-          </div>
-
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50"
-          >
-            Next
-          </button>
+          )}
         </div>
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
 
       {selectedCommand && (
