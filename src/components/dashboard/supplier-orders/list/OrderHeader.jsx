@@ -33,7 +33,7 @@ const OrderHeader = ({ filters, setFilters, handleCreateOrder }) => {
               value={filters.supplier || ""}
               onChange={handleInputChange}
               className="p-2 border rounded-lg w-full"
-              placeholder="Supplier name or ID"
+              placeholder="Supplier name"
             />
           </div>
 
