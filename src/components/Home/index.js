@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsArrowDownRightCircle } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,13 +16,24 @@ import ScrollToTop from "../ScrollToTop";
 import CarouselComponent from "./CarouselComponent";
 import { getCategories } from "../../store/categorySlice";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // or use icons of your choice
+import {
+  addCategory,
+  clearFilters,
+  initializeCategory,
+} from "../../store/filtersSlice";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const Home = () => {
+  // State
   const dispatch = useDispatch();
   const ref = useRef();
+
   const [showArrow, setShowArrow] = useState(false);
 
   const scrollRef = useRef(null);
+
+  // Hooks
+  const navigate = useNavigate();
 
   useEffect(() => {
     const toggleShowArrow = () => {
@@ -62,8 +73,9 @@ const Home = () => {
 
   const scrollLeft = () => {
     if (scrollRef.current) {
+      const cardWidth = scrollRef.current.firstChild?.offsetWidth || 300; // Get the width of the first category card
       scrollRef.current.scrollBy({
-        left: -500, // adjust scroll amount
+        left: -cardWidth, // Scroll left by one card width
         behavior: "smooth",
       });
     }
@@ -71,11 +83,17 @@ const Home = () => {
 
   const scrollRight = () => {
     if (scrollRef.current) {
+      const cardWidth = scrollRef.current.firstChild?.offsetWidth || 300; // Get the width of the first category card
       scrollRef.current.scrollBy({
-        left: 500,
+        left: cardWidth, // Scroll right by one card width
         behavior: "smooth",
       });
     }
+  };
+
+  const redirectToProducts = () => {
+    dispatch(clearFilters());
+    navigate("/products");
   };
 
   const renderHomeBanner = () => (
@@ -89,14 +107,13 @@ const Home = () => {
           <br />
           More than 100 types of assortment.
         </p>
-        <Link to="/products" className="link-item">
-          <button
-            type="button"
-            className="text-white bg-black font-medium rounded-lg text-base px-3 pt-2.5 pb-2 me-2 mb-2"
-          >
-            Start Shopping
-          </button>
-        </Link>
+        <button
+          type="button"
+          onClick={() => redirectToProducts()}
+          className="text-white bg-black font-medium rounded-lg text-base px-3 pt-2.5 pb-2 me-2 mb-2"
+        >
+          Start Shopping
+        </button>
         <a href="#categoriesSection" onClick={scrollToCategories}>
           <button
             type="button"
@@ -139,15 +156,43 @@ const Home = () => {
         </h2>
       </div>
 
-      <div className="home-categories-controls col-12 d-flex align-items-center gap-3">
+      <div className="home-categories-controls col-12 flex items-center gap-3">
         <button className="scroll-btn" onClick={scrollLeft}>
           <ChevronLeft size={28} />
         </button>
 
-        <div className="home-categories-list-wrapper">
-          <div className="home-categories-list" ref={scrollRef}>
+        <div className="relative w-full overflow-hidden">
+          <div
+            className="flex gap-4 overflow-x-auto scroll-smooth no-scrollbar hide-scrollbar"
+            ref={scrollRef}
+          >
             {categories.map((category) => (
-              <CategoryCard key={category.id} categoryDetails={category} />
+              <div
+                key={category.id}
+                className="min-w-full w-[300px] sm:min-w-[50%] md:min-w-[33.33%] p-2"
+              >
+                <Link
+                  to="/products"
+                  className="block"
+                  onClick={() => {
+                    dispatch(initializeCategory());
+                    dispatch(addCategory(category.displayText));
+                  }}
+                >
+                  <div
+                    className="relative h-48 rounded-lg overflow-hidden bg-cover bg-center shadow-md hover:shadow-lg transition-shadow"
+                    style={{
+                      backgroundImage: `url(${getImageUrl(category.imageUrl)})`,
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <p className="text-white text-lg md:text-2xl font-semibold text-center px-4 truncate">
+                        {category.displayText}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
             ))}
           </div>
         </div>

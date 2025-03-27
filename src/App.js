@@ -18,7 +18,6 @@ import "./App.css";
 import AdminLayout from "./pages/dashboard/AdminLayout";
 import ProductsPage from "./pages/dashboard/products/Index";
 import UsersPage from "./pages/dashboard/users";
-import AnalyticsPage from "./pages/dashboard/analytics/Index";
 import HomePage from "./pages/dashboard/home/Index";
 import CommandsPage from "./pages/dashboard/commands/Index";
 import { useEffect, useState } from "react";
@@ -32,6 +31,8 @@ import Cart from "./pages/cart";
 import Products from "./pages/products";
 import StockHistory from "./pages/dashboard/manage-stock/history/Index";
 import Stock from "./pages/dashboard/manage-stock/stock/Index";
+import AddOrder from "./pages/dashboard/manage-orders/add/Index";
+import Orders from "./pages/dashboard/manage-orders/orders/Index";
 
 function App() {
   // Determine if Navbar should be displayed based on current path
@@ -126,32 +127,35 @@ function App() {
 
             {/* --------------------------------------------------------------------- */}
 
+            {/* ------------------------- Manage Orders ------------------------------ */}
+
+            <Route
+              exact
+              path="/admin/orders/add"
+              element={
+                <AdminLayout>
+                  <AddOrder />
+                </AdminLayout>
+              }
+            />
+
+            <Route
+              exact
+              path="/admin/orders"
+              element={
+                <AdminLayout>
+                  <Orders />
+                </AdminLayout>
+              }
+            />
+
+            {/* -------------------------------------------------------------- */}
             <Route
               exact
               path="/admin/users"
               element={
                 <AdminLayout>
                   <UsersPage />
-                </AdminLayout>
-              }
-            />
-
-            <Route
-              exact
-              path="/admin/analytics"
-              element={
-                <AdminLayout>
-                  <AnalyticsPage />
-                </AdminLayout>
-              }
-            />
-
-            <Route
-              exact
-              path="/admin/analytics"
-              element={
-                <AdminLayout>
-                  <AnalyticsPage />
                 </AdminLayout>
               }
             />

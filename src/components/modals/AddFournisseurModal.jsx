@@ -16,9 +16,10 @@ const AddFournisseurModal = ({
     address: "",
   });
 
+  // Populate or reset form when modal opens
   useEffect(() => {
     if (supplier) {
-      // If supplier data is passed for updating, populate the form with the current data
+      // Update mode
       setSupplierData({
         companyName: supplier.companyName || "",
         name: supplier.name || "",
@@ -26,12 +27,21 @@ const AddFournisseurModal = ({
         phone: supplier.phone || "",
         address: supplier.address || "",
       });
+    } else if (isOpen) {
+      // Add mode - reset form
+      setSupplierData({
+        companyName: "",
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+      });
     }
-  }, [supplier]);
+  }, [isOpen, supplier]);
 
   if (!isOpen) return null;
 
-  // Handle input change for all fields
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSupplierData((prevData) => ({
@@ -40,32 +50,45 @@ const AddFournisseurModal = ({
     }));
   };
 
-  // Handle form submission
+  // Check if form is valid
+  const isFormValid = Object.values(supplierData).every(
+    (field) => field.trim() !== ""
+  );
+
+  // Submit form
   const handleSubmit = (e) => {
     e.preventDefault();
     if (supplier) {
-      // If supplier is present, update
       onUpdateSupplier(supplierData);
     } else {
-      // If no supplier, create new one
       onCreateSupplier(supplierData);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex m-0 items-center justify-center z-50">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex m-0 items-center justify-center z-50"
+      role="dialog"
+      aria-labelledby="modal-title"
+    >
       <div className="bg-white w-full max-w-md rounded-lg p-6 relative shadow-lg">
+        {/* Close button */}
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
           onClick={onClose}
+          aria-label="Fermer"
         >
           <XIcon className="w-5 h-5" />
         </button>
-        <h2 className="text-xl font-semibold mb-4">
+
+        {/* Modal Title */}
+        <h2 id="modal-title" className="text-xl font-semibold mb-4">
           {supplier ? "Mettre à jour le fournisseur" : "Ajouter un fournisseur"}
         </h2>
+
+        {/* Form */}
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Company Name Field */}
+          {/* Company Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Nom de l'entreprise
@@ -80,7 +103,7 @@ const AddFournisseurModal = ({
             />
           </div>
 
-          {/* Name Field */}
+          {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Nom
@@ -95,7 +118,7 @@ const AddFournisseurModal = ({
             />
           </div>
 
-          {/* Email Field */}
+          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Email
@@ -110,7 +133,7 @@ const AddFournisseurModal = ({
             />
           </div>
 
-          {/* Phone Field */}
+          {/* Phone */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Téléphone
@@ -125,7 +148,7 @@ const AddFournisseurModal = ({
             />
           </div>
 
-          {/* Address Field */}
+          {/* Address */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Adresse
@@ -151,7 +174,8 @@ const AddFournisseurModal = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm rounded-md bg-primary-500 text-white hover:bg-primary-700"
+              className="px-4 py-2 text-sm rounded-md bg-primary-500 text-white hover:bg-primary-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!isFormValid}
             >
               {supplier ? "Mettre à jour" : "Enregistrer"}
             </button>

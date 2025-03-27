@@ -1,9 +1,9 @@
 export const statusOptions = [
-  { value: "", label: "Tous les statuts" },
-  { value: "en attente", label: "En attente" },
-  { value: "expédiée", label: "Expédiée" },
-  { value: "livrée", label: "Livrée" },
-  { value: "annulée", label: "Annulée" },
+  { value: "", label: "Select status..." },
+  { value: "pending", label: "Pending" },
+  { value: "shipped", label: "Shipped" },
+  { value: "delivered", label: "Delivered" },
+  { value: "cancelled", label: "Cancelled" },
 ];
 
 export const selectStyles = {

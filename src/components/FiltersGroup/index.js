@@ -50,19 +50,19 @@ const FiltersGroup = () => {
         </div>
         <div className="col-6">
           <button
-            id="MEN"
+            id="MALE"
             type="button"
             className={
-              gender === "Men"
+              gender === "Male"
                 ? "filters-button active-gender"
                 : "filters-button"
             }
-            value="Men"
+            value="Male"
             onClick={(event) => {
               dispatch(updateGender(event.target.value));
             }}
           >
-            Men
+            Male
           </button>
         </div>
         <div className="col-6">
@@ -204,17 +204,25 @@ const FiltersGroup = () => {
     </div>
   );
 
+  const closeModal = () => {
+    document.getElementById("filtersGroup").classList.add("d-none");
+  };
+
   return (
-    <div id="filtersGroup" className="eyesome-modal d-none">
+    <div
+      id="filtersGroup"
+      className="eyesome-modal d-none"
+      onClick={(e) => {
+        // Close modal if the click is outside the filters card
+        if (e.target.id === "filtersGroup") {
+          closeModal();
+        }
+      }}
+    >
       <div className="filters-card !z-20">
         <header>
           <h1>Filter Products</h1>
-          <RxCross2
-            className="filters-cross"
-            onClick={() => {
-              document.getElementById("filtersGroup").classList.add("d-none");
-            }}
-          />
+          <RxCross2 className="filters-cross" onClick={closeModal} />
         </header>
         <button
           type="button"
