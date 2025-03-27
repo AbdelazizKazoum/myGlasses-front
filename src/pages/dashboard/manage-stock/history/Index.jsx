@@ -44,7 +44,7 @@ const StockHistory = () => {
   const [filters, setFilters] = useState({
     search: "",
     type: "",
-    supplier: "",
+    supplierId: "",
     reason: "",
     date: "",
   });

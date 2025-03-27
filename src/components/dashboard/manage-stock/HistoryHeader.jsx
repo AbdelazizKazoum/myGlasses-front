@@ -1,4 +1,23 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchSuppliers } from "../../../store/supplierSlice";
+
 const HistoryHeader = ({ filters, setFilters, handleAddStock }) => {
+  // State
+  const [loadingSuppliers, setLoadingSuppliers] = useState(false);
+
+  // Hooks
+  const { suppliers } = useSelector((state) => state.suppliers);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      setLoadingSuppliers(true);
+      await dispatch(fetchSuppliers());
+      setLoadingSuppliers(false);
+    })();
+  }, [dispatch]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -38,16 +57,27 @@ const HistoryHeader = ({ filters, setFilters, handleAddStock }) => {
           </div>
 
           {/* Supplier */}
-          <div className="flex text-gray-700 flex-col">
+          <div className=" text-gray-700 flex flex-col">
             <label className="text-sm font-medium mb-1">Supplier</label>
-            <input
-              type="text"
-              name="supplier"
-              value={filters.supplierId}
-              onChange={handleInputChange}
-              className="p-2 border rounded-lg w-full"
-              placeholder="Supplier name"
-            />
+            {loadingSuppliers ? (
+              <div className="w-full h-10 bg-gray-200 rounded-md animate-pulse" />
+            ) : (
+              <select
+                name="supplierId"
+                className="w-full text-gray-700 p-2 border bg-white rounded-md"
+                value={filters.supplierId}
+                onChange={handleInputChange}
+              >
+                <option className=" " value="">
+                  -- Select Supplier --
+                </option>
+                {suppliers?.map((supplier) => (
+                  <option key={supplier.id} value={supplier.id}>
+                    {supplier.name}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           {/* Reason */}

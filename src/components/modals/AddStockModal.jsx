@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addStock, filterHistory } from "../../store/stockSlice";
 import { searchDetailProductByName } from "../../store/productsSlice";
 import { fetchSuppliers } from "../../store/supplierSlice";
+import { getFilteredSupplierOrders } from "../../store/supplierOrderSlice";
 
 // Enums
 const StockMovementReason = {
@@ -34,9 +35,15 @@ const AddStockModal = ({ isOpen, onClose, filters }) => {
   const [searchDetailProduct, setSearchDetailProduct] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loadingSuppliers, setLoadingSuppliers] = useState(true);
+  const [selectedSupplierId, setSelectedSupplierId] = useState("");
+  const [selectedSupplierName, setSelectedSupplierName] = useState("empty");
 
   const dispatch = useDispatch();
   const { suppliers } = useSelector((state) => state.suppliers);
+  const { supplierOrders, pagination } = useSelector(
+    (state) => state.supplierOrders
+  );
+  console.log("🚀 ~ AddStockModal ~ supplierOrders:", supplierOrders);
 
   const {
     register,
@@ -61,6 +68,28 @@ const AddStockModal = ({ isOpen, onClose, filters }) => {
       );
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      if (selectedSupplierName) {
+        await dispatch(
+          getFilteredSupplierOrders({
+            filters: {
+              status: "",
+              supplier: selectedSupplierName,
+              startDate: "",
+              endDate: "",
+              totalMin: "",
+              totalMax: "",
+              sortBy: "createdAt",
+              sortOrder: "DESC",
+            },
+            pagination: { page: 1, limit: 10 },
+          })
+        );
+      }
+    })();
+  }, [selectedSupplierName, dispatch]);
 
   useEffect(() => {
     (async () => {
@@ -99,6 +128,14 @@ const AddStockModal = ({ isOpen, onClose, filters }) => {
     setSelectedProduct(null);
     setSearchDetailProduct("");
     setValue("productDetailId", "");
+  };
+
+  // Update handleChange for supplier selection
+  const handleSupplierChange = (e) => {
+    const supplierName = e.target.value;
+
+    // setSelectedSupplierId(supplierId);
+    setSelectedSupplierName(supplierName);
   };
 
   if (!isOpen) return null;
@@ -237,13 +274,12 @@ const AddStockModal = ({ isOpen, onClose, filters }) => {
             ) : (
               <select
                 {...register("supplierId")}
+                onChange={handleSupplierChange}
                 className="w-full text-gray-700 p-2 border bg-white rounded-md"
               >
-                <option className=" " value="">
-                  -- Select Supplier --
-                </option>
+                <option value="">-- Select Supplier --</option>
                 {suppliers?.map((supplier) => (
-                  <option key={supplier.id} value={supplier.id}>
+                  <option key={supplier.id} value={supplier.name}>
                     {supplier.name}
                   </option>
                 ))}
@@ -256,17 +292,23 @@ const AddStockModal = ({ isOpen, onClose, filters }) => {
             )}
           </div>
 
-          {/* Supplier Order ID */}
+          {/* Supplier Order Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Supplier Order
+              Supplier Order *
             </label>
-            <input
-              type="text"
+            <select
               {...register("supplierOrderId")}
-              className="w-full p-2 border rounded-md"
-              placeholder="Select supplier order"
-            />
+              className="w-full text-gray-700 p-2 border bg-white rounded-md"
+            >
+              <option value="">-- Select Supplier Order --</option>
+              {supplierOrders.map((order) => (
+                <option key={order.id} value={order.id}>
+                  {new Date(order.createdAt).toLocaleDateString()} -{" "}
+                  {order.total} MAD - {order.status}
+                </option>
+              ))}
+            </select>
             {errors.supplierOrderId && (
               <p className="text-red-500 text-sm">
                 {errors.supplierOrderId.message}
