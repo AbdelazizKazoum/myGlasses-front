@@ -96,6 +96,7 @@ const CommandsPage = () => {
       <div className="overflow-x-auto">
         <CommandsHeader filters={filters} setFilters={setFilters} />
 
+        {/* Command table */}
         <table className="min-w-full border text-sm text-left text-gray-500">
           <thead className="text-xs border text-gray-700 uppercase bg-gray-50">
             <tr>
