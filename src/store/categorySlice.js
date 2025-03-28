@@ -34,17 +34,20 @@ export const getCategories = createAsyncThunk("categories/get", async () => {
   }
 });
 
-export const addCategory = createAsyncThunk("categories/add", async (data) => {
-  try {
-    const res = await api.post("/category", data);
-    toast.success("Category created successfully");
+export const createCategory = createAsyncThunk(
+  "categories/add",
+  async (data) => {
+    try {
+      const res = await api.post("/category", data);
+      toast.success("Category created successfully");
 
-    return res.data;
-  } catch (error) {
-    console.log(error);
-    toast.error("Failed to create category !");
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to create category !");
+    }
   }
-});
+);
 
 export const updateCategory = createAsyncThunk(
   "categories/update",

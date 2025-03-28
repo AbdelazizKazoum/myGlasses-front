@@ -5,8 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getImageUrl } from "../../../utils/getImageUrl";
 import Loader from "../../../components/Loader";
 import { toast } from "react-toastify";
-import { getCategories, updateCategory } from "../../../store/categorySlice";
-import { addCategory } from "../../../store/filtersSlice";
+import {
+  createCategory,
+  getCategories,
+  updateCategory,
+} from "../../../store/categorySlice";
 import ConfirmDeleteModal from "../../modals/ConfirmDeleteModal";
 
 const CategoriesTab = () => {
@@ -40,7 +43,7 @@ const CategoriesTab = () => {
     if (editingCategory) {
       await dispatch(updateCategory({ formData, id: editingCategory.id }));
     } else {
-      await dispatch(addCategory(formData));
+      await dispatch(createCategory(formData));
     }
 
     setIsModalOpen(false);

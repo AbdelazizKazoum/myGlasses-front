@@ -91,6 +91,8 @@ const CommandsPage = () => {
     }
   };
 
+  // https://myglasses-back-production-65ae.up.railway.app
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div className="overflow-x-auto">
