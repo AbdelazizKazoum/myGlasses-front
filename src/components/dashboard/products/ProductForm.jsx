@@ -13,6 +13,7 @@ import Loader from "../../Loader";
 import AdminError from "../../ErrorCard/AdminError";
 import ImageUpload from "../../ui/ImageUpload";
 import { setProduct } from "../../../store/productSlice";
+import { Loader2 } from "lucide-react";
 
 // Validation schema using Zod
 const productSchema = z.object({
@@ -48,7 +49,7 @@ const ProductForm = ({ onSubmit, product }) => {
     handleSubmit,
     setValue,
     reset,
-    formState: { errors, isSubmitting }, // <-- Get isSubmitting from formState
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(productSchema),
   });
@@ -78,22 +79,21 @@ const ProductForm = ({ onSubmit, product }) => {
       setValue("image", product.image);
     } else {
       reset({
-        name: null,
-        brand: null,
-        category: null,
-        description: null,
-        gender: null,
-        weight: null,
-        quantity: null,
-        price: null,
-        newPrice: null,
+        name: "",
+        brand: "",
+        category: "",
+        description: "",
+        gender: "",
+        weight: "",
+        quantity: "",
+        price: "",
+        newPrice: "",
         trending: false,
       });
       setValue("image", null);
     }
   }, [product, reset, setValue]);
 
-  if (loading) return <Loader />;
   if (error) return <AdminError message={error} />;
 
   return (
@@ -127,13 +127,17 @@ const ProductForm = ({ onSubmit, product }) => {
               errors={errors}
               register={register}
             />
-            <SelectInput
-              label="Category"
-              name="category"
-              options={categories}
-              errors={errors}
-              register={register}
-            />
+            {loading ? (
+              <div className="w-full h-10 bg-gray-200 rounded-md animate-pulse" />
+            ) : (
+              <SelectInput
+                label="Category"
+                name="category"
+                options={categories}
+                errors={errors}
+                register={register}
+              />
+            )}
           </div>
         </div>
 
@@ -184,15 +188,14 @@ const ProductForm = ({ onSubmit, product }) => {
       <div className="flex gap-2">
         <button
           type="submit"
-          className="bg-primary-500 rounded text-white px-4 py-2 mt-4 flex items-center justify-center"
-          disabled={isSubmitting} // <-- Disable button while submitting
+          className="bg-primary-500 rounded text-white px-4 py-2 mt-4"
+          disabled={isSubmitting}
         >
           {isSubmitting ? (
-            <>
-              <span className="loader mr-2"></span>{" "}
-              {/* <-- Simple loading spinner */}
+            <span className="flex gap-2">
+              <Loader2 className="animate-spin w-5 h-5" />
               Processing...
-            </>
+            </span>
           ) : product ? (
             "Update Product"
           ) : (
@@ -203,32 +206,12 @@ const ProductForm = ({ onSubmit, product }) => {
           <button
             type="button"
             className="bg-red-400 text-white rounded px-4 py-2 mt-4"
-            onClick={() => handleCancelButton()}
+            onClick={handleCancelButton}
           >
             Cancel
           </button>
         )}
       </div>
-
-      {/* CSS for loader animation */}
-      <style jsx>{`
-        .loader {
-          border: 2px solid white;
-          border-top: 2px solid transparent;
-          border-radius: 50%;
-          width: 16px;
-          height: 16px;
-          animation: spin 0.6s linear infinite;
-        }
-        @keyframes spin {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
     </form>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
+import Loader from "../../Loader";
 
 const VariantGrid = ({ variants, onEdit, loading }) => {
   const [editingIndex, setEditingIndex] = useState(null);
@@ -9,9 +10,11 @@ const VariantGrid = ({ variants, onEdit, loading }) => {
     if (onEdit) onEdit(variants[index]);
   };
 
+  if (loading) return <Loader />;
+
   return (
     <div className="overflow-x-auto mt-4">
-      {loading ? (
+      {loading && !variants ? (
         <div className="flex justify-center items-center py-4">
           <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
         </div>

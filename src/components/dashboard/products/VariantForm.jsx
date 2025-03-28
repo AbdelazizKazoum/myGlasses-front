@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import SelectInput from "../../ui/SelectInput";
 import NumberInput from "../../ui/NumberInput";
 import ColorPickerField from "./ColorPickerField";
-import { CircleX, Upload } from "lucide-react";
+import { CircleX, Loader2, Upload } from "lucide-react";
 import { getImageUrl } from "../../../utils/getImageUrl";
 import { useDispatch } from "react-redux";
 import { updateStock } from "../../../store/productSlice";
@@ -58,7 +58,7 @@ const VariantForm = ({
 
   const onSubmit = async (data) => {
     try {
-      setVariants({ ...data, images });
+      await setVariants({ ...data, images });
       reset();
       setImages([]);
     } catch (error) {
@@ -199,17 +199,22 @@ const VariantForm = ({
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <button
           type="submit"
           className="bg-primary-500 rounded text-white px-4 py-2 mt-4"
           disabled={isSubmitting}
         >
-          {isSubmitting
-            ? "Processing..."
-            : variant
-            ? "Update Variant"
-            : "Add Variant"}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="animate-spin w-5 h-5" />
+              Processing...
+            </>
+          ) : variant ? (
+            "Update Variant"
+          ) : (
+            "Add Variant"
+          )}
         </button>
         {variant && (
           <button
