@@ -10,7 +10,6 @@ import ErrorCard from "../../components/ErrorCard";
 import ScrollToTop from "../../components/ScrollToTop";
 import { updatePriceSort } from "../../store/filtersSlice";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { delayLoading } from "../../utils/delayLoading";
 
 const Products = () => {
   const [showArrow, setShowArrow] = useState(false);

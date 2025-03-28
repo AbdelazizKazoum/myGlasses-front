@@ -4,6 +4,7 @@ import { filterStock } from "../../../../store/stockSlice";
 import StockHeader from "../../../../components/dashboard/manage-stock/StockHeader";
 import StockDetailModal from "../../../../components/modals/StockDetailModal";
 import { PencilIcon } from "lucide-react";
+import Loader from "../../../../components/Loader";
 
 const Stock = () => {
   const [filters, setFilters] = useState({
@@ -16,6 +17,7 @@ const Stock = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [selectedStock, setSelectedStock] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const {
     stock,
@@ -35,12 +37,16 @@ const Stock = () => {
   };
   useEffect(() => {
     (async () => {
+      setLoading(true);
+
       const res = await dispatch(
         filterStock({
           filters,
           pagination: { page: currentPage, limit },
         })
-      );
+      ).finally(() => {
+        setLoading(false);
+      });
     })();
   }, [filters, currentPage, limit, dispatch]);
 
@@ -51,6 +57,8 @@ const Stock = () => {
       setCurrentPage(page);
     }
   };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

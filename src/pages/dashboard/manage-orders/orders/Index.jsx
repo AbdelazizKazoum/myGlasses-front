@@ -9,6 +9,7 @@ import {
   setSeletedSupplierOrder,
 } from "../../../../store/supplierOrderSlice";
 import OrderDetailsModal from "../../../../components/modals/OrderDetailsModal";
+import Loader from "../../../../components/Loader";
 
 const Orders = () => {
   const [filters, setFilters] = useState({
@@ -61,6 +62,8 @@ const Orders = () => {
   const closeModal = () => {
     setShowModal(false);
   };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

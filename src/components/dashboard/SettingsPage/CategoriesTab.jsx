@@ -33,6 +33,8 @@ const CategoriesTab = () => {
   }, [dispatch]);
 
   const handleAddCategory = async () => {
+    setLoading(true);
+
     const formData = new FormData();
     formData.append(
       "data",
@@ -46,8 +48,9 @@ const CategoriesTab = () => {
       await dispatch(createCategory(formData));
     }
 
-    setIsModalOpen(false);
     await dispatch(getCategories());
+    setLoading(false);
+    setIsModalOpen(false);
   };
 
   //   const handleDeleteCategory = async () => {
@@ -235,14 +238,22 @@ const CategoriesTab = () => {
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="px-4 py-2 text-sm rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                disabled={loading}
               >
                 Annuler
               </button>
               <button
                 onClick={handleAddCategory}
-                className="px-4 py-2 text-sm rounded-lg bg-primary-500 text-white hover:bg-primary-800 transition"
+                className="px-4 py-2 text-sm rounded-lg bg-primary-500 text-white hover:bg-primary-800 transition flex items-center justify-center"
+                disabled={loading}
               >
-                {editingCategory ? "Mettre à jour" : "Ajouter"}
+                {loading ? (
+                  <Loader />
+                ) : editingCategory ? (
+                  "Mettre à jour"
+                ) : (
+                  "Ajouter"
+                )}
               </button>
             </div>
           </div>

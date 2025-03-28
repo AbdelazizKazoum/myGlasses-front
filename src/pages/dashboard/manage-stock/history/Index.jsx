@@ -5,6 +5,7 @@ import { filterHistory } from "../../../../store/stockSlice";
 import MovementDetailModal from "../../../../components/modals/MovementDetailModal";
 import AddStockModal from "../../../../components/modals/AddStockModal";
 import { PencilIcon } from "lucide-react";
+import Loader from "../../../../components/Loader";
 
 // Badge component for Type column
 const MovementTypeBadge = ({ type }) => {
@@ -51,6 +52,7 @@ const StockHistory = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [loading, setLoading] = useState(false);
 
   const [selectedMovement, setSelectedMovement] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -73,12 +75,16 @@ const StockHistory = () => {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+
       await dispatch(
         filterHistory({
           filters,
           pagination: { page: currentPage, limit },
         })
-      );
+      ).finally(() => {
+        setLoading(false);
+      });
     })();
   }, [filters, currentPage, limit, dispatch]);
 
@@ -89,6 +95,8 @@ const StockHistory = () => {
       setCurrentPage(page);
     }
   };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

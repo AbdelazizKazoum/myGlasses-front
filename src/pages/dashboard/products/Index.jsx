@@ -6,6 +6,7 @@ import { setProduct } from "../../../store/productSlice";
 import TableHeader from "../../../components/dashboard/products/TableHeader";
 import { getImageUrl } from "../../../utils/getImageUrl";
 import { PencilIcon } from "lucide-react";
+import Loader from "../../../components/Loader";
 
 const ProductsPage = () => {
   // States
@@ -22,6 +23,7 @@ const ProductsPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10); // You can make this dynamic if needed
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,12 +37,15 @@ const ProductsPage = () => {
   // Get products whenever filters or pagination change
   useEffect(() => {
     (async () => {
+      setLoading(true);
       await dispatch(
         getFilterdProducts({
           filters,
           pagination: { page: currentPage, limit },
         })
-      );
+      ).finally(() => {
+        setLoading(false);
+      });
     })();
   }, [filters, currentPage, limit, dispatch]);
 
@@ -61,6 +66,8 @@ const ProductsPage = () => {
     dispatch(setProduct(product));
     navigate("/admin/products/add");
   };
+
+  if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

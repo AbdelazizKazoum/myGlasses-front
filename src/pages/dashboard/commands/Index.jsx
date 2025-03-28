@@ -13,6 +13,7 @@ import {
 import { PencilIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CommandsHeader from "../../../components/dashboard/commands/CommandsHeader";
+import Loader from "../../../components/Loader";
 
 const CommandsPage = () => {
   const [filters, setFilters] = useState({
@@ -92,6 +93,8 @@ const CommandsPage = () => {
   };
 
   // https://myglasses-back-production-65ae.up.railway.app
+
+  if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
