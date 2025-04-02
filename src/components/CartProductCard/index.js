@@ -1,18 +1,18 @@
 import { AiFillPlusCircle, AiFillMinusCircle } from "react-icons/ai";
 import { BiSolidBookmarkHeart } from "react-icons/bi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   removeCartItem,
   decreaseCartItemCount,
   increaseCartItemCount,
 } from "../../store/cartSlice";
 import { addWishlistItem, removeWishlistItem } from "../../store/wishlistSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-
-import "./index.css";
 import { TbCurrencyDirham } from "react-icons/tb";
 import { getImageUrl } from "../../utils/getImageUrl";
+
+import "./index.css";
+
 const CartProductCard = (props) => {
   const { product } = props;
   const {
@@ -24,10 +24,10 @@ const CartProductCard = (props) => {
     qty,
     color,
     size,
-    vailableQuantity,
+    availableQuantity,
   } = product;
-  const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
 
+  const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
   const wishlistProducts = useSelector((state) => state.wishlist);
 
   useEffect(() => {
@@ -35,9 +35,11 @@ const CartProductCard = (props) => {
   }, [wishlistProducts, id]);
 
   const dispatch = useDispatch();
+
   const removeFromCart = () => {
     dispatch(removeCartItem(id));
   };
+
   const addToWishlist = () => {
     setIsAddedToWishlist(true);
     dispatch(addWishlistItem(product));
@@ -49,7 +51,9 @@ const CartProductCard = (props) => {
   };
 
   const increaseItem = () => {
-    dispatch(increaseCartItemCount(id));
+    if (qty < availableQuantity) {
+      dispatch(increaseCartItemCount(id));
+    }
   };
 
   const decreaseItem = () => {
@@ -59,25 +63,27 @@ const CartProductCard = (props) => {
   };
 
   return (
-    <li className="cart-product-card w-full bg-white p-[15px] mb-3 rounded flex items-center  !shadow-sm">
-      <img
-        className="cart-product-image"
-        src={getImageUrl(image)}
-        alt="productName"
-      />
+    <li className="cart-product-card w-full bg-white p-[15px] mb-3 rounded flex items-center !shadow-sm">
+      <img className="cart-product-image" src={getImageUrl(image)} alt={name} />
+
       <div className="cart-product-details">
         <h1>{name}</h1>
 
         {color && (
           <div className="flex mt-0 mb-2">
-            color :
+            Color:
             <span
               style={{ backgroundColor: color }}
-              className=" mx-2 w-6 h-6 rounded-full"
+              className="mx-2 w-6 h-6 rounded-full"
             ></span>
-            Size : <span className=" ml-2">{size}</span>
+            Size: <span className="ml-2">{size}</span>
           </div>
         )}
+
+        {/* Show Available Quantity */}
+        <p className="text-sm text-gray-600">
+          Stock disponible: {availableQuantity}
+        </p>
 
         <p>
           Quantity:{" "}
@@ -87,10 +93,14 @@ const CartProductCard = (props) => {
           />{" "}
           <span>{qty}</span>{" "}
           <AiFillPlusCircle
-            className="cart-product-update-icon"
+            className={`cart-product-update-icon ${
+              qty >= availableQuantity ? "text-gray-400 cursor-not-allowed" : ""
+            }`}
             onClick={increaseItem}
+            disabled={qty >= availableQuantity}
           />
         </p>
+
         <div>
           <button
             type="button"
@@ -99,13 +109,12 @@ const CartProductCard = (props) => {
           >
             Remove
           </button>
-          {!isAddedToWishlist && (
+          {!isAddedToWishlist ? (
             <BiSolidBookmarkHeart
               className="cart-product-bookmark-button"
               onClick={addToWishlist}
             />
-          )}
-          {isAddedToWishlist && (
+          ) : (
             <BiSolidBookmarkHeart
               className="cart-product-bookmark-button color-red"
               onClick={removeFromWishlist}
@@ -113,14 +122,12 @@ const CartProductCard = (props) => {
           )}
         </div>
       </div>
+
       <div className="cart-product-price-container">
-        {/* <p>₹{newPrice}</p> */}
         <div className="flex gap-1">
-          {/* <TbCurrencyDirham className="text-xl" /> */}
           <div className="text-xl font-semibold -ml-1">{newPrice} MAD</div>
         </div>
         <div className="flex gap-1 ml-3">
-          {/* <TbCurrencyDirham className="text-sm text-gray-400" /> */}
           <div className="text-sm font-semibold -ml-1 text-gray-400">
             <del>{price} MAD</del>
           </div>

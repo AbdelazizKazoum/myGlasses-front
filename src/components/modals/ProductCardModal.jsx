@@ -21,7 +21,6 @@ const ProductCardModal = ({
 
   const [quantity, setQuantity] = useState(0);
   const [variantImages, setVariantImages] = useState([]);
-  console.log("🚀 ~ variantImages:", variantImages);
 
   const [showWarning, setShowWarning] = useState(false);
   const [outOfStock, setOutOfStock] = useState(false);
@@ -208,35 +207,6 @@ const ProductCardModal = ({
           <del className="text-sm text-gray-400">MAD {price}</del>
         </div>
 
-        {/* Size Selection */}
-        <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Select Size
-          </label>
-          <div
-            className={`flex flex-wrap gap-2 ${
-              showWarning && !selectedSize ? "animate-shake" : ""
-            }`}
-          >
-            {sizes.map((size) => (
-              <button
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`px-3 py-1 rounded border text-sm transition ${
-                  selectedSize === size
-                    ? "bg-primary-500 text-white border-primary-500"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
-          {showWarning && !selectedSize && (
-            <p className="text-sm text-red-500 mt-1">Please select a size.</p>
-          )}
-        </div>
-
         {/* Color Selection */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -263,6 +233,35 @@ const ProductCardModal = ({
           </div>
           {showWarning && !selectedColor && (
             <p className="text-sm text-red-500 mt-1">Please select a color.</p>
+          )}
+        </div>
+
+        {/* Size Selection */}
+        <div className="mb-3">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Select Size
+          </label>
+          <div
+            className={`flex flex-wrap gap-2 ${
+              showWarning && !selectedSize ? "animate-shake" : ""
+            }`}
+          >
+            {sizes.map((size) => (
+              <button
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                className={`px-3 py-1 rounded border text-sm transition ${
+                  selectedSize === size
+                    ? "bg-primary-500 text-white border-primary-500"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+          {showWarning && !selectedSize && (
+            <p className="text-sm text-red-500 mt-1">Please select a size.</p>
           )}
         </div>
 

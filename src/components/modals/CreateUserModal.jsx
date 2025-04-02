@@ -27,7 +27,7 @@ const UserModal = ({ isOpen, setIsOpen, user }) => {
       cin: data.cin,
       nom: data.nom,
       prenom: data.prenom,
-      tel: data.tel || "",
+      tel: data.tel || null,
       password: data.password,
       role: data.role,
       status: data.status || "",
