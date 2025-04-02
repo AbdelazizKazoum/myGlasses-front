@@ -232,7 +232,8 @@ const ProductDetailsCard = (props) => {
             {selectedVariant?.images?.map((item, index) => (
               <div
                 className={`  border ${
-                  displayImage === item.image && "border-image"
+                  displayImage === item.image &&
+                  "border-image ring-1 ring-primary-500"
                 }  bg-black/[0.075] border-primary-500 p-2 size-14  sm:size-14`}
               >
                 {" "}
