@@ -94,7 +94,7 @@ const CommandsPage = () => {
 
   // https://myglasses-back-production-65ae.up.railway.app
 
-  if (loading) return <Loader />;
+  // if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -126,7 +126,30 @@ const CommandsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {commands.length > 0 ? (
+            {loading ? (
+              Array.from({ length: limit }).map((_, index) => (
+                <tr key={index} className="animate-pulse bg-gray-100 border-b">
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="h-4 bg-gray-300 rounded w-1/6"></div>
+                  </td>
+                </tr>
+              ))
+            ) : commands.length > 0 ? (
               commands.map((command) => (
                 <tr
                   key={command.id}

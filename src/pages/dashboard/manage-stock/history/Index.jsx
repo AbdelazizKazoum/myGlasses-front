@@ -96,7 +96,7 @@ const StockHistory = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  // if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -132,48 +132,98 @@ const StockHistory = () => {
             </tr>
           </thead>
           <tbody>
-            {stockHistory.map((movement, index) => (
-              <tr
-                key={movement.id}
-                className="bg-white border-b border-gray-200 hover:bg-gray-50"
-              >
-                <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2"
-                    />
-                  </div>
-                </td>
-                <td className="px-6 py-4">{index + 1}</td>
-                <td className="px-6 py-4">
-                  <MovementTypeBadge type={movement.type} />
-                </td>
-                <td className="px-6 py-4">{movement.quantity}</td>
-                <td className="px-6 py-4">
-                  {movement?.productDetail?.product?.name}
-                </td>
-                <td className="px-6 py-4">
-                  <ColorCircle color={movement?.productDetail?.color} />
-                </td>
-                <td className="px-6 py-4">{movement?.productDetail?.size}</td>
-                <td className="px-6 py-4">{movement.supplier?.name}</td>
-                <td className="px-6 py-4">{movement.reason}</td>
-                <td className="px-6 py-4">{movement.order}</td>
-                <td className="px-6 py-4">
-                  {movement.createdAt &&
-                    new Date(movement.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() => openDetailModal(movement)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
+            {loading
+              ? Array.from({ length: limit }).map((_, index) => (
+                  <tr
+                    key={index}
+                    className="animate-pulse bg-gray-100 border-b"
                   >
-                    <PencilIcon className="h-4 w-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/6"></div>
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                  </tr>
+                ))
+              : stockHistory.map((movement, index) => (
+                  <tr
+                    key={movement.id}
+                    className="bg-white border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    <td className="w-4 p-4">
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2"
+                        />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">{index + 1}</td>
+                    <td className="px-6 py-4">
+                      <MovementTypeBadge type={movement.type} />
+                    </td>
+                    <td className="px-6 py-4">{movement.quantity}</td>
+                    <td className="px-6 py-4">
+                      {movement?.productDetail?.product?.name}
+                    </td>
+                    <td className="px-6 py-4">
+                      <ColorCircle color={movement?.productDetail?.color} />
+                    </td>
+                    <td className="px-6 py-4">
+                      {movement?.productDetail?.size}
+                    </td>
+                    <td className="px-6 py-4">{movement.supplier?.name}</td>
+                    <td className="px-6 py-4">{movement.reason}</td>
+                    <td className="px-6 py-4">{movement.order}</td>
+                    <td className="px-6 py-4">
+                      {movement.createdAt &&
+                        new Date(movement.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => openDetailModal(movement)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>

@@ -67,7 +67,7 @@ const ProductsPage = () => {
     navigate("/admin/products/add");
   };
 
-  if (loading) return <Loader />;
+  // if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -91,33 +91,62 @@ const ProductsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr
-                key={product.id}
-                className="bg-white border-b border-gray-200 hover:bg-gray-50"
-              >
-                <td className="px-6 py-4">
-                  <img
-                    src={getImageUrl(product.image)}
-                    alt={product.name}
-                    className="w-10 h-10 object-cover rounded"
-                  />
-                </td>
-                <td className="px-6 py-4">{product.name}</td>
-                <td className="px-6 py-4">{product.category}</td>
-                <td className="px-6 py-4">{product.brand}</td>
-                <td className="px-6 py-4">{product.price} MAD</td>
-                <td className="px-6 py-4">{product.stock}</td>
-                <td className="px-6 py-4">
-                  <button
-                    onClick={() => handleEditProduct(product)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
+            {loading
+              ? Array.from({ length: limit }).map((_, index) => (
+                  <tr
+                    key={index}
+                    className="animate-pulse bg-gray-100 border-b"
                   >
-                    <PencilIcon className="h-4 w-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/6"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/6"></div>
+                    </td>
+                  </tr>
+                ))
+              : products.map((product) => (
+                  <tr
+                    key={product.id}
+                    className="bg-white border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    <td className="px-6 py-4">
+                      <img
+                        src={getImageUrl(product.image)}
+                        alt={product.name}
+                        className="w-10 h-10 object-cover rounded"
+                      />
+                    </td>
+                    <td className="px-6 py-4">{product.name}</td>
+                    <td className="px-6 py-4">{product.category}</td>
+                    <td className="px-6 py-4">{product.brand}</td>
+                    <td className="px-6 py-4">{product.price} MAD</td>
+                    <td className="px-6 py-4">{product.stock}</td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => handleEditProduct(product)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>

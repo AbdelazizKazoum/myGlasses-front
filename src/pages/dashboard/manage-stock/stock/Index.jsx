@@ -58,7 +58,7 @@ const Stock = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  // if (loading) return <Loader />;
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -94,47 +94,68 @@ const Stock = () => {
             </tr>
           </thead>
           <tbody>
-            {status === "pending" ? (
-              <tr>
-                <td colSpan="6" className="text-center py-4">
-                  Loading...
-                </td>
-              </tr>
-            ) : (
-              stock.map((item, index) => (
-                <tr
-                  key={item.id}
-                  className="bg-white border-b border-gray-200 hover:bg-gray-50"
-                >
-                  <td className="px-6 py-4">{index + 1}</td>
-                  <td className="px-6 py-4">
-                    {item.productDetail?.product?.name}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div
-                      style={{
-                        backgroundColor: item.productDetail.color,
-                        width: "20px",
-                        height: "20px",
-                        borderRadius: "50%",
-                        display: "inline-block",
-                      }}
-                    ></div>
-                  </td>
-                  <td className="px-6 py-4">{item.productDetail.size}</td>
-                  <td className="px-6 py-4">{item.quantity}</td>
-                  <td className="px-6 py-4">{item.updated}</td>
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={() => openModal(item)} // Open the modal and pass the item
-                      className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
+            {loading
+              ? Array.from({ length: limit }).map((_, index) => (
+                  <tr
+                    key={index}
+                    className="animate-pulse bg-gray-100 border-b"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                    </td>
+                  </tr>
+                ))
+              : stock.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    className="bg-white border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    <td className="px-6 py-4">{index + 1}</td>
+                    <td className="px-6 py-4">
+                      {item.productDetail?.product?.name}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div
+                        style={{
+                          backgroundColor: item.productDetail.color,
+                          width: "20px",
+                          height: "20px",
+                          borderRadius: "50%",
+                          display: "inline-block",
+                        }}
+                      ></div>
+                    </td>
+                    <td className="px-6 py-4">{item.productDetail.size}</td>
+                    <td className="px-6 py-4">{item.quantity}</td>
+                    <td className="px-6 py-4">{item.updated}</td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => openModal(item)} // Open the modal and pass the item
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition"
+                      >
+                        <PencilIcon className="h-4 w-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>
