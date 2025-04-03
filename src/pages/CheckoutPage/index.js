@@ -92,6 +92,10 @@ const CheckoutPage = () => {
         <AddressForm
           onCancel={setAddNewAddress}
           onSubmit={handleSubmitAddress}
+          initialData={{
+            fullName: `${user.nom} ${user.prenom}`,
+            mobile: user.tel,
+          }}
         />
       )}
 
