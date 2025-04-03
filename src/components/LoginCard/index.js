@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import "./index.css";
 import { signIn } from "../../store/authSlice";
@@ -13,6 +13,10 @@ const LoginCard = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const redirectPath = params.get("redirect");
+  console.log("🚀 ~ LoginCard ~ redirectPath:", redirectPath);
 
   const submitForm = async (event) => {
     event.preventDefault();
@@ -24,7 +28,6 @@ const LoginCard = () => {
         const res = await dispatch(
           signIn({ email: emailInput, password: passwordInput })
         );
-        console.log(res.payload);
 
         const user = res?.payload?.user;
 
@@ -33,9 +36,17 @@ const LoginCard = () => {
           // After successful login, navigate to the correct page after a delay
           setTimeout(() => {
             if (user.role === "admin") {
-              navigate("/admin");
+              if (redirectPath) {
+                navigate(redirectPath);
+              } else {
+                navigate("/admin");
+              }
             } else {
-              navigate("/");
+              if (redirectPath) {
+                navigate(redirectPath);
+              } else {
+                navigate("/");
+              }
             }
           }, 2000);
         } else {
