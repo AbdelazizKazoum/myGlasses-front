@@ -119,7 +119,10 @@ const SignUpCard = () => {
               className="border rounded-md p-1.5 shadow-sm"
               {...register("phone", {
                 required: "Phone number is required",
-                pattern: /^[0-9]{10}$/,
+                pattern: {
+                  value: /^[0-9]{10}$/,
+                  message: "Phone number must be 10 digits",
+                },
               })}
             />
             {errors.phone && (
