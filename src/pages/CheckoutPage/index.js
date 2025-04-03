@@ -16,6 +16,7 @@ const CheckoutPage = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showDisplayPayment, setShowDisplayPayment] = useState(false);
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [showAddressWarning, setShowAddressWarning] = useState(false);
 
@@ -57,6 +58,7 @@ const CheckoutPage = () => {
 
   const updatePaymentSuccess = async (value) => {
     if (value) {
+      setLoading(true);
       const res = await dispatch(
         createCommande({
           details: cartProducts,
@@ -64,6 +66,7 @@ const CheckoutPage = () => {
           address: primaryAddress,
         })
       );
+      setLoading(false);
 
       if (!res.error) {
         setShowPaymentSuccess(value);
@@ -291,6 +294,7 @@ const CheckoutPage = () => {
         <PaymentPage
           updateDisplayPayment={updateDisplayPayment}
           updatePaymentSuccess={updatePaymentSuccess}
+          loading={loading}
         />
       )}
       {showPaymentSuccess && (

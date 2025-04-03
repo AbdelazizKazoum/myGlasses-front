@@ -93,6 +93,8 @@ const ProductDetailsCard = (props) => {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+
       await dispatch(getProductDetails(productId.id));
 
       await dispatch(getProductsByCategory(category));
